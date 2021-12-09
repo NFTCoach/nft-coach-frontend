@@ -1,12 +1,16 @@
-.hero {
+.wrapper {
+  display: grid;
   height: 100vh;
-  background: red;
+  grid-template-columns: 1fr;
+  grid-template-rows: 80px auto;
   background-image: linear-gradient(
       var(--bg-gradient-from),
       var(--bg-gradient-to)
     ),
     url("../assets/images/landing/bg.png");
+}
 
+.hero {
   display: flex;
   align-items: center;
   justify-content: center;
