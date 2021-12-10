@@ -2,7 +2,6 @@ import { Typography } from "components/Typography";
 import styles from "./Landing.module.scss";
 import Button from "components/Button";
 import Navbar from "components/Navbar";
-import PlayerImage from "assets/images/landing/player.png";
 import { Fragment } from "react";
 import { Info } from "components/Info";
 import { Team } from "components/Team";
