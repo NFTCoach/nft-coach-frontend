@@ -15,6 +15,14 @@
   &.scrolled {
     transition: 0.15s linear;
     background-color: rgba(33, 13, 66, 0.75);
+    .iconContainer {
+      background-color: #fff;
+      color: black;
+      svg {
+        color: black;
+        transition: 0.15s linear;
+      }
+    }
   }
 
   img {
@@ -35,10 +43,11 @@
     background-color: rgba($color: #fff, $alpha: 0.15);
     padding: 8px 12px 8px 6px;
     border-radius: 8px;
-  }
-
-  .iconContainer svg {
-    color: white;
+    transition: 0.15s all ease-in-out;
+    svg {
+      transition: 0.15s all ease-in-out;
+      color: white;
+    }
   }
 }
 

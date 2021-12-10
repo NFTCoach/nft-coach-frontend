@@ -14,7 +14,7 @@ export const accountSlicer = createSlice({
     name: "account",
     initialState,
     reducers: {
-      signIn(state, action) {
+      setSignedIn(state, action) {
         state.isSignedIn = action.payload;
       },
       setProvider(state, action) {
@@ -36,7 +36,7 @@ export const accountSlicer = createSlice({
     }
   });
   
-  export const { signIn, setProvider, setSigner, setAddress, setAccountData } =
+  export const { setSignedIn, setProvider, setSigner, setAddress, setAccountData } =
     accountSlicer.actions;
   
   export default accountSlicer.reducer;

@@ -6,6 +6,7 @@ import { Typography } from "components/Typography";
 import { useSelector } from "react-redux";
 import useRequestAccounts from "common/utils/useRequestAccounts";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
+import { Link } from "react-router-dom";
 
 
 export default function Navbar() {
@@ -44,7 +45,9 @@ export default function Navbar() {
             </span>
           </div>}
         <div>
-          <Button>Launch Game</Button>
+          <Link to="/game">
+            <Button>Launch Game</Button>
+          </Link>
         </div>
       </div>
     </nav>
