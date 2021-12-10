@@ -8,6 +8,7 @@ import Marketplace from "pages/Marketplace";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
 import { setAccountData } from "store/reducers/account";
+import Game from "pages/Game";
 
 
 function App() {
@@ -19,28 +20,7 @@ function App() {
       duration: 1000,
     });
   });
-
-  useEffect(() => {
-    async function fetchData() {
-      const res = await window.ethereum.request({ method: 'eth_accounts' });
-      //console.log(res);
-      if (res.length > 0){ // user is signed in
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-        console.log(provider);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-        
-        const address = await signer.getAddress();
-        console.log(address);
-
-        dispatch(setAccountData({
-          address, provider, signer, isSignedIn: true
-        }))
-      }
-    }
-    fetchData()
-  }, []);
+  
 
   return (
     <div>
@@ -50,6 +30,7 @@ function App() {
             {/*  <Route path=":teamId" element={<Team />} /> */}
           </Route>
           <Route path="/market" element={<Marketplace />}></Route>
+          <Route path="/game" element={<Game />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

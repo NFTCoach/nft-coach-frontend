@@ -9,8 +9,17 @@ import Numbers from "components/Numbers/Numbers";
 import { Cards } from "components/Cards";
 import { Concept } from "components/Concept";
 import { Roadmap } from "components/Roadmap";
+import useAccount from "common/hooks/useAccount";
+import React, { useEffect } from "react";
 
 const Landing = () => {
+
+  const { getIsSignedIn } = useAccount({ directSignIn: false });
+
+  useEffect(() => {
+    getIsSignedIn();
+  }, []);
+
   return (
     <Fragment>
       <div className={styles.wrapper}>

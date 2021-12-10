@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
 import { checkIfRightNetwork } from "common/utils/checkIfRightNetwork";
-import { setAccountData, signIn } from "store/reducers/account";
+import { setAccountData, setSignedIn } from "store/reducers/account";
 
 const AVALANCHE_NETWORK = {
     id: "0xa869",
@@ -39,7 +39,7 @@ export default function useRequestAccounts() {
             return signer;
         }
         catch {
-            dispatch(signIn(false));
+            dispatch(setSignedIn(false));
             return false;
         }
     }
