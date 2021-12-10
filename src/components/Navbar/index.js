@@ -3,9 +3,16 @@ import styles from "./Navbar.module.scss";
 import logo from "./logo-240.png";
 import Button from "components/Button";
 import { Typography } from "components/Typography";
+import { useSelector } from "react-redux";
+import useRequestAccounts from "common/utils/useRequestAccounts";
+import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
+
 
 export default function Navbar() {
   const ref = useRef(null);
+  
+  const account = useSelector(state => state.account);
+  const { requestAccounts } = useRequestAccounts();
 
   useEffect(() => {
     const onScroll = (e) => {
@@ -28,6 +35,14 @@ export default function Navbar() {
     <nav ref={ref} className={styles.navbar}>
       <img src={logo} alt="logo" />
       <div className={styles.navigationBar}>
+        {account.isSignedIn === false && <Button onClick={requestAccounts}>Sign In</Button>}
+        {account.isSignedIn && <div className={styles.iconContainer}>
+            <UserIcon />
+            <span>
+              {account.address.substring(0, 5)}...
+              {account.address.substring(account.address.length - 5, account.address.length)}
+            </span>
+          </div>}
         <div>
           <Button>Launch Game</Button>
         </div>
