@@ -7,6 +7,8 @@ import { Fragment } from "react";
 import { Info } from "components/Info";
 import Numbers from "components/Numbers/Numbers";
 import { Cards } from "components/Cards";
+import { Concept } from "components/Concept";
+import { Roadmap } from "components/Roadmap";
 
 const Landing = () => {
   return (
@@ -39,7 +41,9 @@ const Landing = () => {
         </div>
       </div>
       <Info />
+      <Concept />
       <Cards />
+      <Roadmap />
     </Fragment>
   );
 };

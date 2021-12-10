@@ -1,4 +1,5 @@
 .cards {
+  margin-top: 1em;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -8,5 +9,43 @@
 .sub {
   margin-top: 24px;
   width: 60%;
+
+  @media (max-width: 768px) {
+    width: 80%;
+  }
   text-align: center;
+}
+
+.cardWrapper {
+  margin-top: 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @media (max-width: 768px) {
+    place-content: center;
+    grid-template-columns: 0.8fr;
+  }
+
+  align-items: center;
+  & img {
+    @media (max-width: 768px) {
+      &:not(:first-child) {
+        margin-top: 1.5rem;
+      }
+    }
+    place-self: center;
+    &:nth-child(1) {
+      max-width: 60%;
+      box-shadow: var(--shadow-main);
+
+      align-self: center;
+    }
+    &:nth-child(2) {
+      max-width: 100%;
+    }
+    &:nth-child(3) {
+      box-shadow: var(--shadow-main);
+      max-width: 60%;
+    }
+  }
 }
