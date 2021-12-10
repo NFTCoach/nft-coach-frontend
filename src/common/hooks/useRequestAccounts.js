@@ -30,7 +30,7 @@ export default function useRequestAccounts() {
             dispatch(
                 setAccountData({
                     address: address,
-                    signedIn: true,
+                    isSignedIn: true,
                     provider: provider,
                     signer
                 })

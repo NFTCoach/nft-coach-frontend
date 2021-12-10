@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
 import { setAccountData, setSignedIn } from "store/reducers/account";
-import useRequestAccounts from "common/utils/useRequestAccounts";
+import useRequestAccounts from "common/hooks/useRequestAccounts";
 
 export default function useAccount({ directSignIn = false }) {
 

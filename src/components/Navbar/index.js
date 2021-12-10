@@ -4,7 +4,7 @@ import logo from "./logo-240.png";
 import Button from "components/Button";
 import { Typography } from "components/Typography";
 import { useSelector } from "react-redux";
-import useRequestAccounts from "common/utils/useRequestAccounts";
+import useRequestAccounts from "common/hooks/useRequestAccounts";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
 import { Link } from "react-router-dom";
 

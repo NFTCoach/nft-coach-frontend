@@ -15,16 +15,18 @@
 
 .members {
   display: grid;
-  gap: 128px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-column-gap: 128px;
+  width: min(80%, 1200px);
+  //grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 
   @media (max-width: 992px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    //grid-template-columns: 1fr 1fr;
+    grid-column-gap: 64px;
   }
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 32px;
+  @media (max-width: 600px) {
+    //grid-template-columns: 1fr 1fr;
+    grid-column-gap: 32px;
   }
 }
 
