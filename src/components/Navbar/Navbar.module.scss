@@ -26,6 +26,20 @@
     gap: 15px;
     align-items: center;
   }
+
+  .iconContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: white;
+    background-color: rgba($color: #fff, $alpha: 0.15);
+    padding: 8px 12px 8px 6px;
+    border-radius: 8px;
+  }
+
+  .iconContainer svg {
+    color: white;
+  }
 }
 
 .link {
