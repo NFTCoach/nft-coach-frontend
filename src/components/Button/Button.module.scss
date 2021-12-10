@@ -1,26 +1,31 @@
-
 .button {
-  border-radius: 4px;
+  border-radius: 8px;
   &.primary {
-    --bg: var(--primary-700);
-    --bg-hover: var(--primary-600);
-    --bg-active: var(--primary-500);
+    --bg: var(--primary-button);
+    --bg-hover: var(--primary-button-hover);
+    --bg-active: var(--primary-button-active);
     --color: var(--text-color);
+    --border: 1px solid transparent;
+    --shadow: none;
   }
 
   &.secondary {
-    --bg: var(--accent-grad);
-    --bg-hover: var(--accent-grad);
-    --bg-active: var(--accent-grad);
+    --bg: transparent;
+    --bg-hover: transparent;
+    --bg-active: transparent;
     --color: var(--text-color);
+    --border: 1px solid var(--text-color);
+    --shadow: 0px 0px 0px 1px var(--text-color);
   }
 
   background: var(--bg);
   color: var(--color);
+  border: var(--border);
   position: relative;
 
   &:hover {
     background-color: var(--bg-hover);
+    box-shadow: var(--shadow);
   }
 
   &:active {
@@ -33,16 +38,20 @@
   }
 
   &.small {
+    border-radius: 8px;
     padding: 8px 12px;
   }
   &.medium {
-    padding: 10px 14px;
+    border-radius: 8px;
+    padding: 8px 14px;
   }
   &.large {
-    padding: 14px 20px;
+    border-radius: 12px;
+    padding: 12px 22px;
   }
   &.xlarge {
-    padding: 18px 24px;
+    border-radius: 14px;
+    padding: 16px 24px;
   }
 }
 
@@ -66,4 +75,3 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-

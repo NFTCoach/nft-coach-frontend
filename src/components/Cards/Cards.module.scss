@@ -1,0 +1,12 @@
+.cards {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+}
+
+.sub {
+  margin-top: 24px;
+  width: 60%;
+  text-align: center;
+}

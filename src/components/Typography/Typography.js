@@ -34,6 +34,7 @@ const Typography = React.forwardRef((props, ref) => {
     as: Component = "span",
     className,
     children,
+    header,
     ...rest
   } = props;
 
@@ -44,6 +45,7 @@ const Typography = React.forwardRef((props, ref) => {
         styles[variant],
         styles[`${weight}`],
         styles[`${decor}`],
+        header && styles.header,
         className
       )}
       {...rest}

@@ -1,20 +1,36 @@
-
-
 .navbar {
-    padding: 0 20px;
-    color: var(--text-color);
-    background: transparent;
+  padding: 12px 20px;
+  color: var(--text-color);
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  transition: 0.15s linear;
+  z-index: 1;
+
+  &.scrolled {
+    transition: 0.15s linear;
+    background-color: rgba(33, 13, 66, 0.75);
+  }
+
+  img {
+    width: 100px;
+  }
+
+  .navigationBar {
     display: flex;
-    justify-content: space-between;
+    gap: 15px;
     align-items: center;
+  }
+}
 
-    img {
-        width: 100px;
-    }
-
-    .navigationBar {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
+.link {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline !important;
+  }
 }
