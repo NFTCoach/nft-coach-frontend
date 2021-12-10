@@ -2,10 +2,13 @@
   color: var(--text-color);
   font-size: 48px;
   font-style: italic;
+  text-align: center;
 }
 
 .subheader {
+  text-align: center;
   color: var(--text-color);
-  font-size: 24px;
+  font-size: 20px;
   font-style: italic;
+  opacity: 0.8;
 }

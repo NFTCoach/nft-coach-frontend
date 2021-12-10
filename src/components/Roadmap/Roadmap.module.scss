@@ -1,0 +1,64 @@
+.roadmap {
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  padding: 32px 64px;
+  flex-direction: column;
+}
+
+.sub {
+  margin-top: 1rem;
+}
+
+.item {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 16px;
+  display: flex;
+  overflow: hidden;
+  padding: 30px 20px;
+  color: var(--text-color);
+  height: fit-content;
+  place-self: center;
+  align-self: flex-start;
+
+  background-color: rgba(46, 18, 89, 0.75);
+}
+
+.items {
+  margin-top: 3rem;
+  display: grid;
+  place-content: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  position: relative;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.list {
+  margin-left: 20px;
+  & li {
+    margin-top: 0.2rem;
+    line-height: 24px;
+    margin-bottom: 0.2rem;
+    list-style-type: disc !important;
+  }
+}
+
+.items {
+  height: 100%;
+}
+
+.one {
+  top: 75px;
+  right: 100px;
+}
+
+.two {
+  top: 100px;
+  left: 500px;
+}

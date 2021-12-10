@@ -1,0 +1,17 @@
+.concept {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4rem;
+  align-items: center;
+}
+
+.conceptPhoto {
+  margin-top: 6rem;
+  max-width: 80%;
+  opacity: 0.8;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}

@@ -31,11 +31,16 @@ const Info = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header>How it works</Header>
+      <Header>Gameplay</Header>
 
       <div className={styles.steps}>
-        {items.map((item) => (
-          <div data-aos="fade-up" className={styles.step}>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            data-aos="fade-up"
+            data-aos-delay={index === 0 ? "0" : index === 1 ? "250" : "500"}
+            className={styles.step}
+          >
             <Typography header variant="title4" weight="semibold">
               {item.title}
             </Typography>
