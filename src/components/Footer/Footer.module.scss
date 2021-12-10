@@ -1,0 +1,44 @@
+.footer {
+  padding-left: 32x;
+  padding-right: 65px;
+  margin-top: 3rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  background-image: radial-gradient(at top center, #1d1533 0%, #141414 70%);
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 80%;
+  margin: auto;
+
+  @media (max-width: 768px) {
+    padding-left: 16px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-left: 32px;
+    padding-right: 32px;
+    width: 100%;
+  }
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  & a {
+    color: var(--text-color);
+  }
+
+  & a:hover {
+    color: var(--primary-button);
+  }
+}
+
+.cp {
+  margin-top: 32px;
+  color: var(--text-color);
+}

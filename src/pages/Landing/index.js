@@ -5,10 +5,11 @@ import Navbar from "components/Navbar";
 import PlayerImage from "assets/images/landing/player.png";
 import { Fragment } from "react";
 import { Info } from "components/Info";
-import Numbers from "components/Numbers/Numbers";
+import { Team } from "components/Team";
 import { Cards } from "components/Cards";
 import { Concept } from "components/Concept";
 import { Roadmap } from "components/Roadmap";
+import Footer from "components/Footer";
 
 const Landing = () => {
   return (
@@ -44,6 +45,8 @@ const Landing = () => {
       <Concept />
       <Cards />
       <Roadmap />
+      <Team />
+      <Footer />
     </Fragment>
   );
 };
