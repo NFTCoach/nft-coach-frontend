@@ -4,9 +4,11 @@ import Marketplace from "assets/images/game/marketplace.png";
 import TrainingMatch from "assets/images/game/training-match.png";
 import Tournaments from "assets/images/game/tournaments.png";
 import { clsnm } from "common/utils/clsnm";
+import { Link } from "react-router-dom";
 
-export default function Gameplay() {
-
+export default function Gameplay({
+    setStage
+}) {
 
     return (<div className={styles.container}>
         <div className={clsnm(styles["gameplay-hero"])}>
@@ -19,19 +21,21 @@ export default function Gameplay() {
             </p>
         </div>
         <div className={clsnm(styles["marketplace-wrapper"], styles["grid-item"])}>
-            <div className={styles.marketplace}>
+            <Link className={styles.marketplace} to="/market">
                 <img src={Marketplace} />
                 <h3>Marketplace</h3>
-            </div>
+            </Link>
         </div>
         <div className={clsnm(styles["training-match--wrapper"], styles["grid-item"])}>
-            <div className={styles["training-match"]}>
+            <div className={styles["training-match"]}
+                onClick={() => setStage("training-match")}>
                 <img src={TrainingMatch} />
                 <h3>PvP Training Games</h3>
             </div>
         </div>
         <div className={clsnm(styles["tournaments-wrapper"], styles["grid-item"])}>
-            <div className={styles["tournaments"]}>
+            <div className={styles["tournaments"]}
+                onClick={() => setStage("tournaments")}>
                 <img src={Tournaments} />
                 <h3>PvP Tournaments</h3>
             </div>

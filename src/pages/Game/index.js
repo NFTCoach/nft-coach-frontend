@@ -3,28 +3,22 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./Game.module.scss";
 import Gameplay from "./Gameplay";
+import Tournaments from "./Tournaments";
+import TrainingMatch from "./TrainingMatch";
 
 export default function Game() {
 
-    const [stage, setStage] = useState("my-team");
+    const [stage, setStage] = useState();
 
-    const { getIsSignedIn } = useAccount({
-        directSignIn: true
-    });
+    //const account = useSelector(state => state.account);
 
-    const account = useSelector(state => state.account);
-
-    useEffect(() => {
-        getIsSignedIn();
-    }, []);
-
-    if (account.isSignedIn === null) {
-        return null;
+    if (stage === "tournaments") {
+        return <Tournaments />;
     }
 
-    if (account.isSignedIn === false) {
-        return <span>You need to sign in</span>
+    if (stage === "training-match") {
+        return <TrainingMatch />;
     }
 
-    return (<Gameplay />);
+    return (<Gameplay setStage={setStage} />);
 }

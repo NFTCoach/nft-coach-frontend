@@ -6,6 +6,13 @@ const initialState = {
     provider: null,
     signer: null,
     isSignedIn: null,
+    name: null,
+    team: {
+      name: "",
+      players: [],
+    },
+    balance: 0,
+    attendedTournament: null
 };
 
 
