@@ -8,11 +8,10 @@ import useRequestAccounts from "common/hooks/useRequestAccounts";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
 import { Link } from "react-router-dom";
 
-
 export default function Navbar() {
   const ref = useRef(null);
-  
-  const account = useSelector(state => state.account);
+
+  const account = useSelector((state) => state.account);
   const { requestAccounts } = useRequestAccounts();
 
   useEffect(() => {
@@ -36,14 +35,23 @@ export default function Navbar() {
     <nav ref={ref} className={styles.navbar}>
       <img src={logo} alt="logo" />
       <div className={styles.navigationBar}>
-        {account.isSignedIn === false && <Button onClick={requestAccounts}>Sign In</Button>}
-        {account.isSignedIn && <div className={styles.iconContainer}>
+        {account.isSignedIn === false && (
+          <Button type="secondary" onClick={requestAccounts}>
+            Sign In
+          </Button>
+        )}
+        {account.isSignedIn && (
+          <div className={styles.iconContainer}>
             <UserIcon />
             <span>
               {account.address.substring(0, 5)}...
-              {account.address.substring(account.address.length - 5, account.address.length)}
+              {account.address.substring(
+                account.address.length - 5,
+                account.address.length
+              )}
             </span>
-          </div>}
+          </div>
+        )}
         <div>
           <Link to="/game">
             <Button>Launch Game</Button>
