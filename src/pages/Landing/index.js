@@ -2,7 +2,7 @@ import { Typography } from "components/Typography";
 import styles from "./Landing.module.scss";
 import Button from "components/Button";
 import Navbar from "components/Navbar";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import { Info } from "components/Info";
 import { Team } from "components/Team";
 import { Cards } from "components/Cards";
@@ -18,6 +18,11 @@ const Landing = () => {
   useEffect(() => {
     getIsSignedIn();
   }, []);
+
+  const ref = useRef(null);
+  const handleScroll = () => {
+    ref?.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <Fragment>
@@ -41,14 +46,16 @@ const Landing = () => {
             to have a life time income. Create your team and join the game!
           </Typography>
           <div className={styles.buttons}>
-            <Button size="large">Get Started</Button>
+            <Button size="large" onClick={handleScroll}>
+              Get Started
+            </Button>
             <Button type="secondary" size="large">
               Buy Token
             </Button>
           </div>
         </div>
       </div>
-      <Info />
+      <Info divRef={ref} />
       <Concept />
       <Cards />
       <Roadmap />

@@ -59,7 +59,7 @@ const Team = () => {
               {item.position}
             </Typography>
 
-            <a href={item.linkedin} target="_blank">
+            <a href={item.linkedin} target="_blank" rel="noreferrer">
               <LinkedinIcon />
             </a>
           </div>

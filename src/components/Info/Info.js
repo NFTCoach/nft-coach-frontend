@@ -1,14 +1,12 @@
 import { Typography } from "components/Typography";
 import styles from "./Info.module.scss";
-
-import Team from "../../assets/images/landing/team.png";
-import Challenge from "../../assets/images/landing/challenge.png";
-import Sell from "../../assets/images/landing/sell.png";
-import { useEffect } from "react";
+import Team from "assets/images/landing/team.png";
+import Challenge from "assets/images/landing/challenge.png";
+import Sell from "assets/images/landing/sell.png";
 import { Header } from "components/Header";
 import { clsnm } from "common/utils/clsnm";
 
-const Info = () => {
+const Info = ({ divRef }) => {
   const items = [
     {
       title: "Create a team",
@@ -31,7 +29,7 @@ const Info = () => {
   ];
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={divRef}>
       <Header>Gameplay</Header>
 
       <div className={styles.steps}>
@@ -52,7 +50,7 @@ const Info = () => {
               src={item.image}
               className={clsnm(
                 styles.image,
-                (index == 2 || index == 0) && styles.lg
+                (index === 2 || index === 0) && styles.lg
               )}
             />
           </div>

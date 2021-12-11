@@ -11,7 +11,14 @@ import { Typography } from "components/Typography";
 
 const Button = React.forwardRef(
   (
-    { children, type = "primary", size = "medium", loading = false, ...rest },
+    {
+      children,
+      type = "primary",
+      size = "medium",
+      loading = false,
+      className,
+      ...rest
+    },
     ref
   ) => {
     const variant = ["small", "medium"].includes(size) ? "body2" : "body1";
@@ -22,7 +29,8 @@ const Button = React.forwardRef(
           styles["button"],
           styles[type],
           styles[size],
-          loading && styles["loading"]
+          loading && styles["loading"],
+          className
         )}
         ref={ref}
         {...rest}

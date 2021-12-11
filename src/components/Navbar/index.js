@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import styles from "./Navbar.module.scss";
 import logo from "./logo-240.png";
 import Button from "components/Button";
-import { Typography } from "components/Typography";
 import { useSelector } from "react-redux";
 import useRequestAccounts from "common/hooks/useRequestAccounts";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";

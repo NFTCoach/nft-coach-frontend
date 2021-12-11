@@ -13,9 +13,9 @@ const Cards = () => {
         & 5 defensive attributes.
       </Header>
       <div className={styles.cardWrapper}>
-        <img data-aos="fade-up" src={Card1} />
-        <img data-aos="fade-up" src={Design} />
-        <img data-aos-duration="2000" data-aos="fade-up" src={Card2} />
+        <img alt="" data-aos="fade-up" src={Card1} />
+        <img alt="" data-aos="fade-up" src={Design} />
+        <img alt="" data-aos-duration="2000" data-aos="fade-up" src={Card2} />
       </div>
     </div>
   );

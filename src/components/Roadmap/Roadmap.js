@@ -1,7 +1,4 @@
 import styles from "./Roadmap.module.scss";
-import OwlCarousel from "react-owl-carousel";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
 import { Typography } from "components/Typography";
 import { Header } from "components/Header";
 import { clsnm } from "common/utils/clsnm";
@@ -42,7 +39,7 @@ const Roadmap = () => {
             <li>Marketplace</li>
             <li>Tournament System</li>
           </ul>
-          <img className={styles.image} src={AvalancheLogo} />
+          <img alt="" className={styles.image} src={AvalancheLogo} />
         </div>
 
         <div
@@ -74,7 +71,7 @@ const Roadmap = () => {
             <li>Game Frontend</li>
             <li>Community Building</li>
           </ul>
-          <img className={styles.image} src={ChainlinkLogo} />
+          <img alt="" className={styles.image} src={ChainlinkLogo} />
         </div>
 
         <div
@@ -109,24 +106,6 @@ const Roadmap = () => {
           </ul>
         </div>
       </div>
-
-      {/*  <OwlCarousel className="owl-theme" loop margin={10} nav>
-        <div class="item">
-          <img src="assets/img/1.jpg" />
-        </div>
-        <div class="item">
-          <img src="assets/img/2.jpg" />
-        </div>
-        <div class="item">
-          <img src="assets/img/3.jpg" />
-        </div>
-        <div class="item">
-          <img src="assets/img/4.jpg" />
-        </div>
-        <div class="item">
-          <img src="assets/img/5.jpg" />
-        </div>
-      </OwlCarousel> */}
     </div>
   );
 };

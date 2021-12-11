@@ -1,30 +1,24 @@
-import React, { useEffect } from "react";
-import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
-import { setAccountData, setSignedIn } from "store/reducers/account";
+import { setSignedIn } from "store/reducers/account";
 import useRequestAccounts from "common/hooks/useRequestAccounts";
 
 export default function useAccount({ directSignIn = false }) {
+  const dispatch = useDispatch();
+  const { requestAccounts } = useRequestAccounts();
 
-    const dispatch = useDispatch();
-    const { requestAccounts } = useRequestAccounts();
+  async function getIsSignedIn() {
+    const res = await window.ethereum.request({ method: "eth_accounts" });
 
-    
-    async function getIsSignedIn() {
-        const res = await window.ethereum.request({ method: 'eth_accounts' });
+    console.log(directSignIn);
 
-        console.log(directSignIn);
-
-        if (directSignIn === true || res.length > 0) {
-            requestAccounts();
-        }
-        else {
-            dispatch(setSignedIn(false))
-        }
-
-        return res.length;
+    if (directSignIn === true || res.length > 0) {
+      requestAccounts();
+    } else {
+      dispatch(setSignedIn(false));
     }
 
-    return { getIsSignedIn };
+    return res.length;
+  }
 
+  return { getIsSignedIn };
 }

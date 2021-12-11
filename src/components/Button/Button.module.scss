@@ -22,6 +22,7 @@
   color: var(--color);
   border: var(--border);
   position: relative;
+  white-space: nowrap;
 
   &:hover {
     background-color: var(--bg-hover);
@@ -33,6 +34,11 @@
   }
 
   &.loading {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  &.disabled {
     pointer-events: none;
     opacity: 0.5;
   }
