@@ -6,7 +6,7 @@ import accountSlicer from "./reducers/account";
 export const store = configureStore({
   reducer: {
     theme: themeSlice,
-    contract: contractSlice,
+    contracts: contractSlice,
     account: accountSlicer
   },
   middleware: (getDefaultMiddleware) => {

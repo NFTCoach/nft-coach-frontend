@@ -21,11 +21,12 @@ export const contractSlice = createSlice({
     initialState,
     reducers: {
         setContractData(state, action) {
-            state.RNG = action.payload.RNG;
+            //console.log("setContract data");
+            //state.RNG = action.payload.RNG;
             state.NC1155 = action.payload.NC1155;
             state.NC721 = action.payload.NC721;
             state.COACH = action.payload.COACH;
-            state.CoreRegistry = action.payload.CoreRegistry;
+            //state.CoreRegistry = action.payload.CoreRegistry;
             state.Management = action.payload.Management;
             state.Marketplace = action.payload.Marketplace;
             state.Tournaments = action.payload.Tournaments;

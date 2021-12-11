@@ -7,10 +7,7 @@ const initialState = {
     signer: null,
     isSignedIn: null,
     name: null,
-    team: {
-      name: "",
-      players: [],
-    },
+    players: null,
     balance: 0,
     attendedTournament: null
 };
@@ -39,11 +36,21 @@ export const accountSlicer = createSlice({
         state.provider = provider;
         state.isSignedIn = isSignedIn;
         state.signer = signer;
+      },
+      setPlayers(state, action) {
+        state.players = action.payload;
       }
     }
   });
   
-  export const { setSignedIn, setProvider, setSigner, setAddress, setAccountData } =
+  export const {
+    setSignedIn,
+    setProvider,
+    setSigner,
+    setAddress,
+    setAccountData,
+    setPlayers
+  } =
     accountSlicer.actions;
   
   export default accountSlicer.reducer;

@@ -8,12 +8,13 @@ import {
     MarketplaceABI,
     NC721ABI,
     NC1155ABI,
-    COACHABI
+    COACHABI,
+    ManagementABI
 } from "contract/ext-abi";
 import contractAddresses from "contract/addresses";
 import { setContractData } from "store/reducers/contracts";
 
-const AVALANCHE_NETWORK = {
+const RINKEBY_NETWORK = {
     id: "0xa869",
     name: "Avalanche Fuji C Chain",
     rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
@@ -27,7 +28,7 @@ export default function useRequestAccounts() {
 
     const requestAccounts = async () => {
         try {
-            await checkIfRightNetwork(AVALANCHE_NETWORK);
+            //await checkIfRightNetwork(AVALANCHE_NETWORK);
             const provider = new ethers.providers.Web3Provider(
                 window.ethereum,
                 "any"
@@ -73,6 +74,12 @@ export default function useRequestAccounts() {
                 provider
             );
 
+            const Management = new ethers.Contract(
+                contractAddresses.Management,
+                ManagementABI,
+                provider
+            );
+
             dispatch(
                 setAccountData({
                     address: address,
@@ -89,7 +96,8 @@ export default function useRequestAccounts() {
                     Marketplace,
                     NC721,
                     NC1155,
-                    COACH
+                    COACH,
+                    Management
                 })
             );
 
