@@ -8,6 +8,7 @@ import Marketplace from "pages/Marketplace";
 import { useDispatch } from "react-redux";
 import Game from "pages/Game";
 import { MyTeam } from "pages/Game/MyTeam";
+import useRequestAccounts from "common/hooks/useRequestAccounts";
 
 function App() {
   const dispatch = useDispatch();
