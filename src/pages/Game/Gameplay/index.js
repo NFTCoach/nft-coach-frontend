@@ -5,10 +5,13 @@ import TrainingMatch from "assets/images/game/training-match.png";
 import Tournaments from "assets/images/game/tournaments.png";
 import { clsnm } from "common/utils/clsnm";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setStage } from "store/reducers/game";
 
-export default function Gameplay({
-    setStage
-}) {
+
+export default function Gameplay() {
+
+    const dispatch = useDispatch();
 
     return (<div className={styles.container}>
         <div className={clsnm(styles["gameplay-hero"])}>
@@ -28,14 +31,14 @@ export default function Gameplay({
         </div>
         <div className={clsnm(styles["training-match--wrapper"], styles["grid-item"])}>
             <div className={styles["training-match"]}
-                onClick={() => setStage("training-match")}>
+                onClick={() => dispatch(setStage("training-match"))}>
                 <img src={TrainingMatch} />
                 <h3>PvP Training Games</h3>
             </div>
         </div>
         <div className={clsnm(styles["tournaments-wrapper"], styles["grid-item"])}>
             <div className={styles["tournaments"]}
-                onClick={() => setStage("tournaments")}>
+                onClick={() => dispatch(setStage("tournaments"))}>
                 <img src={Tournaments} />
                 <h3>PvP Tournaments</h3>
             </div>

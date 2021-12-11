@@ -7,6 +7,7 @@ const initialState = {
     signer: null,
     isSignedIn: null,
     name: null,
+    team: null,
     players: null,
     balance: 0,
     attendedTournament: null
@@ -39,6 +40,9 @@ export const accountSlicer = createSlice({
       },
       setPlayers(state, action) {
         state.players = action.payload;
+      },
+      setTeam(state, action) {
+        state.team = action.payload;
       }
     }
   });
@@ -49,7 +53,8 @@ export const accountSlicer = createSlice({
     setSigner,
     setAddress,
     setAccountData,
-    setPlayers
+    setPlayers,
+    setTeam
   } =
     accountSlicer.actions;
   

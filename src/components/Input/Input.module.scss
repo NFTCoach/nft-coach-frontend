@@ -1,0 +1,21 @@
+
+
+.label {
+}
+
+.label > * + * {
+    margin-top: 10px;
+}
+
+.label span {
+    display: block;
+}
+
+.input {
+    border: 2px solid #fff;
+    background: transparent;
+    color: white;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 15px;
+}

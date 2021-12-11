@@ -1374,6 +1374,25 @@ export const ManagementABI = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getDefaultFive",
+    "outputs": [
+      {
+        "internalType": "uint256[5]",
+        "name": "",
+        "type": "uint256[5]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "playerId",
         "type": "uint256"

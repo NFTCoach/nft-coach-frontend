@@ -11,12 +11,36 @@
 
 .create-team--container {
     display: flex;
+    gap: 30px;
 
     .team-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
     }
-    .coach-container {}
+    .coach-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
 
     h2 {
         font-size: 24px;
     }
+
+
+
+    .image-container {
+        padding: 20px;
+        border: 5px solid white;
+        border-radius: 50%;
+        cursor: pointer;
+        svg {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    
 }

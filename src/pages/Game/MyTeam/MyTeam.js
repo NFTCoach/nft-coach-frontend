@@ -4,57 +4,25 @@ import { useEffect, useState } from "react";
 import styles from "./MyTeam.module.scss";
 import CourtPng from "assets/images/game/court.png";
 import { useSelector } from "react-redux";
-import filterEvents from "common/utils/filterEvents";
+import { useContractFunction } from "common/utils/contract/functions";
 import useRequestAccounts from "common/hooks/useRequestAccounts";
 import { ethers } from "ethers";
 
 function MyTeam() {
   const account = useSelector((state) => state.account);
   const contracts = useSelector((state) => state.contracts);
-  const [myTeam, setMyTeams] = useState([]);
-  const [myPlayers, setMyPlayers] = useState([]);
   const { requestAccounts } = useRequestAccounts();
+
+  const { getAllPlayersOf } = useContractFunction();
 
   useEffect(() => {
     if (!contracts.NC721 || !account.isSignedIn) {
       requestAccounts();
       return;
     }
-
-    const getAllPlayersOf = async (address) => {
-      const mintEvents = await filterEvents(
-        contracts.NC721,
-        "Transfer",
-        ethers.constants.AddressZero,
-        address
-      );
-      const playerIds = mintEvents.map((ev) => ev.args[2].toString());
-
-      let players = [];
-      for (let playerId of playerIds) {
-        const transferEvents = await filterEvents(
-          contracts.NC721,
-          "Transfer",
-          null,
-          null,
-          playerId
-        );
-        if (transferEvents[transferEvents.length - 1].args[1] != address)
-          continue;
-
-        if ((await contracts.Management.idToCoach(playerId)) == address)
-          players.push(playerId);
-      }
-
-      if (!account.isSignedIn || !contracts.NC721) {
-        return;
-      }
-      console.log(players);
-      setMyPlayers(players);
-    };
-
     getAllPlayersOf(account.address);
-  }, [contracts, account]);
+  }, [contracts, account.isSignedIn]);
+
 
   return (
     <div className={styles.wrapper}>
@@ -95,6 +63,6 @@ function MyTeam() {
       </div>
     </div>
   );
-}
+};
 
-export { MyTeam };
+export { MyTeam }
