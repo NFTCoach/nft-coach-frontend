@@ -6,6 +6,7 @@ import Challenge from "../../assets/images/landing/challenge.png";
 import Sell from "../../assets/images/landing/sell.png";
 import { useEffect } from "react";
 import { Header } from "components/Header";
+import { clsnm } from "common/utils/clsnm";
 
 const Info = () => {
   const items = [
@@ -47,7 +48,13 @@ const Info = () => {
             <Typography variant="body1" weight="medium">
               {item.content}
             </Typography>
-            <img src={item.image} className={styles.image} />
+            <img
+              src={item.image}
+              className={clsnm(
+                styles.image,
+                (index == 2 || index == 0) && styles.lg
+              )}
+            />
           </div>
         ))}
       </div>

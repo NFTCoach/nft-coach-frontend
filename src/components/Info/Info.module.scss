@@ -54,4 +54,9 @@
 .image {
   align-self: center;
   max-width: 70%;
+
+  &.lg {
+    margin-top: 1rem;
+    max-width: 90%;
+  }
 }
