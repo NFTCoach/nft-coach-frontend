@@ -19,6 +19,6 @@
   width: 100%;
 
   &::placeholder {
-    color: #ededed;
+    color: var(--text-color);
   }
 }

@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 import styles from "./Tournaments.module.scss";
 
 export function Tournaments() {
-
   const [ongoingTournaments, setOngoingTournaments] = useState(null);
   const [attendedTournament, setAttendedTournament] = useState(null);
 
@@ -41,11 +40,9 @@ export function Tournaments() {
     // if user is not signed in and is not attend any tournament
     if (attendedTournament === false) {
       fetchData();
-    }
-    else {
+    } else {
       // show user the attended tournament
     }
-
   }, [attendedTournament]);
 
   useEffect(() => {
@@ -56,12 +53,12 @@ export function Tournaments() {
       // get user attend any tournament information
       // if there is an attended tournament then setAttendedTournament(attendedTournament)
       // else setAttendedTournament(false);
-      //** for right now this informations will be fetched from localStorage 
+      //** for right now this informations will be fetched from localStorage
       //** because there no function in contracts related to this logic
 
-      const attendedTournament = window.localStorage.getItem("attendedTournament");
+      const attendedTournament =
+        window.localStorage.getItem("attendedTournament");
       setAttendedTournament(attendedTournament ?? false);
-      
     }
     fetchData();
   }, [account.isSignedIn, contracts.Tournaments]);
@@ -72,7 +69,11 @@ export function Tournaments() {
   }, [account.isSignedIn]);
 
   if (attendedTournament === null) {
-    return <Spinner />
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    );
   }
 
   if (attendedTournament) {

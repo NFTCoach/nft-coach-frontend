@@ -4,7 +4,7 @@
     --bg: var(--primary-button);
     --bg-hover: var(--primary-button-hover);
     --bg-active: var(--primary-button-active);
-    --color: var(--text-color);
+    --color: white;
     --border: 1px solid transparent;
     --shadow: none;
   }
@@ -22,7 +22,7 @@
     --bg: var(--color-accent);
     --bg-hover: var(--color-accent-hover);
     --bg-active: var(--color-accent-active);
-    --color: var(--text-color);
+    --color: white;
     --border: 1px solid transparent;
     --shadow: 0px 0px 0px 0px var(--text-color);
   }

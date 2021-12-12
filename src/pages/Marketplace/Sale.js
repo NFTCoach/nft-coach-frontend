@@ -9,7 +9,6 @@ import { PlayerCard } from "components/PlayerCard";
 import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
 import { Fragment, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { useSelector } from "react-redux";
 import styles from "./Marketplace.module.scss";
 

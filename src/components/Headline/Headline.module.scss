@@ -3,6 +3,7 @@
   width: 100%;
   padding: 24px 24px;
   justify-content: space-between;
+  position: relative;
 }
 
 .balance {
@@ -12,4 +13,15 @@
 .hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.right {
+  display: flex;
+  gap: 8px;
 }

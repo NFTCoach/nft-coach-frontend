@@ -10,5 +10,7 @@
 
   &.over {
     background-color: rgb(90, 252, 123);
+    opacity: 0.7;
+    box-shadow: 0px 0px 0px 4px rgb(90, 252, 123);
   }
 }

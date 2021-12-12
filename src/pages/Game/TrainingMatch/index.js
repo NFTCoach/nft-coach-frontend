@@ -89,15 +89,15 @@ export default function TrainingMatch() {
 
   return (
     <div className={styles.container}>
-      <Headline title="Training & Match" />
-      <Button>Match</Button>
-      <Button
-        onClick={() => {
-          navigate(PATHS.team);
-        }}
-      >
-        My Team
-      </Button>
+      <Headline title="Training & Match">
+        <Button
+          onClick={() => {
+            navigate(PATHS.team);
+          }}
+        >
+          My Team
+        </Button>
+      </Headline>
     </div>
   );
 }
