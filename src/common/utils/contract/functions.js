@@ -10,7 +10,7 @@ const getArgs = async (txn, event) => {
   return receipt.events?.filter((x) => x.event === event)?.[0]?.args;
 };
 
-const parseCoach = (n) => {
+export const parseCoach = (n) => {
   const interm = n * 10 ** 6;
   const parser = ethers.BigNumber.from(10).pow(12);
   return ethers.BigNumber.from(interm).mul(parser);
@@ -31,6 +31,7 @@ export function useContractFunction() {
     COACH,
     Marketplace,
     TrainingMatches,
+    RNG,
   } = useSelector((state) => state.contracts);
 
   const { signer } = useSelector((state) => state.account);
@@ -120,11 +121,21 @@ export function useContractFunction() {
   };
 
   const requestOpenPack = async () => {
-    await Management.connect(signer).requestOpenPackRandomness();
+    const txn = await Management.connect(signer).requestOpenPackRandomness();
+    await txn.wait();
+
+    await new Promise((res, rej) => {
+      RNG.on("ChainlinkRandomFulfilled", (addr) => {
+        if (addr == signer.address) res();
+      });
+
+      setTimeout(() => rej("Timeout"), 20000);
+    });
   };
 
   const openPack = async () => {
-    await Management.connect(signer).openPack();
+    const txn = await Management.connect(signer).openPack();
+    await txn.wait();
   };
 
   const setDefaultFive = async (playerList) => {
@@ -206,10 +217,6 @@ export function useContractFunction() {
       );
     }
     return retObj;
-  };
-
-  const getTournamentDetails = async (tournamentId) => {
-    return new Tournament(await Tournaments.idToTournament(tournamentId));
   };
 
   const getAllPlayerListings = async () => {
@@ -366,6 +373,18 @@ export function useContractFunction() {
     return createdIds.filter((id) => !startedIds.includes(id));
   };
 
+  const testMintCard = async (to, id, amt) => {
+    const txn = await NC1155.mint(to, id, amt, []);
+    await txn.wait();
+  };
+
+  const testCreateTournament = async (details) => {
+    const txn = await Tournaments.createDefaultTournament(details);
+    const tournamentId = (await getArgs(txn, "TournamentCreated"))[0];
+
+    return tournamentId;
+  };
+
   const get10RandomTeams = async () => {
     const registerEvents = await filterEvents(Management, "TeamRegistered");
     const usersWithTeams = registerEvents.map((ev) => ev.args[0]);
@@ -402,7 +421,7 @@ export function useContractFunction() {
     isTournamentFinished,
     getTournamentPlayerList,
     getWinnersOfTournament,
-    getTournamentDetails,
+    //getTournamentDetails,
     getAllPlayerListings,
     getAllCardListings,
     getAllRentedListings,
@@ -418,6 +437,8 @@ export function useContractFunction() {
     delistPlayer,
     buyCard,
     getCardBalanceOf,
+    testMintCard,
+    testCreateTournament,
     get10RandomTeams,
   };
 }

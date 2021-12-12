@@ -7,7 +7,8 @@ import {
   NC721ABI,
   NC1155ABI,
   COACHABI,
-  ManagementABI
+  ManagementABI,
+  RNGABI
 } from "contract/ext-abi";
 import contractAddresses from "contract/addresses";
 import { ethers } from "ethers";
@@ -58,6 +59,13 @@ export default function useContracts(provider) {
       ManagementABI,
       provider
     );
+
+    const RNG = new ethers.Contract(
+      contractAddresses.RNG,
+      RNGABI,
+      provider
+    );
+
     dispatch(
       setContractData({
         Tournaments,
@@ -66,7 +74,8 @@ export default function useContracts(provider) {
         NC721,
         NC1155,
         COACH,
-        Management
+        Management,
+        RNG
       })
     );
   }

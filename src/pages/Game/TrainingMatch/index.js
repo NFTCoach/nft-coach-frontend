@@ -61,7 +61,7 @@ export default function TrainingMatch() {
     getTeamStats(account.address);
     async function fetchData() {
       const res = await getDefaultFiveReq.exec(account.address);
-      if (res.includes("0") && account.team?.initialized) {
+      if (res?.includes("0") && !account.team?.initialized) {
         navigate(PATHS.team);
         toast("Please set your default five");
       }

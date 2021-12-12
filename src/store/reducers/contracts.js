@@ -7,7 +7,8 @@ const initialState = {
     Management: null,
     Marketplace: null,
     Tournaments: null,
-    TrainingMatches: null
+    TrainingMatches: null,
+    RNG: null
 };
 
 export const contractSlice = createSlice({
@@ -22,6 +23,7 @@ export const contractSlice = createSlice({
             state.Marketplace = action.payload.Marketplace;
             state.Tournaments = action.payload.Tournaments;
             state.TrainingMatches = action.payload.TrainingMatches;
+            state.RNG = action.payload.RNG;
         }
     }
 })
