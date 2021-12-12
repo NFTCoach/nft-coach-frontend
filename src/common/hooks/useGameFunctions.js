@@ -1,8 +1,10 @@
 import { Player, Team } from "common/utils/contract/classes";
+import { filterEvents } from "common/utils/contract/functions";
 import { useSelector } from "react-redux";
 
+
 export const useGameFunctions = () => {
-  const { Management } = useSelector((state) => state.contracts);
+  const { Management, Tournaments } = useSelector((state) => state.contracts);
   const { signer } = useSelector((state) => state.account);
 
   const getDefaultFive = async (address) => {
@@ -43,5 +45,16 @@ export const useGameFunctions = () => {
     );
   };
 
-  return { getStats, getDefaultFive, setDefaultFive, getTeamStats };
+  const getOngoingTournaments = async () => {
+    const createEvents = await filterEvents(Tournaments, "TournamentCreated");
+    const createdIds = createEvents.map(ev => ev.args[0]);
+
+    const startEvents = await filterEvents(Tournaments, "TournamentStarted");
+    /** @type {string[]} */
+    const startedIds = startEvents.map(ev => ev.args[0]);
+
+    return createdIds.filter(id => !startedIds.includes(id));
+  };
+
+  return { getStats, getDefaultFive, setDefaultFive, getTeamStats, getOngoingTournaments };
 };

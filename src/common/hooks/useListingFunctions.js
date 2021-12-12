@@ -65,6 +65,6 @@ export const useListingFunctions = () => {
     getAllCardListings,
     getAllPlayerListings,
     getAllRentedListings,
-    getAllPlayersOf
+    getAllPlayersOf,
   };
 };
