@@ -3,4 +3,5 @@ export const PATHS = {
   game: "/game",
   team: "/game/team",
   market: "/market",
+  tournaments: "/tournaments",
 };

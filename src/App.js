@@ -13,6 +13,7 @@ import { DndProvider } from "react-dnd";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PATHS } from "common/constants/paths";
+import { Tournaments } from "pages/Game/Tournaments";
 
 function App() {
   useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
           <Route path={PATHS.market} element={<Marketplace />} />
           <Route path={PATHS.game} element={<Game />} />
           <Route path={PATHS.team} element={<MyTeam />} />
+          <Route path={PATHS.tournaments} element={<Tournaments />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

@@ -19,6 +19,7 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   return (
     <Fragment>
       <Modal
+        opacity={0.5}
         className={styles.modal}
         isOpen={isSelling}
         close={() => {
@@ -43,6 +44,7 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
         </div>
       </Modal>
       <Modal
+        opacity={0.5}
         className={styles.modal}
         isOpen={isRenting}
         close={() => {
