@@ -43,7 +43,7 @@ export default function TrainingMatch() {
         getTeamStats(account.address);
         async function fetchData() {
             const res = await getDefaultFiveReq.exec(account.address);
-            if (res.includes("0")) {
+            if (res.includes("0") && account.team?.initialized) {
                 navigate(PATHS.team);
                 toast("Please set your default five");
             }
@@ -73,7 +73,7 @@ export default function TrainingMatch() {
         return <Button onClick={getIsSignedIn}>
             Sign in with Metamask
         </Button>
-    } 
+    }
 
     if (account.players === null) {
         // players loading
