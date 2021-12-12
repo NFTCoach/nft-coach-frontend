@@ -10,49 +10,41 @@ export const useListingFunctions = () => {
   const contracts = useSelector((state) => state.contracts);
 
   const getAllPlayerListings = async () => {
-    const listEvents = await filterEvents(
-      contracts.Marketplace,
-      "PlayerListed"
-    );
-    let listedIds = listEvents.map((ev) => ev.args[0]);
+    const listEvents = await filterEvents(contracts.Marketplace, "PlayerListed");
+    let listedIds = listEvents.map(ev => ev.args[0]);
 
-    const listings = await Promise.all(
-      listedIds.map((id) => async () => {
-        return new Listing(await contracts.Marketplace.idToListing(id));
-      })
-    );
+    const listings = await Promise.all(listedIds.map(id =>
+        contracts.Marketplace.idToListing(id).then((l) => new Listing(id, l))
+    ));
 
-    return listings.filter((l) => l.active);
+    return listings.filter(l => l.active);
   };
 
   const getAllCardListings = async () => {
     const listEvents = await filterEvents(contracts.Marketplace, "CardListed");
-    let listedIds = listEvents.map((ev) => ev.args[0]);
+    let listedIds = listEvents.map(ev => ev.args[0]);
 
-    const listings = await Promise.all(
-      listedIds.map((id) => async () => {
+    const listings = await Promise.all(listedIds.map(id => async () => {
         return new CardListing(await contracts.Marketplace.idToCardListing(id));
-      })
-    );
+    }));
 
-    return listings.filter((l) => l.active);
+    return listings.filter(l => l.active);
   };
 
   const getAllRentedListings = async () => {
-    const listEvents = await filterEvents(
-      contracts.Marketplace,
-      "PlayerListedForRent"
-    );
-    let listedIds = listEvents.map((ev) => ev.args[0]);
+    const listEvents = await filterEvents(contracts.Marketplace, "PlayerListedForRent");
+    let listedIds = listEvents.map(ev => ev.args[0]);
 
-    const listings = await Promise.all(
-      listedIds.map((id) => async () => {
+    const listings = await Promise.all(listedIds.map(id => async () => {
         return new Listing(await contracts.Marketplace.idToListing(id));
-      })
-    );
+    }));
 
-    return listings.filter((l) => l.active);
+    return listings.filter(l => l.active);
   };
 
-  return { getAllCardListings, getAllPlayerListings, getAllRentedListings };
+  return {
+    getAllCardListings,
+    getAllPlayerListings,
+    getAllRentedListings
+  };
 };

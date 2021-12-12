@@ -189,9 +189,11 @@ export function useContractFunction() {
         const listEvents = await filterEvents(Marketplace, "PlayerListed");
         let listedIds = listEvents.map(ev => ev.args[0]);
 
-        const listings = await Promise.all(listedIds.map(id => async () => {
-            return new Listing(await Marketplace.idToListing(id));
-        }));
+        const listings = await Promise.all(listedIds.map(id =>
+            Marketplace.idToListing(id).then((l) => new Listing(id, l))
+        ));
+
+        console.log(listings);
 
         return listings.filter(l => l.active);
     }
