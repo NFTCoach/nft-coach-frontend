@@ -8,15 +8,21 @@ import { useContractFunction } from "common/utils/contract/functions";
 import CreateTeam from "pages/Game/CreateTeam";
 import styles from "./TrainingMatch.module.scss";
 import { MyTeam } from "../MyTeam";
+import { useNavigate } from "react-router";
+import { PATHS } from "common/constants/paths";
+import { useRequest } from "common/hooks/useRequest";
+import { toast } from "react-toastify";
 
 export default function TrainingMatch() {
 
     const account = useSelector(state => state.account);
     const contracts = useSelector(state => state.contracts);
+    let navigate = useNavigate();
 
     //const dispatch = useDispatch();
    
-    const { getAllPlayersOf, getTeamStats } = useContractFunction();
+    const { getAllPlayersOf, getTeamStats, getDefaultFive } = useContractFunction();
+    const getDefaultFiveReq = useRequest(getDefaultFive);
 
     const [randomOpponents, setRandomOpponents] = useState([]);
 
@@ -30,12 +36,19 @@ export default function TrainingMatch() {
     }
 
     useEffect(() => {
-        console.log(contracts);
         if (!account.isSignedIn || !contracts.NC721) {
             return
         }
         getAllPlayersOf(account.address);
         getTeamStats(account.address);
+        async function fetchData() {
+            const res = await getDefaultFiveReq.exec(account.address);
+            if (res.includes("0")) {
+                navigate(PATHS.team);
+                toast("Please set your default five");
+            }
+        }
+        fetchData();
         //contracts.COACH.balanceOf(account.address).then(res => console.log(res.toNumber()));
         
     }, [contracts, account.isSignedIn]);
@@ -79,6 +92,9 @@ export default function TrainingMatch() {
     //console.log(account.players);
 
     return (<div className={styles.container}>
-        <MyTeam />
+       <Button>Match</Button>
+       <Button onClick={() => {
+           navigate(PATHS.team);
+       }}>My Team</Button>
     </div>);
 }

@@ -52,7 +52,7 @@ function MyTeam() {
       return;
     }
     getAllPlayersReq.exec(address);
-    getTeamStats();
+    getTeamStats(address);
   }, [contracts, isSignedIn]);
 
   useEffect(() => {
