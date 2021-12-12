@@ -27,16 +27,22 @@ const Filters = () => {
       >
         Players
       </Button>
-      <Button onClick={() => handleToggle("teams")} type={isActive("teams")}>
+      <Button
+        disabled
+        onClick={() => handleToggle("teams")}
+        type={isActive("teams")}
+      >
         Teams
       </Button>
       <Button
+        disabled
         onClick={() => handleToggle("player-packs")}
         type={isActive("player-packs")}
       >
         Player Packs
       </Button>
       <Button
+        disabled
         onClick={() => handleToggle("upgrade-packs")}
         type={isActive("upgrade-packs")}
       >

@@ -36,8 +36,10 @@
 }
 
 .market {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  height: fit-content;
+  gap: 12px;
 }
 
 .modal-container {
@@ -45,4 +47,15 @@
   flex-direction: column;
   gap: 15px;
   padding: 20px;
+}
+
+.button {
+  width: 100%;
+}
+
+.spinner {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding-top: 3rem;
 }
