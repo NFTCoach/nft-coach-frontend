@@ -67,9 +67,9 @@ export default function TrainingMatch() {
         return "loading..";
     }
 
-    if (account.team === null) {
+    if (!account.team?.initialized) {
         // redirect user 5 selection page
-        return null;
+        return <CreateTeam />;
     }
 
     if (account.players?.length < 5) {

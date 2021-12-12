@@ -3,11 +3,15 @@ import styles from "./CreateTeam.module.scss";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
 import Button from "components/Button";
 import Input from "components/Input";
+import { useGameFunctions } from "common/hooks/useGameFunctions";
+import { useContractFunction } from "common/utils/contract/functions";
+import { useRequest } from "common/hooks/useRequest";
 
 const CreateTeam = () => {
 
-    const createTeam = () => {
-    };
+    const { registerTeam } = useContractFunction();
+    const registerTeamReq = useRequest(registerTeam);
+    
 
     return (
         <div className={styles.container}>
@@ -31,10 +35,11 @@ const CreateTeam = () => {
                     <Input name="coach_name">
                         Coach Name
                     </Input>
-                    
                 </div>
             </div>
-            <Button size="large">Create</Button>
+            <Button size="large" loading={registerTeamReq.loading} onClick={() => {
+                registerTeamReq.exec();
+            }}>Create</Button>
         </div>
     );
 }

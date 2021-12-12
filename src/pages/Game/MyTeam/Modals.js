@@ -1,3 +1,4 @@
+import { useContractFunction } from "common/utils/contract/functions";
 import Button from "components/Button";
 import Input from "components/Input";
 import Modal from "components/Modal/Modal";
@@ -15,6 +16,21 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   const [sellingPrice, setSellingPrice] = useState("");
   const [rentingPrice, setRentingPrice] = useState("");
   const [rentingDuration, setRentingDuration] = useState(1);
+
+  const { listPlayer } = useContractFunction()
+
+  const sellPlayer = async () => {
+    if (!sellingPrice) {
+      return;
+    }
+
+    try {
+      await listPlayer(sellingPlayer.id, sellingPrice)
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
 
   return (
     <Fragment>
@@ -38,7 +54,7 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
             value={sellingPrice}
             placeholder="Price"
           />
-          <Button type="tertiary" disabled={sellingPrice == ""}>
+          <Button type="tertiary" onClick={sellPlayer} disabled={sellingPrice == ""}>
             List item
           </Button>
         </div>

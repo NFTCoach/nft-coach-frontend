@@ -295,11 +295,11 @@ export function useContractFunction() {
     }
 
     const getTeamStats = async (address) => {
-        return new Team(
+        dispatch(setTeam(new Team(
             address,
             await Management.userToTeam(address),
             await Management.getDefaultFive(address)
-        );
+        )))
     }
 
     const getOngoingTournaments = async () => {

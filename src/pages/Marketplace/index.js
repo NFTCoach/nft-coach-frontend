@@ -13,9 +13,8 @@ import { Filters } from "./Filters";
 import styles from "./Marketplace.module.scss";
 
 export default function Marketplace() {
-  const { type } = useSelector((state) => state.market);
+  const { type, filters } = useSelector((state) => state.market);
   const { isSignedIn } = useSelector((state) => state.account);
-  const [allPlayers, setAllPlayers] = useState([]);
   const [allCardListing, setAllCardListings] = useState([]);
   const [allPlayerListing, setAllPlayerListing] = useState([]);
   const { getIsSignedIn } = useAccount();
@@ -65,7 +64,9 @@ export default function Marketplace() {
         </Link>
       </Headline>
       <div className={styles.wrapper}>
-        <div className={styles.market}></div>
+        <div className={styles.market}>
+          
+        </div>
         <div className={styles.filter}>
           <Typography variant="title4" weight="semibold">
             Filters

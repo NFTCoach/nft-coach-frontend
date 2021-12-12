@@ -2,7 +2,7 @@ import { prodlog } from "common/utils/prodlog";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-export const useRequest = (func, { errorMsg } = {}) => {
+export const useRequest = (func, { errorMsg, onFinished } = {}) => {
   const [loading, setLoading] = useState(false);
 
   const notify = (msg) =>
@@ -22,6 +22,7 @@ export const useRequest = (func, { errorMsg } = {}) => {
         setLoading(true);
         const res = await func?.(...args);
         setLoading(false);
+        onFinished?.();
         return res;
       } catch (err) {
         prodlog(err);
