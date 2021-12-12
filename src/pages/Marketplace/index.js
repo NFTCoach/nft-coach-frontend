@@ -1,5 +1,4 @@
 import useAccount from "common/hooks/useAccount";
-import { useGameFunctions } from "common/hooks/useGameFunctions";
 import { useListingFunctions } from "common/hooks/useListingFunctions";
 import { useRequest } from "common/hooks/useRequest";
 import { useContractFunction } from "common/utils/contract/functions";
@@ -13,10 +12,22 @@ import { Link } from "react-router-dom";
 import { setType, toggleFilter } from "store/reducers/market";
 import { Filters } from "./Filters";
 import styles from "./Marketplace.module.scss";
+import Modal from "components/Modal/Modal";
+import { PlayerAvatar } from "components/PlayerAvatar";
+import { Contract } from "@ethersproject/contracts";
+import { Spinner } from "components/Spinner";
 
 export default function Marketplace() {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalItem, setModalItem] = useState();
+  const [modalItemType, setModalItemType] = useState();
+  /**
+   * modalItemType = "buyPlayer" | "rentPlayer"
+   */
+
   const { type, filters } = useSelector((state) => state.market);
-  const { isSignedIn } = useSelector((state) => state.account);
+  const { isSignedIn, address } = useSelector((state) => state.account);
   const [allCardListing, setAllCardListings] = useState([]);
   const [allRentedListing, setAllRentedListings] = useState([]);
   const [allPlayerListing, setAllPlayerListing] = useState([]);
@@ -27,11 +38,16 @@ export default function Marketplace() {
     getAllPlayerListings,
     getAllRentedListings
   } = useListingFunctions();
+
+  const { getAllPlayersOf } = useListingFunctions();
+
   const dispatch = useDispatch();
 
   const { buyPlayer, rentPlayer } = useContractFunction();
   const buyPlayerReq = useRequest(buyPlayer);
   const rentPlayerReq = useRequest(rentPlayer);
+
+  const [myOwnPlayers, setMyOwnPlayers] = useState(null);
 
   const getCardListingsReq = useRequest(getAllCardListings, {
     errorMsg: "Could not load marketplace",
@@ -42,15 +58,31 @@ export default function Marketplace() {
   const getAllRentedListingReq = useRequest(getAllRentedListings, {
     errorMsg: "Could not load marketplace"
   });
+  const getAllPlayersOfReq = useRequest(getAllPlayersOf, {
+    errorMsg: "Could not load marketplace"
+  })
 
   useEffect(() => {
     if (!isSignedIn) {
       getIsSignedIn();
       return;
     }
-  }, []);
+    if (!address)
+      return;
+    const _getAllPlayersOfReq = async () => {
+      if (contracts.NC721) {
+        const res = await getAllPlayersOfReq.exec(address) || [];
+        console.log(res);
+        setMyOwnPlayers(res);
+      }
+    }
+    _getAllPlayersOfReq();
+  }, [address]);
 
   useEffect(() => {
+    if (myOwnPlayers === null) {
+      return;
+    }
     const getReq = async () => {
       if (contracts.Marketplace) {
         const res = await getCardListingsReq.exec();
@@ -73,10 +105,46 @@ export default function Marketplace() {
     getReq();
     getPlayerReq();
     getRentedReq();
-  }, [contracts.Marketplace]);
+  }, [contracts.Marketplace, myOwnPlayers]);
 
   return (
     <div data-aos="fade-in" className={styles.container}>
+      <Modal isOpen={isModalOpen} opacity={0.5} close={() => {
+        setIsModalOpen(false);
+        setModalItem(null);
+      }} closeOutside={false}>
+        {modalItemType == "buyPlayer" && 
+        <div className={styles["modal-container"]}>
+          <Typography variant="title6" weight="medium">Buy Player</Typography>
+            <PlayerAvatar
+              id={modalItem?.id}
+            />
+            <Typography variant="body2">
+              {modalItem?.price}
+            </Typography>
+            <Button type="secondary" onClick={() => {
+              buyPlayerReq.exec(modalItem?.id);
+            }}
+              loading={buyPlayerReq.loading}>
+              Buy Player
+           </Button>
+        </div>
+        }
+        {modalItemType === "rentPlayer" &&
+          <div className={styles["modal-container"]}>
+          <Typography variant="title6">Rent Player</Typography>
+            <PlayerAvatar
+              id={modalItem?.id}
+            />
+            <Button type="secondary" onClick={() => {
+                rentPlayerReq.exec(modalItem?.id);
+              }}
+              loading={rentPlayerReq.loading}>
+              Rent Player
+            </Button>
+          </div>
+        }
+      </Modal>
       <Headline title="Marketplace">
         <Link to="/game/team">
           <Button>Sell players</Button>
@@ -84,7 +152,8 @@ export default function Marketplace() {
       </Headline>
       <div className={styles.wrapper}>
         <div className={styles.market}>
-          {type === "sale" && allPlayerListing.map((item, index) => {
+          {getAllPlayersOfReq.loading && <Spinner />}
+          {type === "sale" && allPlayerListing.filter(item => !myOwnPlayers?.includes(item.id)).map((item, index) => {
             return (<PlayerCard
                       key={index}
                       size="128px"
@@ -92,19 +161,19 @@ export default function Marketplace() {
                     >
               <Button
                 onClick={() => {
-                  buyPlayerReq.exec(item.id);
-                  //dispatch(setSellingPlayer(item));
-                  //setIsSelling(true);
+                  console.log(item);
+                  setModalItem(item);
+                  setModalItemType("buyPlayer")
+                  setIsModalOpen(true);
                 }}
                 size="xsmall"
                 type="secondary"
-                loading={buyPlayerReq.loading}
               >
                 Buy
               </Button>
             </PlayerCard>)
           })}
-          {type === "rent" && allRentedListing.map((item, index) => {
+          {type === "rent" && allRentedListing.filter(item => !myOwnPlayers?.includes(item.id)).map((item, index) => {
             return (<PlayerCard
                       key={index}
                       size="128px"
@@ -113,12 +182,14 @@ export default function Marketplace() {
               <Button
                 onClick={() => {
                   rentPlayerReq.exec(item.id);
-                  //dispatch(setSellingPlayer(item));
-                  //setIsSelling(true);
                 }}
                 size="xsmall"
                 type="secondary"
-                loading={rentPlayerReq.loading}
+                onClick={() => {
+                  setModalItem(item);
+                  setModalItemType("rentPlayer");
+                  setIsModalOpen(true);
+                }}
               >
                 Rent
               </Button>
