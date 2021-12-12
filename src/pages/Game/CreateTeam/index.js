@@ -72,10 +72,10 @@ const CreateTeam = () => {
           };
           fetchData()
             .then((res) => {
+              toast("Initializing team, please wait", {
+                autoClose: 10000,
+              });
               setTimeout(() => {
-                toast("Initializing team, please wait", {
-                  autoClose: 10000,
-                });
                 navigate(PATHS.team);
               }, 10000);
             })
