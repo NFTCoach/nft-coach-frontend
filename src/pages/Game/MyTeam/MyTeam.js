@@ -24,27 +24,32 @@ import { ReactComponent as PlusIcon } from "assets/icons/edit/plus_circle_outlin
 import Icon from "components/Icon/Icon";
 import Modals from "./Modals";
 import CreateTeam from "../CreateTeam";
+import { Loader } from "components/Loader";
+import { PATHS } from "common/constants/paths";
+import { useNavigate } from "react-router";
 
 function MyTeam() {
-  const { isSignedIn, address, team } = useSelector((state) => state.account);
+  const { isSignedIn, address } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
     (state) => state.game
   );
+  const navigate = useNavigate();
   const contracts = useSelector((state) => state.contracts);
   const {
     getStats,
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const { getAllPlayersOf, getTeamStats } = useContractFunction();
+  const { getAllPlayersOf } = useContractFunction();
+  const { getTeamStats } = useGameFunctions();
   const dispatch = useDispatch();
   const { getIsSignedIn } = useAccount();
   const statReq = useRequest(getStats);
   const defaultFiveReq = useRequest(getDefaultFive);
   const setDefaultFiveReq = useRequest(setDefaultFiveR);
   const getAllPlayersReq = useRequest(getAllPlayersOf);
-
   const [adding, setAdding] = useState(false);
+  const getTeamStatsReq = useRequest(getTeamStats);
 
   useEffect(() => {
     if (!contracts.NC721 || !isSignedIn) {
@@ -52,7 +57,14 @@ function MyTeam() {
       return;
     }
     getAllPlayersReq.exec(address);
-    getTeamStats(address);
+
+    const fetchData = async () => {
+      const res = await getTeamStatsReq.exec(address);
+      if (!res.initialized) {
+        navigate(PATHS.create_team);
+      }
+    };
+    fetchData();
   }, [contracts, isSignedIn]);
 
   useEffect(() => {
@@ -76,8 +88,8 @@ function MyTeam() {
   const [isSelling, setIsSelling] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
 
-  if (!team?.initialized) {
-    return <CreateTeam />
+  if (!isSignedIn) {
+    return <Loader />;
   }
 
   return (
@@ -88,7 +100,13 @@ function MyTeam() {
         isRenting={isRenting}
         setIsRenting={setIsRenting}
       />
-      <Headline title="Team" />
+      <Headline title="Team">
+        {!defaultFive.includes("0") && (
+          <Link to={PATHS.training}>
+            <Button>Go To Matching</Button>
+          </Link>
+        )}
+      </Headline>
       <div className={styles.courtWrapper}>
         <div className={styles.players}>
           <div className={styles.buttons}>
@@ -165,6 +183,7 @@ function MyTeam() {
           <img src={CourtPng} className={styles.courtImg} />
           {defaultFive?.map((item, index) => (
             <PlayerDrop
+              key={index}
               id={item}
               index={index}
               className={styles[`player${index + 1}`]}

@@ -1,4 +1,4 @@
-import { Player } from "common/utils/contract/classes";
+import { Player, Team } from "common/utils/contract/classes";
 import { useSelector } from "react-redux";
 
 export const useGameFunctions = () => {
@@ -35,5 +35,13 @@ export const useGameFunctions = () => {
     await Management.connect(signer).setDefaultFive(playerList);
   };
 
-  return { getStats, getDefaultFive, setDefaultFive };
+  const getTeamStats = async (address) => {
+    return new Team(
+      address,
+      await Management.userToTeam(address),
+      await Management.getDefaultFive(address)
+    );
+  };
+
+  return { getStats, getDefaultFive, setDefaultFive, getTeamStats };
 };
