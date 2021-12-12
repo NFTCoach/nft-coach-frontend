@@ -6,13 +6,15 @@ import AutoForm from "react-auto-form";
 import { ethers } from "ethers";
 import { useContractFunction } from "common/utils/contract/functions";
 import CreateTeam from "pages/Game/CreateTeam";
+import styles from "./TrainingMatch.module.scss";
+import { MyTeam } from "../MyTeam";
 
 export default function TrainingMatch() {
 
     const account = useSelector(state => state.account);
     const contracts = useSelector(state => state.contracts);
 
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
    
     const { getAllPlayersOf, getTeamStats } = useContractFunction();
 
@@ -65,12 +67,18 @@ export default function TrainingMatch() {
         return "loading..";
     }
 
-    if (account.players?.length < 5) {
+    if (account.team === null) {
         // redirect user 5 selection page
-        return (<CreateTeam />);
+        return null;
+    }
+
+    if (account.players?.length < 5) {
+        return null;
     }
 
     //console.log(account.players);
 
-    return (<CreateTeam />);
+    return (<div className={styles.container}>
+        <MyTeam />
+    </div>);
 }

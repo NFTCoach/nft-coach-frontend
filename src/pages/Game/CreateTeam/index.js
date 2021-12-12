@@ -5,6 +5,10 @@ import Button from "components/Button";
 import Input from "components/Input";
 
 const CreateTeam = () => {
+
+    const createTeam = () => {
+    };
+
     return (
         <div className={styles.container}>
             <h1>Create Team</h1>
