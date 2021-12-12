@@ -25,14 +25,12 @@ export const useRequest = (
       try {
         setLoading(true);
         onStart?.();
-        if (timeout) {
-          setTimeout(() => {
-            toast(message, {
-              autoClose: timeout,
-            });
-          }, timeout);
-        }
         const res = await func?.(...args);
+        if (timeout) {
+          toast(message, {
+            autoClose: timeout,
+          });
+        }
         setLoading(false);
         onFinished?.();
         return res;
