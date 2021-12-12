@@ -40,7 +40,7 @@ export default function Marketplace() {
     const getReq = async () => {
       if (contracts.Marketplace) {
         const res = await getCardListingsReq.exec();
-
+        console.log(res);
         setAllCardListings(res);
       }
     };
@@ -49,6 +49,7 @@ export default function Marketplace() {
       console.log(contracts.Marketplace);
       if (contracts.Marketplace) {
         const res = await getPlayerListingReq.exec();
+        console.log(res);
         setAllPlayerListing(res);
       }
     };

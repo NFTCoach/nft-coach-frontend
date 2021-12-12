@@ -23,9 +23,10 @@ import { ReactComponent as MinusIcon } from "assets/icons/edit/minus_circle_outl
 import { ReactComponent as PlusIcon } from "assets/icons/edit/plus_circle_outline.svg";
 import Icon from "components/Icon/Icon";
 import Modals from "./Modals";
+import CreateTeam from "../CreateTeam";
 
 function MyTeam() {
-  const { isSignedIn, address } = useSelector((state) => state.account);
+  const { isSignedIn, address, team } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
     (state) => state.game
   );
@@ -35,7 +36,7 @@ function MyTeam() {
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const { getAllPlayersOf } = useContractFunction();
+  const { getAllPlayersOf, getTeamStats } = useContractFunction();
   const dispatch = useDispatch();
   const { getIsSignedIn } = useAccount();
   const statReq = useRequest(getStats);
@@ -51,6 +52,7 @@ function MyTeam() {
       return;
     }
     getAllPlayersReq.exec(address);
+    getTeamStats();
   }, [contracts, isSignedIn]);
 
   useEffect(() => {
@@ -73,6 +75,10 @@ function MyTeam() {
 
   const [isSelling, setIsSelling] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
+
+  if (!team?.initialized) {
+    return <CreateTeam />
+  }
 
   return (
     <div className={styles.wrapper}>

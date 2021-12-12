@@ -1,3 +1,4 @@
+import { useRequest } from "common/hooks/useRequest";
 import { useContractFunction } from "common/utils/contract/functions";
 import Button from "components/Button";
 import Input from "components/Input";
@@ -17,7 +18,12 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   const [rentingPrice, setRentingPrice] = useState("");
   const [rentingDuration, setRentingDuration] = useState(1);
 
-  const { listPlayer } = useContractFunction()
+  const { listPlayer } = useContractFunction();
+  const listPlayerReq = useRequest(listPlayer, {
+    onFinished: () => {
+      setIsSelling(false);
+    }
+  })
 
   const sellPlayer = async () => {
     if (!sellingPrice) {
@@ -25,7 +31,7 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
     }
 
     try {
-      await listPlayer(sellingPlayer.id, sellingPrice)
+      listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
     }
     catch(err) {
       console.log(err)
@@ -54,7 +60,7 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
             value={sellingPrice}
             placeholder="Price"
           />
-          <Button type="tertiary" onClick={sellPlayer} disabled={sellingPrice == ""}>
+          <Button type="tertiary" loading={listPlayerReq.loading} onClick={sellPlayer} disabled={sellingPrice == ""}>
             List item
           </Button>
         </div>
