@@ -336,7 +336,8 @@ export function useContractFunction() {
     
     const get10RandomTeams = async () => {
         const registerEvents = await filterEvents(Management, "TeamRegistered");
-        const usersWithTeams = registerEvents.map(ev => ev.args[0]);
+        const usersWithTeamsUnshuffled = registerEvents.map(ev => ev.args[0]);
+        const usersWithTeams = usersWithTeamsUnshuffled.sort(() => 0.5 - Math.random());
     
         const teamList = [];
         for (let i = 0; i < usersWithTeams.length; i++) {
@@ -353,6 +354,11 @@ export function useContractFunction() {
 
     const getChainlinkRandomOf = async (address) => {
         return await RNG.getChainlinkRandom(address);
+    }
+
+
+    const getBlockRandomOf = async (address) => {
+        return await RNG.getBlockRandom(address);
     }
 
     return {
@@ -395,6 +401,7 @@ export function useContractFunction() {
         testMintCard,
         testCreateTournament,
         get10RandomTeams,
-        getChainlinkRandomOf
+        getChainlinkRandomOf,
+        getBlockRandomOf
     };
 };

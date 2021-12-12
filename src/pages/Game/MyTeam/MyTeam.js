@@ -65,13 +65,31 @@ function MyTeam() {
     { timeout: 5000, message: "Saving..." }
   );
   const getTeamStatsReq = useRequest(getTeamStats);
-  const openPackReq = useRequest(async () => {
-    const res = await getChainlinkRandomOf(address);
-    console.log(res.toString());
-    await requestOpenPack();
-    await openPack();
-  });
   const getAllPlayersReq = useRequest(getAllPlayersOf);
+
+  const openPackReq = useRequest(async () => {
+    await getChainlinkRandomOf(address).then(async () => {
+      console.log("then");
+      await openPack();
+    })
+    .catch(async (e) => {
+      console.log("chainlink randomness error:", e);
+      await requestOpenPack()
+            .then(() => console.log("requestOpenPack then"))
+            .catch(err => console.log("requestOpenPack hata", err));
+      await openPack()
+            .then(() => console.log("openPack then"))
+            .catch(err => console.log("open pack hata:", err));
+    }).finally(() => {
+      getAllPlayersReq.exec();
+    })
+    //console.log(res.toString());
+  }, {
+    onFinished: () => {
+      setIsPlayerPackOpen(false);
+    }
+  });
+
   const [adding, setAdding] = useState(false);
 
   useRouting();
