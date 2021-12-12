@@ -2,7 +2,9 @@ import useAccount from "common/hooks/useAccount";
 import { useGameFunctions } from "common/hooks/useGameFunctions";
 import { useListingFunctions } from "common/hooks/useListingFunctions";
 import { useRequest } from "common/hooks/useRequest";
+import Button from "components/Button";
 import { Headline } from "components/Headline";
+import { Typography } from "components/Typography";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styles from "./Marketplace.module.scss";
@@ -15,7 +17,6 @@ export default function Marketplace() {
   const [allPlayerListing, setAllPlayerListing] = useState([]);
   const { getIsSignedIn } = useAccount();
   const contracts = useSelector((state) => state.contracts);
-
   const { getAllCardListings, getAllPlayerListings } = useListingFunctions();
 
   const getCardListingsReq = useRequest(getAllCardListings, {
@@ -47,14 +48,25 @@ export default function Marketplace() {
         setAllPlayerListing(res);
       }
     };
-
-    getReq();
+    /*   getReq(); */
     /* getPlayerReq(); */
   }, [contracts.Marketplace, contracts.Tournaments]);
 
   return (
     <div className={styles.container}>
       <Headline title="Marketplace" />
+      <div className={styles.wrapper}>
+        <div className={styles.market}></div>
+        <div className={styles.filter}>
+          <Typography variant="title4" weight="semibold">
+            Filters
+          </Typography>
+          <Button>Players</Button>
+          <Button>Teams</Button>
+          <Button>Player Packs</Button>
+          <Button>Upgrade Packs</Button>
+        </div>
+      </div>
     </div>
   );
 }
