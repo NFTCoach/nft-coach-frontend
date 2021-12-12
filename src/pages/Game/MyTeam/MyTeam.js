@@ -28,8 +28,18 @@ import { Loader } from "components/Loader";
 import { PATHS } from "common/constants/paths";
 import { useNavigate } from "react-router";
 import { useRouting } from "common/hooks/useRouting";
+import Modal from "components/Modal/Modal";
+import { useGeneralFunctions } from "common/hooks/useGeneralFunctions";
 
 function MyTeam() {
+
+  const [isSelling, setIsSelling] = useState(false);
+  const [isRenting, setIsRenting] = useState(false);
+  const [isPlayerPackOpen, setIsPlayerPackOpen] = useState(false);
+
+  const [playerPacks, setPlayerPacks] = useState();
+
+
   const { isSignedIn, address } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
     (state) => state.game
@@ -41,7 +51,10 @@ function MyTeam() {
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const { getAllPlayersOf } = useContractFunction();
+  const { getAllPlayersOf, requestOpenPack, openPack, getPlayerBalanceOf, getChainlinkRandomOf } = useContractFunction();
+  const { getTeamStats } = useGameFunctions();
+  const { getCardBalanceOf } = useGeneralFunctions();
+
   const dispatch = useDispatch();
   const { getIsSignedIn } = useAccount();
   const statReq = useRequest(getStats);
@@ -51,6 +64,13 @@ function MyTeam() {
     {},
     { timeout: 5000, message: "Saving..." }
   );
+  const getTeamStatsReq = useRequest(getTeamStats);
+  const openPackReq = useRequest(async () => {
+    const res = await getChainlinkRandomOf(address);
+    console.log(res.toString());
+    await requestOpenPack();
+    await openPack();
+  });
   const getAllPlayersReq = useRequest(getAllPlayersOf);
   const [adding, setAdding] = useState(false);
 
@@ -61,6 +81,19 @@ function MyTeam() {
       return;
     }
     getAllPlayersReq.exec(address);
+
+    const fetchData = async () => {
+      let res = await getTeamStatsReq.exec(address);
+      if (!res.initialized) {
+        navigate(PATHS.create_team);
+      }
+      const cardBalance = await getCardBalanceOf(address, 10);
+      console.log(cardBalance.toNumber());
+      console.log(address);
+      const playerBalance = await getPlayerBalanceOf(address);
+      console.log(playerBalance.toNumber());
+    };
+    fetchData();
   }, [contracts, isSignedIn]);
 
   useEffect(() => {
@@ -81,9 +114,6 @@ function MyTeam() {
     getDefaultFive();
   }, [players]);
 
-  const [isSelling, setIsSelling] = useState(false);
-  const [isRenting, setIsRenting] = useState(false);
-
   if (!isSignedIn) {
     return <Loader />;
   }
@@ -98,6 +128,18 @@ function MyTeam() {
         isRenting={isRenting}
         setIsRenting={setIsRenting}
       />
+      <Modal
+        isOpen={isPlayerPackOpen}
+        close={() => {
+          setIsPlayerPackOpen(false);
+        }}
+      >
+        <Button type="secondary" onClick={() => {
+          openPackReq.exec();
+        }} loading={openPackReq.loading}>
+          Open Pack
+        </Button>
+      </Modal>
       <Headline title="Team">
         {!defaultFive.includes("0") && (
           <Link to={PATHS.training}>
@@ -119,6 +161,11 @@ function MyTeam() {
             >
               <Icon>{adding ? <MinusIcon /> : <PlusIcon />}</Icon>
               Add to marketplace
+            </Button>
+            <Button type="secondary" onClick={() => {
+                setIsPlayerPackOpen(true);
+              }}>
+              Open pack
             </Button>
           </div>
 
