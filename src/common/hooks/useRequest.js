@@ -2,7 +2,11 @@ import { prodlog } from "common/utils/prodlog";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-export const useRequest = (func, { errorMsg, onFinished } = {}) => {
+export const useRequest = (
+  func,
+  { errorMsg, onStart, onFinished } = {},
+  { timeout, message } = {}
+) => {
   const [loading, setLoading] = useState(false);
 
   const notify = (msg) =>
@@ -20,6 +24,14 @@ export const useRequest = (func, { errorMsg, onFinished } = {}) => {
     exec: async function (...args) {
       try {
         setLoading(true);
+        onStart?.();
+        if (timeout) {
+          setTimeout(() => {
+            toast(message, {
+              autoClose: timeout,
+            });
+          }, timeout);
+        }
         const res = await func?.(...args);
         setLoading(false);
         onFinished?.();

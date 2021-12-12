@@ -82,11 +82,6 @@ export default function TrainingMatch() {
     );
   }
 
-  if (!account.team?.initialized) {
-    // redirect user 5 selection page
-    return <CreateTeam />;
-  }
-
   return (
     <div className={styles.container}>
       <Headline title="Training & Match">

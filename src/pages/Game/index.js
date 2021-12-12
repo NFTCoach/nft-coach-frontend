@@ -9,6 +9,8 @@ export default function Game() {
   const game = useSelector((state) => state.game);
 
   //const account = useSelector(state => state.account);
+  
+
 
   if (game.stage === "tournaments") {
     return <Tournaments />;

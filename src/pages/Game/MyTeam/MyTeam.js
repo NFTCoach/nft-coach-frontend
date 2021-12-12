@@ -46,7 +46,11 @@ function MyTeam() {
   const { getIsSignedIn } = useAccount();
   const statReq = useRequest(getStats);
   const defaultFiveReq = useRequest(getDefaultFive);
-  const setDefaultFiveReq = useRequest(setDefaultFiveR);
+  const setDefaultFiveReq = useRequest(
+    setDefaultFiveR,
+    {},
+    { timeout: 5000, message: "Saving..." }
+  );
   const getAllPlayersReq = useRequest(getAllPlayersOf);
   const [adding, setAdding] = useState(false);
   const getTeamStatsReq = useRequest(getTeamStats);

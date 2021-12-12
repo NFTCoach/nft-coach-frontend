@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./CreateTeam.module.scss";
 import { ReactComponent as UserIcon } from "assets/icons/user/user.svg";
 import Button from "components/Button";
@@ -11,21 +11,37 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { PATHS } from "common/constants/paths";
+import useAccount from "common/hooks/useAccount";
+import { prodlog } from "common/utils/prodlog";
 
 const CreateTeam = () => {
   const { registerTeam } = useContractFunction();
   const navigate = useNavigate();
-  const { Management } = useSelector((state) => state.contracts);
-  const registerTeamReq = useEventRequest(registerTeam, {
-    eventName: "TeamRegistered",
-    contract: Management,
-    onListeningEvent: () => {
-      toast("Initializing team, please wait");
-    },
-    onFinished: () => {
-      navigate(PATHS.team);
-    },
-  });
+  const { getTeamStats } = useGameFunctions();
+  const getTeamStatsReq = useRequest(getTeamStats);
+  const { getIsSignedIn } = useAccount();
+  const { isSignedIn, address } = useSelector((state) => state.account);
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      getIsSignedIn();
+      return;
+    }
+    const fetchData = async () => {
+      const res = await getTeamStatsReq.exec(address);
+
+      if (res.initialized) {
+        navigate(PATHS.team);
+        toast("Your team is already initialized", {
+          autoClose: 3000,
+        });
+      }
+    };
+
+    fetchData();
+  }, [isSignedIn]);
+
+  const registerTeamReq = useRequest(registerTeam);
 
   return (
     <div className={styles.container}>
@@ -51,7 +67,21 @@ const CreateTeam = () => {
         size="large"
         loading={registerTeamReq.loading}
         onClick={() => {
-          registerTeamReq.exec();
+          const fetchData = async () => {
+            await registerTeamReq.exec();
+          };
+          fetchData()
+            .then((res) => {
+              setTimeout(() => {
+                toast("Initializing team, please wait", {
+                  autoClose: 10000,
+                });
+                navigate(PATHS.team);
+              }, 10000);
+            })
+            .catch((err) => {
+              prodlog(err);
+            });
         }}
       >
         Create
