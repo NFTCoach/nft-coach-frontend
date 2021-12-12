@@ -11,6 +11,7 @@ import { useRequest } from "common/hooks/useRequest";
 import { toast } from "react-toastify";
 import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
+import { Headline } from "components/Headline";
 
 export default function TrainingMatch() {
   const account = useSelector((state) => state.account);
@@ -86,14 +87,9 @@ export default function TrainingMatch() {
     return <CreateTeam />;
   }
 
-  if (account.players?.length < 5) {
-    return null;
-  }
-
-  //console.log(account.players);
-
   return (
     <div className={styles.container}>
+      <Headline title="Training & Match" />
       <Button>Match</Button>
       <Button
         onClick={() => {

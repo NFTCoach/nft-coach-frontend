@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Marketplace from "pages/Marketplace";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Game from "pages/Game";
 import { MyTeam } from "pages/Game/MyTeam";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -14,6 +14,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PATHS } from "common/constants/paths";
 import { Tournaments } from "pages/Game/Tournaments";
+import CreateTeam from "pages/Game/CreateTeam";
+import TrainingMatch from "pages/Game/TrainingMatch";
 
 function App() {
   useEffect(() => {
@@ -33,6 +35,8 @@ function App() {
           <Route path={PATHS.game} element={<Game />} />
           <Route path={PATHS.team} element={<MyTeam />} />
           <Route path={PATHS.tournaments} element={<Tournaments />} />
+          <Route path={PATHS.create_team} element={<CreateTeam />} />
+          <Route path={PATHS.training} element={<TrainingMatch />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer
