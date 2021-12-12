@@ -32,13 +32,11 @@ import Modal from "components/Modal/Modal";
 import { useGeneralFunctions } from "common/hooks/useGeneralFunctions";
 
 function MyTeam() {
-
   const [isSelling, setIsSelling] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
   const [isPlayerPackOpen, setIsPlayerPackOpen] = useState(false);
 
   const [playerPacks, setPlayerPacks] = useState();
-
 
   const { isSignedIn, address } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
@@ -51,7 +49,13 @@ function MyTeam() {
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const { getAllPlayersOf, requestOpenPack, openPack, getPlayerBalanceOf, getChainlinkRandomOf } = useContractFunction();
+  const {
+    getAllPlayersOf,
+    requestOpenPack,
+    openPack,
+    getPlayerBalanceOf,
+    getChainlinkRandomOf,
+  } = useContractFunction();
   const { getTeamStats } = useGameFunctions();
   const { getCardBalanceOf } = useGeneralFunctions();
 
@@ -134,9 +138,13 @@ function MyTeam() {
           setIsPlayerPackOpen(false);
         }}
       >
-        <Button type="secondary" onClick={() => {
-          openPackReq.exec();
-        }} loading={openPackReq.loading}>
+        <Button
+          type="secondary"
+          onClick={() => {
+            openPackReq.exec();
+          }}
+          loading={openPackReq.loading}
+        >
           Open Pack
         </Button>
       </Modal>
@@ -162,9 +170,12 @@ function MyTeam() {
               <Icon>{adding ? <MinusIcon /> : <PlusIcon />}</Icon>
               Add to marketplace
             </Button>
-            <Button type="secondary" onClick={() => {
+            <Button
+              type="secondary"
+              onClick={() => {
                 setIsPlayerPackOpen(true);
-              }}>
+              }}
+            >
               Open pack
             </Button>
           </div>
