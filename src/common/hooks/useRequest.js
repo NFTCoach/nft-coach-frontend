@@ -30,9 +30,14 @@ export const useRequest = (
           toast(message, {
             autoClose: timeout,
           });
+          setTimeout(() => {
+            setLoading(false);
+            onFinished?.();
+          }, timeout);
+        } else {
+          setLoading(false);
+          onFinished?.();
         }
-        setLoading(false);
-        onFinished?.();
         return res;
       } catch (err) {
         prodlog(err);
