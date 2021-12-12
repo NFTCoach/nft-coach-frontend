@@ -1,13 +1,10 @@
 import useAccount from "common/hooks/useAccount";
 import Button from "components/Button";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import AutoForm from "react-auto-form";
-import { ethers } from "ethers";
+import { useSelector } from "react-redux";
 import { useContractFunction } from "common/utils/contract/functions";
 import CreateTeam from "pages/Game/CreateTeam";
 import styles from "./TrainingMatch.module.scss";
-import { MyTeam } from "../MyTeam";
 import { useNavigate } from "react-router";
 import { PATHS } from "common/constants/paths";
 import { useRequest } from "common/hooks/useRequest";
