@@ -2,6 +2,7 @@ import { clsnm } from "common/utils/clsnm";
 import React from "react";
 import styles from "./Button.module.scss";
 import { Typography } from "components/Typography";
+import { Spinner } from "components/Spinner";
 
 /**
  * type = "primary" | "secondary"
@@ -42,7 +43,9 @@ const Button = React.forwardRef(
         >
           {children}
         </Typography>
-        <div className={styles.loadingIndicator}>{loading && "Sending..."}</div>
+        <div className={styles.loadingIndicator}>
+          {loading && <Spinner size={18} />}
+        </div>
       </button>
     );
   }

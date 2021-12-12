@@ -23,6 +23,9 @@
   border: var(--border);
   position: relative;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: var(--bg-hover);

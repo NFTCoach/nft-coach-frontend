@@ -8,11 +8,12 @@ import Marketplace from "pages/Marketplace";
 import { useDispatch } from "react-redux";
 import Game from "pages/Game";
 import { MyTeam } from "pages/Game/MyTeam";
-import useRequestAccounts from "common/hooks/useRequestAccounts";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const dispatch = useDispatch();
-
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -20,7 +21,7 @@ function App() {
   });
 
   return (
-    <div>
+    <DndProvider backend={HTML5Backend}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />}>
@@ -31,7 +32,8 @@ function App() {
           <Route path="/game/team" element={<MyTeam />} />
         </Routes>
       </BrowserRouter>
-    </div>
+      <ToastContainer theme="dark" />
+    </DndProvider>
   );
 }
 

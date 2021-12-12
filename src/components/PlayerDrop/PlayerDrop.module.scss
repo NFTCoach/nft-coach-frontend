@@ -1,0 +1,14 @@
+.player {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: rgb(218, 216, 216);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.over {
+    background-color: rgb(90, 252, 123);
+  }
+}

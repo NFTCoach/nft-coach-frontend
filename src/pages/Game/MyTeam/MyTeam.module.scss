@@ -2,20 +2,8 @@
   min-height: 100vh;
 }
 
-.header {
-  display: flex;
-  width: 100%;
-  padding: 24px 24px;
-  justify-content: space-between;
-}
-
-.balance {
-  justify-self: flex-end;
-}
-
-.hidden {
-  opacity: 0;
-  pointer-events: none;
+.notReady {
+  margin-top: 1.2rem;
 }
 
 .courtWrapper {
@@ -33,57 +21,78 @@
 }
 
 .players {
+  max-height: 80vh;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: calc(100% - 380px);
+}
+.cards {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  cursor: grab;
 }
 
 .court {
   margin-left: auto;
   position: relative;
   width: 380px;
+  height: 560px;
 
   justify-content: center;
   display: flex;
   justify-self: flex-end;
-
-  & .player {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    background-color: rgb(218, 216, 216);
-  }
-
-  & .player1 {
-    position: absolute;
-    left: 24px;
-    top: 60px;
-  }
-  & .player2 {
-    position: absolute;
-    right: 24px;
-    top: 60px;
-  }
-  & .player3 {
-    position: absolute;
-    left: 50%;
-    top: 42%;
-    transform: translateX(-50%);
-  }
-  & .player4 {
-    position: absolute;
-    left: 24px;
-    bottom: 60px;
-  }
-  & .player5 {
-    position: absolute;
-    right: 24px;
-    bottom: 60px;
-  }
+  flex-direction: column;
 }
 .courtImg {
   border-radius: 12px;
-  width: 100%;
+  width: 355px;
+  height: 560px;
 }
 
 .imageWrapper {
   width: max-content;
   position: relative;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+}
+
+.player1 {
+  position: absolute;
+  left: 24px;
+  top: 60px;
+}
+.player2 {
+  position: absolute;
+  right: 24px;
+  top: 60px;
+}
+.player3 {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translateX(-50%);
+}
+.player4 {
+  position: absolute;
+  left: 24px;
+  bottom: 60px;
+}
+.player5 {
+  position: absolute;
+  right: 24px;
+  bottom: 60px;
+}
+
+.save {
+  margin-top: 1rem;
 }
