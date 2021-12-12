@@ -7,6 +7,7 @@ export default function useSetUserInformation() {
     
     async function setUserDetails() {
         // get user details and dispatch it
+        
     }
 
     return { setUserDetails };
