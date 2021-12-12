@@ -12,13 +12,14 @@ import { toast } from "react-toastify";
 import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
 import { Headline } from "components/Headline";
+import { Link } from "react-router-dom";
+import { useRouting } from "common/hooks/useRouting";
 
 export default function TrainingMatch() {
   const account = useSelector((state) => state.account);
+  const { team } = useSelector((state) => state.account);
   const contracts = useSelector((state) => state.contracts);
   let navigate = useNavigate();
-
-  //const dispatch = useDispatch();
 
   const { getAllPlayersOf, getTeamStats, getDefaultFive } =
     useContractFunction();
@@ -37,6 +38,7 @@ export default function TrainingMatch() {
 
   useEffect(() => {
     if (!account.isSignedIn || !contracts.NC721) {
+      getIsSignedIn();
       return;
     }
     getAllPlayersOf(account.address);
@@ -52,9 +54,7 @@ export default function TrainingMatch() {
     //contracts.COACH.balanceOf(account.address).then(res => console.log(res.toNumber()));
   }, [contracts, account.isSignedIn]);
 
-  useEffect(() => {
-    getIsSignedIn();
-  }, []);
+  useRouting();
 
   useEffect(() => {
     if (account.players?.length < 5) {
@@ -84,15 +84,26 @@ export default function TrainingMatch() {
 
   return (
     <div className={styles.container}>
-      <Headline title="Training & Match">
-        <Button
-          onClick={() => {
-            navigate(PATHS.team);
-          }}
-        >
-          My Team
-        </Button>
-      </Headline>
+      <Headline title="Training & Match" />
+      <div className={styles.wrapper}>
+        <div></div>
+        <div className={styles.stats}>
+          <Typography variant="title4">Team Stats</Typography>
+          <div className={styles.inner}>
+            <Typography variant="body2" weight="medium">
+              Morale: 100
+            </Typography>
+            <Typography variant="body2" weight="medium">
+              Wins: 0
+            </Typography>
+            <div className={styles.customize}>
+              <Link to={PATHS.team}>
+                <Button>Customize Team</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

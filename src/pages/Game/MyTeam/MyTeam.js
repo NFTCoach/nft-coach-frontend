@@ -27,6 +27,7 @@ import CreateTeam from "../CreateTeam";
 import { Loader } from "components/Loader";
 import { PATHS } from "common/constants/paths";
 import { useNavigate } from "react-router";
+import { useRouting } from "common/hooks/useRouting";
 
 function MyTeam() {
   const { isSignedIn, address } = useSelector((state) => state.account);
@@ -41,7 +42,6 @@ function MyTeam() {
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
   const { getAllPlayersOf } = useContractFunction();
-  const { getTeamStats } = useGameFunctions();
   const dispatch = useDispatch();
   const { getIsSignedIn } = useAccount();
   const statReq = useRequest(getStats);
@@ -53,22 +53,14 @@ function MyTeam() {
   );
   const getAllPlayersReq = useRequest(getAllPlayersOf);
   const [adding, setAdding] = useState(false);
-  const getTeamStatsReq = useRequest(getTeamStats);
 
+  useRouting();
   useEffect(() => {
     if (!contracts.NC721 || !isSignedIn) {
       getIsSignedIn();
       return;
     }
     getAllPlayersReq.exec(address);
-
-    const fetchData = async () => {
-      const res = await getTeamStatsReq.exec(address);
-      if (!res.initialized) {
-        navigate(PATHS.create_team);
-      }
-    };
-    fetchData();
   }, [contracts, isSignedIn]);
 
   useEffect(() => {
