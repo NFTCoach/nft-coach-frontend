@@ -17,6 +17,9 @@ import { PlayerAvatar } from "components/PlayerAvatar";
 import { Sale } from "./Sale";
 import { Rent } from "./Rent";
 import { Loader } from "components/Loader";
+import { Contract } from "@ethersproject/contracts";
+import { Spinner } from "components/Spinner";
+import { useApproveFunctions } from "common/hooks/useApproveFunctions";
 
 export default function Marketplace() {
   const [modalItemType, setModalItemType] = useState();
@@ -35,6 +38,14 @@ export default function Marketplace() {
   const { getAllPlayersOf } = useListingFunctions();
 
   const dispatch = useDispatch();
+
+  const { buyPlayer, rentPlayer } = useContractFunction();
+  const { approvePlayersForMarket } = useApproveFunctions()
+  const buyPlayerReq = useRequest(async () => {
+    await approvePlayersForMarket();
+    await buyPlayer();
+  });
+  const rentPlayerReq = useRequest(rentPlayer);
 
   const [myOwnPlayers, setMyOwnPlayers] = useState(null);
 

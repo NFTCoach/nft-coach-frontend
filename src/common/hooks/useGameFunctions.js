@@ -45,16 +45,10 @@ export const useGameFunctions = () => {
     );
   };
 
-  const getOngoingTournaments = async () => {
-    const createEvents = await filterEvents(Tournaments, "TournamentCreated");
-    const createdIds = createEvents.map(ev => ev.args[0]);
-
-    const startEvents = await filterEvents(Tournaments, "TournamentStarted");
-    /** @type {string[]} */
-    const startedIds = startEvents.map(ev => ev.args[0]);
-
-    return createdIds.filter(id => !startedIds.includes(id));
+  return {
+    getStats,
+    getDefaultFive,
+    setDefaultFive,
+    getTeamStats,
   };
-
-  return { getStats, getDefaultFive, setDefaultFive, getTeamStats, getOngoingTournaments };
 };

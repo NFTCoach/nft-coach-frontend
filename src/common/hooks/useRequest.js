@@ -40,6 +40,7 @@ export const useRequest = (
         prodlog(err);
         notify(errorMsg);
         setLoading(false);
+        throw new Error(err);
       }
     },
     loading: loading,
