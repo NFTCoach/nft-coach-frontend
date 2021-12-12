@@ -2,9 +2,10 @@ import { prodlog } from "common/utils/prodlog";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-
-
-export const useEventRequest = (func, { eventName, contract, errorMsg, onFinished } = {}) => {
+export const useEventRequest = (
+  promise,
+  { eventName, contract, errorMsg, onFinished, onStart, onListeningEvent } = {}
+) => {
   const [loading, setLoading] = useState(false);
 
   const notify = (msg) =>
@@ -20,23 +21,34 @@ export const useEventRequest = (func, { eventName, contract, errorMsg, onFinishe
 
   const fn = {
     exec: async function (...args) {
-      try {
-        setLoading(true);
-        const res = await func?.(...args);
-        const _fn = new Promise((resolve, reject) => {
-            contract.on(eventName, (...arguments) => {
-                onFinished?.();
-                setLoading(false);
-                resolve(...arguments);
+      setLoading(true);
+      let timer;
+      return new Promise((res, rej) => {
+        const func = async () => {
+          await promise?.(...args);
+        };
+        func(res, rej)
+          .then(() => {
+            onStart?.();
+            onListeningEvent?.();
+            contract.on(eventName, (...args) => {
+              setLoading(false);
+              res(...args);
+              onFinished?.();
             });
-        });
-        setTimeout(_fn, 30 * 1000);
-        return res;
-      } catch (err) {
-        prodlog(err);
-        notify(errorMsg);
-        setLoading(false);
-      }
+
+            timer = setTimeout(() => {
+              rej("Timeout exceeded");
+              notify(errorMsg);
+              setLoading(false);
+            }, 60 * 1000);
+          })
+          .catch((err) => {
+            setLoading(false);
+            clearTimeout(timer);
+            rej(err);
+          });
+      });
     },
     loading: loading,
   };
