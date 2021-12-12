@@ -41,7 +41,11 @@ const CreateTeam = () => {
     fetchData();
   }, [isSignedIn]);
 
-  const registerTeamReq = useRequest(registerTeam);
+  const registerTeamReq = useRequest(
+    registerTeam,
+    { onFinished: () => navigate(PATHS.team) },
+    { timeout: 15000, message: "Team is initalizing, please wait" }
+  );
 
   return (
     <div className={styles.container}>
@@ -70,18 +74,7 @@ const CreateTeam = () => {
           const fetchData = async () => {
             await registerTeamReq.exec();
           };
-          fetchData()
-            .then((res) => {
-              toast("Initializing team, please wait", {
-                autoClose: 15000,
-              });
-              setTimeout(() => {
-                navigate(PATHS.team);
-              }, 15000);
-            })
-            .catch((err) => {
-              prodlog(err);
-            });
+          fetchData();
         }}
       >
         Create
