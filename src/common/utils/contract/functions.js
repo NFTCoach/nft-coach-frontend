@@ -3,6 +3,7 @@ import { Team, Player, CardListing, Tournament, Listing } from "./classes";
 import { ethers } from "ethers";
 import { setPlayers, setTeam } from "store/reducers/account";
 import { setPlayers as setGamePlayers } from "store/reducers/game";
+import { prodlog } from "../prodlog";
 
 const getArgs = async (txn, event) => {
   const receipt = await txn.wait();

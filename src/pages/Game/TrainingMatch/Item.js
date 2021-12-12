@@ -27,7 +27,7 @@ const Item = ({
         setSelected(index);
       }}
       key={index}
-      class={clsnm(styles.item, selected === index && styles.selected)}
+      className={clsnm(styles.item, selected === index && styles.selected)}
     >
       <h4>Team {index + 1}</h4>
     </div>

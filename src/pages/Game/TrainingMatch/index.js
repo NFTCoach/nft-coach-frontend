@@ -30,14 +30,18 @@ export default function TrainingMatch() {
     getDefaultFive,
     get10RandomTeams,
     requestTraining,
+    train,
+    getBlockRandomOf,
   } = useContractFunction();
   const getDefaultFiveReq = useRequest(getDefaultFive);
   const getRandomTeamsReq = useRequest(get10RandomTeams);
   const requestTrainingReq = useRequest(
     requestTraining,
     {},
-    { timeout: 10000, message: "Training goes on" }
+    { timeout: 15000, message: "Training goes on" }
   );
+  const trainReq = useRequest(train);
+  const randomReq = useRequest(getBlockRandomOf);
 
   const [randomOpponents, setRandomOpponents] = useState([]);
   const [selected, setSelected] = useState(-1);
@@ -61,7 +65,7 @@ export default function TrainingMatch() {
     getTeamStats(account.address);
     async function fetchData() {
       const res = await getDefaultFiveReq.exec(account.address);
-      if (res?.includes("0") && !account.team?.initialized) {
+      if (res?.includes("0") && account.team?.initialized) {
         navigate(PATHS.team);
         toast("Please set your default five");
       }
@@ -73,7 +77,6 @@ export default function TrainingMatch() {
       setRandomOpponents(res);
     };
     fetchTeams();
-    //contracts.COACH.balanceOf(account.address).then(res => console.log(res.toNumber()));
   }, [contracts, account.isSignedIn]);
 
   useRouting();
@@ -122,6 +125,8 @@ export default function TrainingMatch() {
     }
   };
 
+  console.log(randomOpponents);
+
   return (
     <div className={styles.container}>
       <Headline title="Training & Match" />
@@ -137,16 +142,20 @@ export default function TrainingMatch() {
                 Choose Enemy
               </Typography>
               <div className={styles.carouselWrapper}>
-                <Icon
-                  onClick={() => handleFocused("decrement")}
-                  size={40}
-                  className={styles.icon}
-                >
-                  <LeftIcon />
-                </Icon>
+                {randomOpponents?.length > 4 && (
+                  <Icon
+                    onClick={() => handleFocused("decrement")}
+                    size={40}
+                    className={styles.icon}
+                  >
+                    <LeftIcon />
+                  </Icon>
+                )}
+
                 <div className={styles.carousel}>
                   {randomOpponents.map((item, index) => (
                     <Item
+                      key={index}
                       setSelected={setSelected}
                       selected={selected}
                       focused={focused}
@@ -157,13 +166,15 @@ export default function TrainingMatch() {
                     />
                   ))}
                 </div>
-                <Icon
-                  onClick={() => handleFocused("increment")}
-                  size={40}
-                  className={styles.icon}
-                >
-                  <RightIcon />
-                </Icon>
+                {randomOpponents?.length > 4 && (
+                  <Icon
+                    onClick={() => handleFocused("increment")}
+                    size={40}
+                    className={styles.icon}
+                  >
+                    <RightIcon />
+                  </Icon>
+                )}
               </div>
               <div className={styles.match}>
                 {selected !== -1 && (
@@ -178,6 +189,16 @@ export default function TrainingMatch() {
                         await requestTrainingReq.exec(
                           randomOpponents[selected]
                         );
+                        setTimeout(async () => {
+                          const res = await trainReq.exec();
+                          if (res >= 4) {
+                            toast("Congratulations! You won the match!");
+                            navigate(PATHS.team);
+                          } else {
+                            toast("Ucnfortunately, you lost the match!");
+                            navigate(PATHS.team);
+                          }
+                        }, 20000);
                       }}
                     >
                       Match with team
