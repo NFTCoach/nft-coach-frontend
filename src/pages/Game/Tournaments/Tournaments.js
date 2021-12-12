@@ -141,9 +141,8 @@ export function Tournaments() {
       {/** Show user the ongoing tournaments */}
       {ongoingTournaments.map((tournament, index) => {
         console.log(tournament);
-        return (<div>
+        return (<div key={index}>
           <Button
-            key={index}
             onClick={() => enterTournament(tournament.id)}
             loading={joinTournamentReq.loading}
             >Enter tournament</Button>
