@@ -34,7 +34,7 @@ export function Tournaments() {
 
   if (account.attendedTournament) {
     // show attended tournament
-  } else if (account.team?.players.length < 5) {
+  } else if (account.team?.players?.length < 5) {
     // show CreateTeam page
   } else {
     // enter the tournament and pay fee
