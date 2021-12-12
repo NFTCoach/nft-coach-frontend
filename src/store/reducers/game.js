@@ -7,6 +7,8 @@ const initialState = {
   players: [],
   playerStats: [],
   defaultFive: ["0", "0", "0", "0", "0"],
+  rentingPlayer: null,
+  sellingPlayer: null,
 };
 
 export const gameSlice = createSlice({
@@ -29,6 +31,12 @@ export const gameSlice = createSlice({
       const { index, id } = action.payload;
       state.defaultFive[index] = id;
     },
+    setSellingPlayer: (state, action) => {
+      state.sellingPlayer = action.payload;
+    },
+    setRentingPlayer: (state, action) => {
+      state.rentingPlayer = action.payload;
+    },
   },
 });
 
@@ -38,6 +46,8 @@ export const {
   setPlayerStats,
   setDefaultFive,
   setDefaultFiveIndex,
+  setRentingPlayer,
+  setSellingPlayer,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

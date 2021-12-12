@@ -18,6 +18,7 @@ const Button = React.forwardRef(
       size = "medium",
       loading = false,
       className,
+      disabled,
       ...rest
     },
     ref
@@ -30,6 +31,7 @@ const Button = React.forwardRef(
           styles["button"],
           styles[type],
           styles[size],
+          disabled && styles.disabled,
           loading && styles["loading"],
           className
         )}

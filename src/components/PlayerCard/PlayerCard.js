@@ -4,7 +4,7 @@ import { useDrag } from "react-dnd";
 import { PlayerAvatar } from "components/PlayerAvatar";
 import styles from "./PlayerCard.module.scss";
 
-const PlayerCard = ({ size, className, playerId, draggable }) => {
+const PlayerCard = ({ size, className, playerId, draggable, children }) => {
   const [{ isDragging, isDraggable }, drag] = useDrag({
     type: "1",
     item: { playerId: playerId },
@@ -16,11 +16,12 @@ const PlayerCard = ({ size, className, playerId, draggable }) => {
   return (
     <div className={styles.wrapper}>
       <PlayerAvatar
-        ref={drag}
+        ref={isDraggable ? drag : null}
         id={playerId}
         className={className}
         size={size}
       />
+      {children}
     </div>
   );
 };

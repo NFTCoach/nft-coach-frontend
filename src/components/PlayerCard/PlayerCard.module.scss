@@ -6,4 +6,6 @@
   box-sizing: border-box;
   background-color: var(--card-bg);
   border-radius: 8px;
+  flex-direction: column;
+  gap: 1rem;
 }

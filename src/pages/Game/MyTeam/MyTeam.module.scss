@@ -96,3 +96,42 @@
 .save {
   margin-top: 1rem;
 }
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+
+  & button {
+    width: 100%;
+  }
+}
+
+.modal {
+  width: 512px;
+}
+
+.modalInner {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  padding-top: 16px;
+  width: 100%;
+  gap: 12px;
+}
+
+.title {
+  align-self: flex-start;
+}
+
+.slider {
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+}

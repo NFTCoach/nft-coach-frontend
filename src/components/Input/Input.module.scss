@@ -1,21 +1,24 @@
-
-
 .label {
 }
 
 .label > * + * {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .label span {
-    display: block;
+  display: block;
 }
 
 .input {
-    border: 2px solid #fff;
-    background: transparent;
-    color: white;
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 15px;
+  border: 1px solid var(--card-bg);
+  background: var(--card-bg);
+  color: var(--text-color);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 100%;
+
+  &::placeholder {
+    color: #ededed;
+  }
 }

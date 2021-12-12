@@ -11,7 +11,7 @@ export const useListingFunctions = () => {
 
   const getAllPlayerListings = async () => {
     const listEvents = await filterEvents(
-      contracts.Tournaments,
+      contracts.Marketplace,
       "PlayerListed"
     );
     let listedIds = listEvents.map((ev) => ev.args[0]);
@@ -26,7 +26,7 @@ export const useListingFunctions = () => {
   };
 
   const getAllCardListings = async () => {
-    const listEvents = await filterEvents(contracts.Tournaments, "CardListed");
+    const listEvents = await filterEvents(contracts.Marketplace, "CardListed");
     let listedIds = listEvents.map((ev) => ev.args[0]);
 
     const listings = await Promise.all(
@@ -40,7 +40,7 @@ export const useListingFunctions = () => {
 
   const getAllRentedListings = async () => {
     const listEvents = await filterEvents(
-      contracts.Tournaments,
+      contracts.Marketplace,
       "PlayerListedForRent"
     );
     let listedIds = listEvents.map((ev) => ev.args[0]);

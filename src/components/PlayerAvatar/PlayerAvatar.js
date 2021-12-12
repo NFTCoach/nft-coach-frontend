@@ -161,7 +161,7 @@ const skinColorArr = [
   "Black",
 ];
 
-const PlayerAvatar = forwardRef(({ id, size, className }, ref) => {
+const PlayerAvatar = forwardRef(({ id = "0", size, className }, ref) => {
   return (
     <div className={styles.wrapper} ref={ref}>
       <Avatar

@@ -1,0 +1,52 @@
+.overlay {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1001;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  min-width: 200px;
+  min-height: 100px;
+  background-color: var(--bg);
+  z-index: 1;
+  border-radius: 8px;
+  z-index: 1001;
+}
+
+.close {
+  &:hover {
+    background-color: var(--primary-button);
+    cursor: pointer;
+    transition: 0.1s linear;
+  }
+
+  & svg {
+    color: var(--text-color);
+  }
+
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  padding: 4px;
+  border-radius: 6px;
+}

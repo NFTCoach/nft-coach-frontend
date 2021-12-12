@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slider {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.thumb {
+  background-color: var(--primary-button);
+  border-radius: 8px;
+  padding: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.track {
+  position: absolute;
+  border-radius: 8px;
+  top: 8px;
+  background: #ddd;
+  border-top: 10px solid #ededed;
+}

@@ -6,11 +6,14 @@ import Button from "components/Button";
 import { Headline } from "components/Headline";
 import { Typography } from "components/Typography";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { setType, toggleFilter } from "store/reducers/market";
+import { Filters } from "./Filters";
 import styles from "./Marketplace.module.scss";
 
 export default function Marketplace() {
-  const { players } = useSelector((state) => state.account);
+  const { type } = useSelector((state) => state.market);
   const { isSignedIn } = useSelector((state) => state.account);
   const [allPlayers, setAllPlayers] = useState([]);
   const [allCardListing, setAllCardListings] = useState([]);
@@ -18,6 +21,7 @@ export default function Marketplace() {
   const { getIsSignedIn } = useAccount();
   const contracts = useSelector((state) => state.contracts);
   const { getAllCardListings, getAllPlayerListings } = useListingFunctions();
+  const dispatch = useDispatch();
 
   const getCardListingsReq = useRequest(getAllCardListings, {
     errorMsg: "Could not load marketplace",
@@ -35,36 +39,57 @@ export default function Marketplace() {
 
   useEffect(() => {
     const getReq = async () => {
-      if (contracts.Marketplace && contracts.Tournaments) {
+      if (contracts.Marketplace) {
         const res = await getCardListingsReq.exec();
+
         setAllCardListings(res);
       }
     };
 
     const getPlayerReq = async () => {
-      console.log(contracts.Marketplace, contracts.Tournaments);
-      if (contracts.Marketplace && contracts.Tournaments) {
+      console.log(contracts.Marketplace);
+      if (contracts.Marketplace) {
         const res = await getPlayerListingReq.exec();
         setAllPlayerListing(res);
       }
     };
-    /*   getReq(); */
-    /* getPlayerReq(); */
-  }, [contracts.Marketplace, contracts.Tournaments]);
+    getReq();
+    getPlayerReq();
+  }, [contracts.Marketplace]);
 
   return (
-    <div className={styles.container}>
-      <Headline title="Marketplace" />
+    <div data-aos="fade-in" className={styles.container}>
+      <Headline title="Marketplace">
+        <Link to="/game/team">
+          <Button>Sell players</Button>
+        </Link>
+      </Headline>
       <div className={styles.wrapper}>
         <div className={styles.market}></div>
         <div className={styles.filter}>
           <Typography variant="title4" weight="semibold">
             Filters
           </Typography>
-          <Button>Players</Button>
-          <Button>Teams</Button>
-          <Button>Player Packs</Button>
-          <Button>Upgrade Packs</Button>
+          <div className={styles.filters}>
+            <Filters />
+          </div>
+          <Typography variant="title4" weight="semibold">
+            Type
+          </Typography>
+          <div className={styles.types}>
+            <Button
+              onClick={() => dispatch(setType("sale"))}
+              type={type != "sale" ? "secondary" : "primary"}
+            >
+              Sale
+            </Button>
+            <Button
+              onClick={() => dispatch(setType("rent"))}
+              type={type != "rent" ? "secondary" : "primary"}
+            >
+              Rent
+            </Button>
+          </div>
         </div>
       </div>
     </div>

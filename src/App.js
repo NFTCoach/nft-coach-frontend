@@ -12,6 +12,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PATHS } from "common/constants/paths";
 
 function App() {
   useEffect(() => {
@@ -24,15 +25,22 @@ function App() {
     <DndProvider backend={HTML5Backend}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />}>
+          <Route path={PATHS.landing} element={<Landing />}>
             {/*  <Route path=":teamId" element={<Team />} /> */}
           </Route>
-          <Route path="/market" element={<Marketplace />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/game/team" element={<MyTeam />} />
+          <Route path={PATHS.market} element={<Marketplace />} />
+          <Route path={PATHS.game} element={<Game />} />
+          <Route path={PATHS.team} element={<MyTeam />} />
         </Routes>
       </BrowserRouter>
-      <ToastContainer theme="dark" />
+      <ToastContainer
+        position="top-right"
+        draggable={true}
+        hideProgressBar={false}
+        theme="dark"
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+      />
     </DndProvider>
   );
 }
