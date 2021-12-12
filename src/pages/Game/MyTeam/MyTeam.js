@@ -51,7 +51,7 @@ function MyTeam() {
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const { getAllPlayersOf, requestOpenPack, openPack, getPlayerBalanceOf } = useContractFunction();
+  const { getAllPlayersOf, requestOpenPack, openPack, getPlayerBalanceOf, getChainlinkRandomOf } = useContractFunction();
   const { getTeamStats } = useGameFunctions();
   const { getCardBalanceOf } = useGeneralFunctions();
 
@@ -66,6 +66,8 @@ function MyTeam() {
   );
   const getTeamStatsReq = useRequest(getTeamStats);
   const openPackReq = useRequest(async () => {
+    const res = await getChainlinkRandomOf(address);
+    console.log(res.toString());
     await requestOpenPack();
     await openPack();
   });

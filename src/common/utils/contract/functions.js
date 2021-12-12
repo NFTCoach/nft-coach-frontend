@@ -351,6 +351,10 @@ export function useContractFunction() {
         return teamList;
     }
 
+    const getChainlinkRandomOf = async (address) => {
+        return await RNG.getChainlinkRandom(address);
+    }
+
     return {
         getTeamStats,
         getAllPlayersOf,
@@ -390,6 +394,7 @@ export function useContractFunction() {
         getCardBalanceOf,
         testMintCard,
         testCreateTournament,
-        get10RandomTeams
+        get10RandomTeams,
+        getChainlinkRandomOf
     };
 };
