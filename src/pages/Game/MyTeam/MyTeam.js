@@ -67,7 +67,6 @@ function MyTeam() {
     const getReq = async () => {
       if (players?.length > 0) {
         const res = await statReq.exec(players);
-        console.log(res);
         dispatch(setPlayerStats(res));
       }
     };
@@ -88,6 +87,8 @@ function MyTeam() {
   if (!isSignedIn) {
     return <Loader />;
   }
+
+  console.log(playerStats);
 
   return (
     <div className={styles.wrapper}>

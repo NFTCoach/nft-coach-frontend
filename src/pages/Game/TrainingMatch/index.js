@@ -61,7 +61,7 @@ export default function TrainingMatch() {
     getTeamStats(account.address);
     async function fetchData() {
       const res = await getDefaultFiveReq.exec(account.address);
-      if (res?.includes("0") && !account.team?.initialized) {
+      if (res?.includes("0") && account.team?.initialized) {
         navigate(PATHS.team);
         toast("Please set your default five");
       }
@@ -137,13 +137,16 @@ export default function TrainingMatch() {
                 Choose Enemy
               </Typography>
               <div className={styles.carouselWrapper}>
-                <Icon
-                  onClick={() => handleFocused("decrement")}
-                  size={40}
-                  className={styles.icon}
-                >
-                  <LeftIcon />
-                </Icon>
+                {randomOpponents?.length > 4 && (
+                  <Icon
+                    onClick={() => handleFocused("decrement")}
+                    size={40}
+                    className={styles.icon}
+                  >
+                    <LeftIcon />
+                  </Icon>
+                )}
+
                 <div className={styles.carousel}>
                   {randomOpponents.map((item, index) => (
                     <Item
@@ -157,13 +160,15 @@ export default function TrainingMatch() {
                     />
                   ))}
                 </div>
-                <Icon
-                  onClick={() => handleFocused("increment")}
-                  size={40}
-                  className={styles.icon}
-                >
-                  <RightIcon />
-                </Icon>
+                {randomOpponents?.length > 4 && (
+                  <Icon
+                    onClick={() => handleFocused("increment")}
+                    size={40}
+                    className={styles.icon}
+                  >
+                    <RightIcon />
+                  </Icon>
+                )}
               </div>
               <div className={styles.match}>
                 {selected !== -1 && (
