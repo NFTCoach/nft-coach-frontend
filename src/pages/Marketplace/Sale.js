@@ -21,10 +21,12 @@ const Sale = ({
   const [allPlayerListing, setAllPlayerListing] = useState([]);
   const contracts = useSelector((state) => state.contracts);
   const { isSignedIn } = useSelector((state) => state.account);
-
-  const { getAllPlayerListings } = useListingFunctions();
-  const { buyPlayer, approveCoachForMarketplace, isCoachApprovedForMarket } =
-    useContractFunction();
+  const {
+    buyPlayer,
+    approveCoachForMarketplace,
+    isCoachApprovedForMarket,
+    getAllPlayerListings,
+  } = useContractFunction();
   const approveReq = useRequest(
     approveCoachForMarketplace,
     {},
