@@ -40,26 +40,26 @@ export function useContractFunction() {
 
   const getAllPlayersOf = async (address) => {
     const mintEvents = await filterEvents(NC721, "Transfer", null, address);
-    const playerIds = mintEvents.map((ev) => ev.args[2].toString());
+    const playerIds = [
+      ...new Set(mintEvents.map((ev) => ev.args[2].toString())),
+    ];
 
     let players = [];
-    await Promise.all(
-      playerIds.map(async (playerId) => {
-        const transferEvents = await filterEvents(
-          NC721,
-          "Transfer",
-          null,
-          null,
-          ethers.BigNumber.from(playerId)
-        );
+    for (let playerId of playerIds) {
+      const transferEvents = await filterEvents(
+        NC721,
+        "Transfer",
+        null,
+        null,
+        ethers.BigNumber.from(playerId)
+      );
 
-        if (transferEvents[transferEvents.length - 1].args[1] != address)
-          return;
+      if (transferEvents[transferEvents.length - 1].args[1] != address)
+        continue;
 
-        if ((await Management.idToCoach(playerId)) == address)
-          players.push(playerId);
-      })
-    );
+      if ((await Management.idToCoach(playerId)) == address)
+        players.push(playerId);
+    }
 
     const rentEvents = await filterEvents(Marketplace, "PlayerRented");
     const rentedIds = rentEvents.map((ev) => ev.args[0].toString());
@@ -71,9 +71,9 @@ export function useContractFunction() {
         players.splice(idx, 1);
       }
     }
-
     dispatch(setGamePlayers(players));
     dispatch(setPlayers(players));
+    return players;
   };
 
   const randSeed = () => Math.floor(Math.random() * 1000000);

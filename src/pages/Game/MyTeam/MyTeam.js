@@ -34,7 +34,6 @@ import { setPlayers } from "store/reducers/account";
 import { useListingFunctions } from "common/hooks/useListingFunctions";
 
 function MyTeam() {
-
   const [forceUpdateChange, setForceUpdateChange] = useState(true);
 
   const [isSelling, setIsSelling] = useState(false);
@@ -56,11 +55,7 @@ function MyTeam() {
     getDefaultFive,
     setDefaultFive: setDefaultFiveR,
   } = useGameFunctions();
-  const {
-    getAllPlayersOf,
-    getPlayerBalanceOf,
-    testOpenPack
-  } = useContractFunction();
+  const { getAllPlayersOf, testOpenPack } = useContractFunction();
   const { getTeamStats } = useGameFunctions();
   const { getCardBalanceOf } = useGeneralFunctions();
 
@@ -83,17 +78,20 @@ function MyTeam() {
     }
   };
 
-  const openPackReq = useRequest(async () => {
-    await testOpenPack();
-  }, {
-    onFinished: async () => {
-      setIsPlayerPackOpen(false);
-      setForceUpdateChange(!forceUpdateChange);
+  const openPackReq = useRequest(
+    async () => {
+      await testOpenPack();
+    },
+    {
+      onFinished: async () => {
+        setIsPlayerPackOpen(false);
+        setForceUpdateChange(!forceUpdateChange);
+      },
     }
-  });
+  );
 
   const [adding, setAdding] = useState(false);
-  
+
   useRouting();
   useEffect(() => {
     if (!contracts.NC721 || !isSignedIn) {
@@ -102,7 +100,6 @@ function MyTeam() {
     }
 
     const fetchData = async () => {
-      
       let res = await getTeamStatsReq.exec(address);
       if (!res.initialized) {
         navigate(PATHS.create_team);
@@ -111,7 +108,7 @@ function MyTeam() {
       setCardBalance(cardBalanceRes.toNumber());
       console.log(cardBalanceRes.toNumber());
     };
-    getAllPlayersReq.exec(address)
+    getAllPlayersReq.exec(address);
     fetchData();
   }, [contracts, isSignedIn, forceUpdateChange]);
 
@@ -177,14 +174,16 @@ function MyTeam() {
               <Icon>{adding ? <MinusIcon /> : <PlusIcon />}</Icon>
               Add to marketplace
             </Button>
-            {cardBalance.length > 0 && <Button
-              type="secondary"
-              onClick={() => {
-                setIsPlayerPackOpen(true);
-              }}
-            >
-              Open pack
-            </Button>}
+            {cardBalance.length > 0 && (
+              <Button
+                type="secondary"
+                onClick={() => {
+                  setIsPlayerPackOpen(true);
+                }}
+              >
+                Open pack
+              </Button>
+            )}
           </div>
 
           {!defaultFiveReq.loading && defaultFive?.includes?.("0") && (
@@ -200,47 +199,48 @@ function MyTeam() {
             </div>
           ) : (
             <div className={styles.cards}>
-              {defaultFive && playerStats
-                ?.filter((item) => !defaultFive?.includes(item.id))
-                ?.map?.((item, index) => (
-                  <PlayerCard
-                    draggable={!adding}
-                    key={index}
-                    size="128px"
-                    playerId={item.id}
-                  >
-                    {adding && (
-                      <div
-                        data-aos-duration="500"
-                        data-aos="fade-in"
-                        className={styles.meta}
-                      >
-                        <Button
-                          onClick={() => {
-                            dispatch(setRentingPlayer(item));
-                            setIsRenting(true);
-                          }}
-                          size="xsmall"
-                          type="secondary"
-                          disabled={item.locked}
+              {defaultFive &&
+                playerStats
+                  ?.filter((item) => !defaultFive?.includes(item.id))
+                  ?.map?.((item, index) => (
+                    <PlayerCard
+                      draggable={!adding}
+                      key={index}
+                      size="128px"
+                      playerId={item.id}
+                    >
+                      {adding && (
+                        <div
+                          data-aos-duration="500"
+                          data-aos="fade-in"
+                          className={styles.meta}
                         >
-                          Rent
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            dispatch(setSellingPlayer(item));
-                            setIsSelling(true);
-                          }}
-                          size="xsmall"
-                          type="tertiary"
-                          disabled={item.locked}
-                        >
-                          Sell
-                        </Button>
-                      </div>
-                    )}
-                  </PlayerCard>
-                ))}
+                          <Button
+                            onClick={() => {
+                              dispatch(setRentingPlayer(item));
+                              setIsRenting(true);
+                            }}
+                            size="xsmall"
+                            type="secondary"
+                            disabled={item.locked}
+                          >
+                            Rent
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              dispatch(setSellingPlayer(item));
+                              setIsSelling(true);
+                            }}
+                            size="xsmall"
+                            type="tertiary"
+                            disabled={item.locked}
+                          >
+                            Sell
+                          </Button>
+                        </div>
+                      )}
+                    </PlayerCard>
+                  ))}
             </div>
           )}
         </div>
