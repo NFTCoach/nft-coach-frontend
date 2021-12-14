@@ -34,7 +34,12 @@ const Sale = ({
     }
   );
   const isApprovedReq = useRequest(isCoachApprovedForMarket);
-  const buyPlayerReq = useRequest(buyPlayer);
+  const buyPlayerReq = useRequest(buyPlayer, {
+    onFinished: () => {
+      setIsModalOpen(false);
+      setModalItem(null);
+    },
+  });
   const getPlayerListingReq = useRequest(getAllPlayerListings, {
     errorMsg: "Could not load marketplace",
   });
