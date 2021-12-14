@@ -2,3 +2,11 @@
   min-height: 100vh;
   justify-content: center;
 }
+
+.tournaments {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  width: 80%;
+  margin: auto;
+  grid-gap: 30px;
+}

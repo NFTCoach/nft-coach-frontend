@@ -1,0 +1,20 @@
+.container {
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 40px;
+    align-items: center;
+    border: 2px solid rgb(204, 199, 199);
+    padding: 30px 20px;
+    gap: 20px;
+
+    .information {
+        position: absolute;
+        bottom: -20px;
+        z-index: 1;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+}

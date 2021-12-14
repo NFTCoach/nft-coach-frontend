@@ -200,7 +200,7 @@ function MyTeam() {
             </div>
           ) : (
             <div className={styles.cards}>
-              {playerStats
+              {defaultFive && playerStats
                 ?.filter((item) => !defaultFive?.includes(item.id))
                 ?.map?.((item, index) => (
                   <PlayerCard
@@ -222,6 +222,7 @@ function MyTeam() {
                           }}
                           size="xsmall"
                           type="secondary"
+                          disabled={item.locked}
                         >
                           Rent
                         </Button>
@@ -232,6 +233,7 @@ function MyTeam() {
                           }}
                           size="xsmall"
                           type="tertiary"
+                          disabled={item.locked}
                         >
                           Sell
                         </Button>

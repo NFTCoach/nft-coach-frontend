@@ -11,6 +11,7 @@ import { Spinner } from "components/Spinner";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import Tournament from "./Tournament";
 import styles from "./Tournaments.module.scss";
 
 export function Tournaments() {
@@ -32,10 +33,8 @@ export function Tournaments() {
     directSignIn: false,
   });
 
-  const { getOngoingTournaments, joinTournament, getTournamentDetails } = useTournamentFunctions();
-  const { approveCoachForTournament } = useApproveFunctions();
-  
-  const joinTournamentReq = useRequest(joinTournament);
+  const { getOngoingTournaments, getTournamentDetails } = useTournamentFunctions();
+
   const getOngoingTournamentsReq = useRequest(getOngoingTournaments);
 
   useEffect(() => {
@@ -106,20 +105,6 @@ export function Tournaments() {
     setUserDetails();
   }, [account.isSignedIn]);
 
-  const enterTournament = async (tournamentId) => {
-    console.log(typeof tournamentId);
-    try {
-      await approveCoachForTournament();
-      await joinTournamentReq.exec(tournamentId);
-      window.localStorage.setItem("attendedTournamentId", tournamentId);
-      setAttendedTournamentId(tournamentId);
-    }
-    catch(err) {
-      //toast("Error joining the tournament")
-      console.log(err);
-    }
-  };
-
   if (attendedTournamentId === null) {
     return (
       <div className={styles.container}>
@@ -127,6 +112,22 @@ export function Tournaments() {
         <Spinner />
       </div>
     );
+  }
+
+  if (ongoingTournaments) {
+    return (<div className={styles.container}>
+      <Headline title="All Tournaments"></Headline>
+      {/** Show user the ongoing tournaments */}
+      <div className={styles.tournaments}>
+        {ongoingTournaments.map((tournament, index) => {
+          //console.log(tournament);
+          return (<Tournament setAttendedTournamentId={setAttendedTournamentId}
+            tournament={tournament}
+            attendedTournamentId={attendedTournamentId}
+            key={index}></Tournament>);
+        })}
+      </div>
+    </div>);
   }
 
   if (attendedTournamentId) {
@@ -138,22 +139,7 @@ export function Tournaments() {
       </div>
     );
   }
-
-  if (ongoingTournaments) {
-    return (<div className={styles.container}>
-      <Headline title="All Tournaments"></Headline>
-      {/** Show user the ongoing tournaments */}
-      {ongoingTournaments.map((tournament, index) => {
-        console.log(tournament);
-        return (<div key={index}>
-          <Button
-            onClick={() => enterTournament(tournament.id)}
-            loading={joinTournamentReq.loading}
-            >Enter tournament</Button>
-        </div>);
-      })}
-    </div>);
-  }
+  
 
   return null;
 }
