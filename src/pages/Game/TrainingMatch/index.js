@@ -172,7 +172,7 @@ export default function TrainingMatch() {
                       focused={focused}
                       item={item}
                       index={index}
-                      randomOpponents={randomOpponents}
+                      randomOpponents={randomArray}
                       setFocused={setFocused}
                     />
                   ))}
@@ -198,7 +198,7 @@ export default function TrainingMatch() {
                       className={styles.button}
                       onClick={async () => {
                         const res = await requestTrainingReq.exec(
-                          randomOpponents[selected]
+                          randomArray[selected]
                         );
                         console.log(res);
                         if (res.score >= 4) {
