@@ -23,8 +23,17 @@ const Sale = ({
   const { isSignedIn } = useSelector((state) => state.account);
 
   const { getAllPlayerListings } = useListingFunctions();
-  const { buyPlayer } = useContractFunction();
-
+  const { buyPlayer, approveCoachForMarketplace, isCoachApprovedForMarket } =
+    useContractFunction();
+  const approveReq = useRequest(
+    approveCoachForMarketplace,
+    {},
+    {
+      timeout: 5000,
+      message: "Approving coach...",
+    }
+  );
+  const isApprovedReq = useRequest(isCoachApprovedForMarket);
   const buyPlayerReq = useRequest(buyPlayer);
   const getPlayerListingReq = useRequest(getAllPlayerListings, {
     errorMsg: "Could not load marketplace",
@@ -34,17 +43,25 @@ const Sale = ({
     if (myOwnPlayers === null) {
       return;
     }
-
     const getPlayerReq = async () => {
       if (contracts.Marketplace) {
         const res = await getPlayerListingReq.exec();
-        console.log(res);
         setAllPlayerListing(res);
       }
     };
-
     getPlayerReq();
   }, [contracts.Marketplace, myOwnPlayers]);
+
+  /* useEffect(() => {
+    if (!isSignedIn) {
+      return;
+    }
+    const approve = async () => {
+      const isApproved = localStorage.getItem("approvedCoachForMarketplace");
+      if (!isApproved) await approveReq.exec();
+    };
+    approve();
+  }, []); */
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalItem, setModalItem] = useState();
@@ -75,9 +92,16 @@ const Sale = ({
             <PlayerAvatar id={modalItem?.id} />
             <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
+              loading={approveReq.loading || buyPlayerReq.loading}
               type="secondary"
-              onClick={() => {
-                buyPlayerReq.exec(modalItem?.id);
+              onClick={async () => {
+                const isApproved = isApprovedReq.exec();
+                if (isApproved) {
+                  await buyPlayerReq.exec(modalItem?.id);
+                } else {
+                  await approveReq.exec();
+                  await buyPlayerReq.exec(modalItem?.id);
+                }
               }}
               loading={buyPlayerReq.loading}
             >

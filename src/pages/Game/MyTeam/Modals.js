@@ -18,18 +18,29 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   const [rentingPrice, setRentingPrice] = useState("");
   const [rentingDuration, setRentingDuration] = useState(1);
 
-  const { listPlayer, listPlayerForRent } = useContractFunction();
+  const {
+    listPlayer,
+    listPlayerForRent,
+    approveCardsForMarket,
+    areCardsApprovedForMarket,
+  } = useContractFunction();
   const listPlayerReq = useRequest(listPlayer, {
     onFinished: () => {
       setIsSelling(false);
-    }
-  })
-
+    },
+  });
   const listPlayerForRentReq = useRequest(listPlayerForRent, {
     onFinished: () => {
       setIsRenting(false);
-    }
-  })
+    },
+  });
+
+  const isApprovedReq = useRequest(areCardsApprovedForMarket);
+  const approveReq = useRequest(
+    approveCardsForMarket,
+    {},
+    { timeout: 4000, message: "Approving cards" }
+  );
 
   const _listPlayerForRentReq = async () => {
     if (!rentingPrice) {
@@ -37,12 +48,15 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
     }
 
     try {
-      await listPlayerForRentReq.exec(rentingPlayer?.id, rentingPrice, rentingDuration);
-    }
-    catch(err) {
+      await listPlayerForRentReq.exec(
+        rentingPlayer?.id,
+        rentingPrice,
+        rentingDuration
+      );
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   const sellPlayer = async () => {
     if (!sellingPrice) {
@@ -50,12 +64,17 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
     }
 
     try {
-      await listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
-    }
-    catch(err) {
+      const isApproved = await isApprovedReq.exec();
+      if (isApproved) {
+        await listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
+      } else {
+        await approveReq.exec();
+        await listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
+      }
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
     <Fragment>
@@ -79,7 +98,12 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
             value={sellingPrice}
             placeholder="Price"
           />
-          <Button type="tertiary" loading={listPlayerReq.loading} onClick={sellPlayer} disabled={sellingPrice == ""}>
+          <Button
+            type="tertiary"
+            loading={listPlayerReq.loading}
+            onClick={sellPlayer}
+            disabled={sellingPrice == ""}
+          >
             List item
           </Button>
         </div>

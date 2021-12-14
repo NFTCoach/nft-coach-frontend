@@ -70,14 +70,14 @@ export default function TrainingMatch() {
     async function fetchData() {
       const [getDefaultFiveRes, _teamStats] = await Promise.all([
         getDefaultFiveReq.exec(account.address),
-        getTeamStats(account.address)
-        ]);
+        getTeamStats(account.address),
+      ]);
       if (getDefaultFiveRes?.includes("0") && account.team?.initialized) {
         navigate(PATHS.team);
         toast("Please set your default five");
       }
       console.log(_teamStats);
-      setTeamStats(_teamStats)
+      setTeamStats(_teamStats);
     }
     fetchData();
 
@@ -134,7 +134,9 @@ export default function TrainingMatch() {
     }
   };
 
-  console.log(randomOpponents);
+  const randomArray = Object.keys(randomOpponents || {}).map(
+    (item) => randomOpponents[item]
+  );
 
   return (
     <div className={styles.container}>
@@ -162,7 +164,7 @@ export default function TrainingMatch() {
                 )}
 
                 <div className={styles.carousel}>
-                  {randomOpponents.map((item, index) => (
+                  {randomArray?.map((item, index) => (
                     <Item
                       key={index}
                       setSelected={setSelected}
@@ -213,12 +215,16 @@ export default function TrainingMatch() {
                     </Button>
                   </Fragment>
                 )}
-                {score.length === 2 && <div style={{textAlign: "center"}}>
-                  <Typography weight="semibold" variant="title2" as="div">Score</Typography>
-                  <Typography weight="semibold" variant="title2">
-                    {score[0] || ""} - {score[1] || ""}
-                  </Typography>
-                </div>}
+                {score.length === 2 && (
+                  <div style={{ textAlign: "center" }}>
+                    <Typography weight="semibold" variant="title2" as="div">
+                      Score
+                    </Typography>
+                    <Typography weight="semibold" variant="title2">
+                      {score[0] || ""} - {score[1] || ""}
+                    </Typography>
+                  </div>
+                )}
               </div>
             </div>
           )}

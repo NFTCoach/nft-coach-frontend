@@ -75,6 +75,7 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
           return (
             <PlayerCard key={index} size="128px" playerId={item.id}>
               <Button
+                className={styles.button}
                 onClick={() => {
                   rentPlayerReq.exec(item.id);
                 }}
@@ -91,7 +92,11 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
             </PlayerCard>
           );
         })}
-        {getAllRentedListingReq.loading && <Spinner />}
+      {getAllRentedListingReq.loading && (
+        <div className={styles.spinner}>
+          <Spinner />
+        </div>
+      )}
     </Fragment>
   );
 };

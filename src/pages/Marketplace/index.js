@@ -33,29 +33,33 @@ export default function Marketplace() {
 
   const { getIsSignedIn } = useAccount();
   const contracts = useSelector((state) => state.contracts);
-  const { getAllCardListings, getAllRentedListings } = useListingFunctions();
-
-  const { getAllPlayersOf } = useListingFunctions();
-
+  const { getAllCardListings, getAllRentedListings, getAllPlayersOf } =
+    useListingFunctions();
   const dispatch = useDispatch();
-
-  const { buyPlayer, rentPlayer } = useContractFunction();
-  const { approvePlayersForMarket } = useApproveFunctions()
+  const { buyPlayer, rentPlayer, isCoachApprovedForMarket } =
+    useContractFunction();
+  const { approvePlayersForMarket } = useApproveFunctions();
   const buyPlayerReq = useRequest(async () => {
     await approvePlayersForMarket();
     await buyPlayer();
   });
   const rentPlayerReq = useRequest(rentPlayer);
-
   const [myOwnPlayers, setMyOwnPlayers] = useState(null);
-
   const getCardListingsReq = useRequest(getAllCardListings, {
     errorMsg: "Could not load marketplace",
   });
-
   const getAllPlayersOfReq = useRequest(getAllPlayersOf, {
     errorMsg: "Could not load marketplace",
   });
+  const approveReq = useRequest(
+    isCoachApprovedForMarket,
+    {
+      onFinished: () => {
+        localStorage.setItem("approvedCoachForMarket", true);
+      },
+    },
+    { timeout: 3000, message: "Approving coaches..." }
+  );
 
   useEffect(() => {
     if (!isSignedIn) {
