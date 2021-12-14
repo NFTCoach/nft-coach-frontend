@@ -33,11 +33,14 @@ export default function Marketplace() {
 
   const { getIsSignedIn } = useAccount();
   const contracts = useSelector((state) => state.contracts);
-  const { getAllCardListings, getAllRentedListings, getAllPlayersOf } =
-    useListingFunctions();
+  const { getAllRentedListings, getAllPlayersOf } = useListingFunctions();
   const dispatch = useDispatch();
-  const { buyPlayer, rentPlayer, isCoachApprovedForMarket } =
-    useContractFunction();
+  const {
+    buyPlayer,
+    rentPlayer,
+    isCoachApprovedForMarket,
+    getAllCardListings,
+  } = useContractFunction();
   const { approvePlayersForMarket } = useApproveFunctions();
   const buyPlayerReq = useRequest(async () => {
     await approvePlayersForMarket();
