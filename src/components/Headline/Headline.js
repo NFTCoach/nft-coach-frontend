@@ -6,6 +6,9 @@ import { ReactComponent as Sun } from "assets/icons/experimental/sun.svg";
 import { ReactComponent as Moon } from "assets/icons/experimental/moon.svg";
 import Icon from "components/Icon/Icon";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { PATHS } from "common/constants/paths";
+import { ReactComponent as HomeIcon } from "assets/icons/home/home_alt_fill.svg";
 
 const Headline = ({ title, children }) => {
   const { balance } = useSelector((state) => state.account);
@@ -38,13 +41,23 @@ const Headline = ({ title, children }) => {
 
   return (
     <div className={styles.header}>
-      {children ? (
+      {/*children ? (
         children
       ) : (
         <Button className={styles.hidden} type="secondary">
-          Balance: {balance} ETH
+          Balance: {balance} COACH
         </Button>
-      )}
+      )*/}
+      <div className={styles.links}>
+        <Link to="/">
+          <Icon className={styles.svg}>
+            <HomeIcon />
+          </Icon>
+        </Link>
+        <Link to={PATHS.team}>My Team</Link>
+        <Link to={PATHS.training}>Training</Link>
+        <Link to={PATHS.tournaments}>Tournaments</Link>
+      </div>
 
       <Typography className={styles.title} variant="title2" weight="semibold">
         {title}
@@ -58,7 +71,7 @@ const Headline = ({ title, children }) => {
           <Icon>{theme === "dark" ? <Moon /> : <Sun />}</Icon>
         </Button>
         <Button className={styles.balance} type="secondary">
-          Balance: {balance} ETH
+          Balance: {balance} COACH
         </Button>
       </div>
     </div>

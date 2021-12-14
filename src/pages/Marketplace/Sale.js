@@ -38,6 +38,7 @@ const Sale = ({
     const getPlayerReq = async () => {
       if (contracts.Marketplace) {
         const res = await getPlayerListingReq.exec();
+        console.log(res);
         setAllPlayerListing(res);
       }
     };

@@ -25,3 +25,69 @@
   display: flex;
   gap: 8px;
 }
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  a:not(:first-child) {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 6px;
+    transition: 0.1s all ease;
+    &:hover {
+      //text-decoration: underline;
+    }
+  }
+  .svg {
+    cursor: pointer;
+    transition: 0.1s all ease;
+    padding: 6px;
+    border-radius: 4px;
+    svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+      margin-top: -3px;
+    }
+    
+  }
+}
+
+:global(body.dark) {
+  .links {
+    a:not(:first-child) {
+      box-shadow: 0 0 0 1px white;
+      color: white;
+      &:hover {
+        box-shadow: 0 0 0 2px white;
+      }
+    }
+    .svg {
+      color: white;
+      box-shadow: 0 0 0 1px white;
+      &:hover {
+        box-shadow: 0 0 0 2px white;
+      }
+    }
+  }
+}
+
+:global(body.light) {
+  .links {
+    a:not(:first-child) {
+      color: black;
+      box-shadow: 0 0 0 1px black;
+      &:hover {
+        box-shadow: 0 0 0 2px black;
+      }
+    }
+    .svg {
+      color: black;
+      box-shadow: 0 0 0 1px black;
+      &:hover {
+        box-shadow: 0 0 0 2px black;
+      }
+    }
+  }
+}

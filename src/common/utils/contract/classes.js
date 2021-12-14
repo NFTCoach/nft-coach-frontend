@@ -36,7 +36,7 @@ export class Player {
 }
 
 export class Team {
-  constructor(owner, struct, defaultFive) {
+  constructor(owner, struct, defaultFive, avgs) {
     this.owner = owner;
 
     const [initialized, morale, wins, lastChallenge] = struct;
@@ -47,6 +47,9 @@ export class Team {
     this.lastChallenge = new Date(lastChallenge * 1000);
 
     this.defaultFive = defaultFive;
+
+    this.atkAvg = avgs[0];
+    this.defAvg = avgs[1];
   }
 }
 
@@ -89,7 +92,7 @@ export class Listing {
     this.id = id.toString();
 
     this.active = active;
-    this.rentDuration = rentDuration * 1000 + " secs";
+    this.rentDuration = rentDuration;
     this.price = fmtCoach(price);
   }
 }

@@ -66,7 +66,6 @@ export default function Marketplace() {
     const _getAllPlayersOfReq = async () => {
       if (contracts.NC721) {
         const res = (await getAllPlayersOfReq.exec(address)) || [];
-        console.log(res);
         setMyOwnPlayers(res);
       }
     };
@@ -105,6 +104,7 @@ export default function Marketplace() {
               modalItemType={modalItemType}
               setModalItemType={setModalItemType}
               myOwnPlayers={myOwnPlayers}
+              loading={getAllPlayersOfReq.loading}
             />
           ) : (
             <Rent

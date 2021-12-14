@@ -107,6 +107,7 @@ export function Tournaments() {
   }, [account.isSignedIn]);
 
   const enterTournament = async (tournamentId) => {
+    console.log(typeof tournamentId);
     try {
       await approveCoachForTournament();
       await joinTournamentReq.exec(tournamentId);
@@ -122,6 +123,7 @@ export function Tournaments() {
   if (attendedTournamentId === null) {
     return (
       <div className={styles.container}>
+        <Headline title="Tournaments"></Headline>
         <Spinner />
       </div>
     );
@@ -131,13 +133,15 @@ export function Tournaments() {
     // show attended tournaments
     return (
       <div className={styles.container}>
-        <Navbar />
+        <Headline title="Continue Tournament"></Headline>
+        <Button>Finish tournament</Button>
       </div>
     );
   }
 
   if (ongoingTournaments) {
     return (<div className={styles.container}>
+      <Headline title="All Tournaments"></Headline>
       {/** Show user the ongoing tournaments */}
       {ongoingTournaments.map((tournament, index) => {
         console.log(tournament);

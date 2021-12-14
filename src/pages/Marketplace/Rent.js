@@ -5,6 +5,7 @@ import Button from "components/Button";
 import Modal from "components/Modal/Modal";
 import { PlayerAvatar } from "components/PlayerAvatar";
 import { PlayerCard } from "components/PlayerCard";
+import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
 import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,6 +34,7 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
     const getRentedReq = async () => {
       if (contracts.Marketplace) {
         const res = await getAllRentedListingReq.exec();
+        console.log(res);
         setAllRentedListings(res);
       }
     };
@@ -89,6 +91,7 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
             </PlayerCard>
           );
         })}
+        {getAllRentedListingReq.loading && <Spinner />}
     </Fragment>
   );
 };

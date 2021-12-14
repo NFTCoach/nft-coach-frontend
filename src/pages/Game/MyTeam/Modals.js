@@ -18,12 +18,31 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   const [rentingPrice, setRentingPrice] = useState("");
   const [rentingDuration, setRentingDuration] = useState(1);
 
-  const { listPlayer } = useContractFunction();
+  const { listPlayer, listPlayerForRent } = useContractFunction();
   const listPlayerReq = useRequest(listPlayer, {
     onFinished: () => {
       setIsSelling(false);
     }
   })
+
+  const listPlayerForRentReq = useRequest(listPlayerForRent, {
+    onFinished: () => {
+      setIsRenting(false);
+    }
+  })
+
+  const _listPlayerForRentReq = async () => {
+    if (!rentingPrice) {
+      return;
+    }
+
+    try {
+      await listPlayerForRentReq.exec(rentingPlayer?.id, rentingPrice, rentingDuration);
+    }
+    catch(err) {
+      console.log(err);
+    }
+  }
 
   const sellPlayer = async () => {
     if (!sellingPrice) {
@@ -31,10 +50,10 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
     }
 
     try {
-      listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
+      await listPlayerReq.exec(sellingPlayer?.id, sellingPrice);
     }
     catch(err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -97,6 +116,8 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
           <Button
             type="tertiary"
             disabled={rentingPrice == "" || rentingDuration == 0}
+            loading={listPlayerForRentReq.loading}
+            onClick={_listPlayerForRentReq}
           >
             List item
           </Button>

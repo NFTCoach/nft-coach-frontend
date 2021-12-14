@@ -1,7 +1,7 @@
 import useAccount from "common/hooks/useAccount";
 import Button from "components/Button";
 import React, { Fragment, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useContractFunction } from "common/utils/contract/functions";
 import CreateTeam from "pages/Game/CreateTeam";
 import styles from "./TrainingMatch.module.scss";
@@ -18,11 +18,15 @@ import { ReactComponent as RightIcon } from "assets/icons/arrow/chevron_big_righ
 import { ReactComponent as LeftIcon } from "assets/icons/arrow/chevron_big_left.svg";
 import Icon from "components/Icon/Icon";
 import Item from "./Item";
+import { setTeam } from "store/reducers/account";
 
 export default function TrainingMatch() {
   const account = useSelector((state) => state.account);
   const { team } = useSelector((state) => state.account);
   const contracts = useSelector((state) => state.contracts);
+  const [score, setScore] = useState([]);
+  const [teamStats, setTeamStats] = useState(null);
+  //const dispatch = useDispatch();
   let navigate = useNavigate();
   const {
     getAllPlayersOf,
@@ -31,14 +35,15 @@ export default function TrainingMatch() {
     get10RandomTeams,
     requestTraining,
     train,
+    testTrain,
     getBlockRandomOf,
   } = useContractFunction();
   const getDefaultFiveReq = useRequest(getDefaultFive);
   const getRandomTeamsReq = useRequest(get10RandomTeams);
   const requestTrainingReq = useRequest(
-    requestTraining,
-    {},
-    { timeout: 15000, message: "Training goes on" }
+    testTrain,
+    {}
+    //{ timeout: 15000, message: "Training goes on" }
   );
   const trainReq = useRequest(train);
   const randomReq = useRequest(getBlockRandomOf);
@@ -62,13 +67,17 @@ export default function TrainingMatch() {
       return;
     }
     getAllPlayersOf(account.address);
-    getTeamStats(account.address);
     async function fetchData() {
-      const res = await getDefaultFiveReq.exec(account.address);
-      if (res?.includes("0") && account.team?.initialized) {
+      const [getDefaultFiveRes, _teamStats] = await Promise.all([
+        getDefaultFiveReq.exec(account.address),
+        getTeamStats(account.address)
+        ]);
+      if (getDefaultFiveRes?.includes("0") && account.team?.initialized) {
         navigate(PATHS.team);
         toast("Please set your default five");
       }
+      console.log(_teamStats);
+      setTeamStats(_teamStats)
     }
     fetchData();
 
@@ -186,25 +195,30 @@ export default function TrainingMatch() {
                       loading={requestTrainingReq.loading}
                       className={styles.button}
                       onClick={async () => {
-                        await requestTrainingReq.exec(
+                        const res = await requestTrainingReq.exec(
                           randomOpponents[selected]
                         );
-                        setTimeout(async () => {
-                          const res = await trainReq.exec();
-                          if (res >= 4) {
-                            toast("Congratulations! You won the match!");
-                            navigate(PATHS.team);
-                          } else {
-                            toast("Ucnfortunately, you lost the match!");
-                            navigate(PATHS.team);
-                          }
-                        }, 20000);
+                        console.log(res);
+                        if (res.score >= 4) {
+                          toast("Congratulations! You won the match!");
+                          //navigate(PATHS.team);
+                        } else {
+                          toast("Unfortunately, you lost the match!");
+                          //navigate(PATHS.team);
+                        }
+                        setScore([res.score, 7 - res.score]);
                       }}
                     >
                       Match with team
                     </Button>
                   </Fragment>
                 )}
+                {score.length === 2 && <div style={{textAlign: "center"}}>
+                  <Typography weight="semibold" variant="title2" as="div">Score</Typography>
+                  <Typography weight="semibold" variant="title2">
+                    {score[0] || ""} - {score[1] || ""}
+                  </Typography>
+                </div>}
               </div>
             </div>
           )}
@@ -215,10 +229,16 @@ export default function TrainingMatch() {
           </Typography>
           <div className={styles.inner}>
             <Typography variant="body2" weight="medium">
-              Morale: {team?.morale}
+              Morale: {teamStats?.morale}
             </Typography>
             <Typography variant="body2" weight="medium">
-              Wins: {team?.wins}
+              Wins: {teamStats?.wins}
+            </Typography>
+            <Typography variant="body2" weight="medium">
+              Attack: {teamStats?.atkAvg}
+            </Typography>
+            <Typography variant="body2" weight="medium">
+              Defence: {teamStats?.defAvg}
             </Typography>
             <div className={styles.customize}>
               <Link to={PATHS.team}>

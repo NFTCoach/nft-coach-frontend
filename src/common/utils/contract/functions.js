@@ -44,22 +44,33 @@ export function useContractFunction() {
         const playerIds = mintEvents.map(ev => ev.args[2].toString());
     
         let players = [];
-        for (let playerId of playerIds) {
-            const eventFilter = NC721.filters["Transfer"](null, null, ethers.BigNumber.from(playerId));
-            const transferEvents = await NC721.queryFilter(eventFilter);
+        await Promise.all(playerIds.map(async playerId => {
+            const transferEvents = await filterEvents(NC721, "Transfer", null, null, ethers.BigNumber.from(playerId));
     
             if (transferEvents[transferEvents.length - 1].args[1] != address)
-                continue;
+                return;
     
             if (await Management.idToCoach(playerId) == address)
                 players.push(playerId);
+        }));
+    
+        const rentEvents = await filterEvents(Marketplace, "PlayerRented");
+        const rentedIds = rentEvents.map(ev => ev.args[0].toString());
+        for (let playerId of rentedIds) {
+            if (await Management.idToCoach(playerId) == signer.address) {
+                players.push(playerId);
+            }
+            else if (players.includes(playerId)) {
+                const idx = players.indexOf(playerId);
+                players.splice(idx, 1);
+            }
         }
-        console.log(players);
+    
         dispatch(setGamePlayers(players));
         dispatch(setPlayers(players));
-    };
+    }    
 
-
+    const randSeed = () => Math.floor(Math.random() * 1000000);
 
     const getStats = async (players) => {
         const playerReqs = players.map(async (id, i) =>
@@ -203,7 +214,7 @@ export function useContractFunction() {
 
         console.log(listings);
 
-        return listings.filter(l => l.active);
+        return listings.filter(l => l.active && l.rentDuration == 0);
     }
 
     const getAllCardListings = async () => {
@@ -214,18 +225,17 @@ export function useContractFunction() {
             return new CardListing(await Marketplace.idToCardListing(id));
         }));
 
-        return listings.filter(l => l.active);
+        return listings.filter(l => l.active && l.rentDuration == 0);
     }
 
     const getAllRentedListings = async () => {
-        const listEvents = await filterEvents(Marketplace, "PlayerListedForRent");
+        const listEvents = await filterEvents(Marketplace, "PlayerListed");
         let listedIds = listEvents.map(ev => ev.args[0]);
-
-        const listings = await Promise.all(listedIds.map(id => async () => {
-            return new Listing(await Marketplace.idToListing(id));
-        }));
-
-        return listings.filter(l => l.active);
+    
+        const listings = await Promise.all(listedIds.map(id =>
+            Marketplace.idToListing(id).then(l => new Listing(id, l))
+        ));
+        return listings.filter(l => l.active && l.rentDuration > 0);
     }
 
     /**
@@ -264,7 +274,8 @@ export function useContractFunction() {
      * @param {number} rentDuration in seconds
      */
     const listPlayerForRent = async (playerId, price, rentDuration) => {
-        await Marketplace.connect(signer).listPlayerForRent(playerId, parseCoach(price), rentDuration);
+        const txn = await Marketplace.connect(signer).listPlayerForRent(playerId, parseCoach(price), rentDuration);
+        await txn.wait();
     }
 
     /**
@@ -305,12 +316,34 @@ export function useContractFunction() {
     }
 
     const getTeamStats = async (address) => {
-        dispatch(setTeam(new Team(
+        const calcAtkDef = (arr) => {
+            let atk = 0, def = 0;
+            for (let i = 0; i < 5; i++)
+                atk += arr[i];
+            for (let i = 5; i < 10; i++)
+                def += arr[i];
+    
+            return [atk, def];
+        }
+    
+        let atkSum = 0, defSum = 0;
+    
+        const defaultFive = await Management.getDefaultFive(address);
+    
+        await Promise.all(Object.values(defaultFive).map(id =>
+            Management.getStats(id).then(stats => {
+                const [a, d] = calcAtkDef(stats);
+                atkSum += a;
+                defSum += d;
+            })));
+    
+        return new Team(
             address,
             await Management.userToTeam(address),
-            await Management.getDefaultFive(address)
-        )))
-    }
+            defaultFive,
+            [atkSum / 5, defSum / 5]
+        );
+    }    
 
     const getOngoingTournaments = async () => {
         const createEvents = await filterEvents(Tournaments, "TournamentCreated");
@@ -362,6 +395,37 @@ export function useContractFunction() {
         return await RNG.getBlockRandom(address);
     }
 
+    const testOpenPack = async () => {
+        const txn = await Management.connect(signer).testOpenPack(randSeed());
+        await txn.wait();
+    };
+    
+    const shuffleArray = (originArr) => {
+        const array = originArr
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    
+        return array
+    }
+    
+    const testTrain = async (address) => {
+        const txn = await TrainingMatches.connect(signer).testTraining(address, randSeed())
+        const [_caller, score] = await getArgs(txn, "MatchFinished");
+    
+        const shoots = [...Array(score).fill(0), ...Array(7 - score).fill(1)]
+    
+        await txn.wait();
+    
+        return {
+            score,
+            shoots: shuffleArray(shoots)
+        }
+    }
+
     return {
         getTeamStats,
         getAllPlayersOf,
@@ -403,6 +467,8 @@ export function useContractFunction() {
         testCreateTournament,
         get10RandomTeams,
         getChainlinkRandomOf,
-        getBlockRandomOf
+        getBlockRandomOf,
+        testTrain,
+        testOpenPack
     };
 };

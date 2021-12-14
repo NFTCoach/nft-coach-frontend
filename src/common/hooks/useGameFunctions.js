@@ -38,12 +38,34 @@ export const useGameFunctions = () => {
   };
 
   const getTeamStats = async (address) => {
+    const calcAtkDef = (arr) => {
+        let atk = 0, def = 0;
+        for (let i = 0; i < 5; i++)
+            atk += arr[i];
+        for (let i = 5; i < 10; i++)
+            def += arr[i];
+
+        return [atk, def];
+    }
+
+    let atkSum = 0, defSum = 0;
+
+    const defaultFive = await Management.getDefaultFive(address);
+
+    await Promise.all(Object.values(defaultFive).map(id =>
+        Management.getStats(id).then(stats => {
+            const [a, d] = calcAtkDef(stats);
+            atkSum += a;
+            defSum += d;
+        })));
+
     return new Team(
-      address,
-      await Management.userToTeam(address),
-      await Management.getDefaultFive(address)
+        address,
+        await Management.userToTeam(address),
+        defaultFive,
+        [atkSum / 5, defSum / 5]
     );
-  };
+  }
 
   return {
     getStats,

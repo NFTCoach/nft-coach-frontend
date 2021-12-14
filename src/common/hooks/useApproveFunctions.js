@@ -9,11 +9,11 @@ export const useApproveFunctions = () => {
     const { signer } = useSelector(state => state.account);
 
     const approveCoachForTournament = async () => {
-        await COACH.connect(signer).approve(Tournaments.address, parseCoach(ethers.constants.MaxUint256));
+        await COACH.connect(signer).approve(Tournaments.address, ethers.constants.MaxUint256);
     }
 
     const approveCoachForMarketplace = async () => {
-        await COACH.connect(signer).approve(Marketplace.address, parseCoach(ethers.constants.MaxUint256));
+        await COACH.connect(signer).approve(Marketplace.address, ethers.constants.MaxUint256);
     }
 
     const approveCardsForMarket = async () => {

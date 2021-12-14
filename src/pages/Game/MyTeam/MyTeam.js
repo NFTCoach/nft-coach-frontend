@@ -30,13 +30,20 @@ import { useNavigate } from "react-router";
 import { useRouting } from "common/hooks/useRouting";
 import Modal from "components/Modal/Modal";
 import { useGeneralFunctions } from "common/hooks/useGeneralFunctions";
+import { setPlayers } from "store/reducers/account";
+import { useListingFunctions } from "common/hooks/useListingFunctions";
 
 function MyTeam() {
+
+  const [forceUpdateChange, setForceUpdateChange] = useState(true);
+
   const [isSelling, setIsSelling] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
   const [isPlayerPackOpen, setIsPlayerPackOpen] = useState(false);
 
-  const [playerPacks, setPlayerPacks] = useState();
+  const [cardBalance, setCardBalance] = useState(0);
+
+  //const [playerPacks, setPlayerPacks] = useState();
 
   const { isSignedIn, address } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
@@ -51,10 +58,8 @@ function MyTeam() {
   } = useGameFunctions();
   const {
     getAllPlayersOf,
-    requestOpenPack,
-    openPack,
     getPlayerBalanceOf,
-    getChainlinkRandomOf,
+    testOpenPack
   } = useContractFunction();
   const { getTeamStats } = useGameFunctions();
   const { getCardBalanceOf } = useGeneralFunctions();
@@ -71,60 +76,46 @@ function MyTeam() {
   const getTeamStatsReq = useRequest(getTeamStats);
   const getAllPlayersReq = useRequest(getAllPlayersOf);
 
+  const getReq = async () => {
+    if (players?.length > 0) {
+      const res = await statReq.exec(players);
+      dispatch(setPlayerStats(res));
+    }
+  };
+
   const openPackReq = useRequest(async () => {
-    await getChainlinkRandomOf(address).then(async () => {
-      console.log("then");
-      await openPack();
-    })
-    .catch(async (e) => {
-      console.log("chainlink randomness error:", e);
-      await requestOpenPack()
-            .then(() => console.log("requestOpenPack then"))
-            .catch(err => console.log("requestOpenPack hata", err));
-      await openPack()
-            .then(() => console.log("openPack then"))
-            .catch(err => console.log("open pack hata:", err));
-    }).finally(() => {
-      getAllPlayersReq.exec();
-    })
-    //console.log(res.toString());
+    await testOpenPack();
   }, {
-    onFinished: () => {
+    onFinished: async () => {
       setIsPlayerPackOpen(false);
+      setForceUpdateChange(!forceUpdateChange);
     }
   });
 
   const [adding, setAdding] = useState(false);
-
+  
   useRouting();
   useEffect(() => {
     if (!contracts.NC721 || !isSignedIn) {
       getIsSignedIn();
       return;
     }
-    getAllPlayersReq.exec(address);
 
     const fetchData = async () => {
+      
       let res = await getTeamStatsReq.exec(address);
       if (!res.initialized) {
         navigate(PATHS.create_team);
       }
-      const cardBalance = await getCardBalanceOf(address, 10);
-      console.log(cardBalance.toNumber());
-      console.log(address);
-      const playerBalance = await getPlayerBalanceOf(address);
-      console.log(playerBalance.toNumber());
+      const cardBalanceRes = await getCardBalanceOf(address, 10);
+      setCardBalance(cardBalanceRes.toNumber());
+      console.log(cardBalanceRes.toNumber());
     };
+    getAllPlayersReq.exec(address)
     fetchData();
-  }, [contracts, isSignedIn]);
+  }, [contracts, isSignedIn, forceUpdateChange]);
 
   useEffect(() => {
-    const getReq = async () => {
-      if (players?.length > 0) {
-        const res = await statReq.exec(players);
-        dispatch(setPlayerStats(res));
-      }
-    };
     const getDefaultFive = async () => {
       if (!address) {
         return;
@@ -139,8 +130,6 @@ function MyTeam() {
   if (!isSignedIn) {
     return <Loader />;
   }
-
-  console.log(playerStats);
 
   return (
     <div className={styles.wrapper}>
@@ -188,14 +177,14 @@ function MyTeam() {
               <Icon>{adding ? <MinusIcon /> : <PlusIcon />}</Icon>
               Add to marketplace
             </Button>
-            <Button
+            {cardBalance.length > 0 && <Button
               type="secondary"
               onClick={() => {
                 setIsPlayerPackOpen(true);
               }}
             >
               Open pack
-            </Button>
+            </Button>}
           </div>
 
           {!defaultFiveReq.loading && defaultFive?.includes?.("0") && (
