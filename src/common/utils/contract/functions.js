@@ -485,7 +485,8 @@ export function useContractFunction() {
   const testTrain = async (address) => {
     const txn = await TrainingMatches.connect(signer).testTraining(
       address,
-      randSeed()
+      randSeed(),
+      { gasLimit: 500000 }
     );
     const [_caller, score] = await getArgs(txn, "MatchFinished");
 
