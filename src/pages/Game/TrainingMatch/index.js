@@ -198,7 +198,7 @@ export default function TrainingMatch() {
                       className={styles.button}
                       onClick={async () => {
                         const res = await requestTrainingReq.exec(
-                          randomArray[selected]
+                          randomArray[selected]?.owner
                         );
                         console.log(res);
                         if (res.score >= 4) {
