@@ -21,8 +21,8 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   const {
     listPlayer,
     listPlayerForRent,
-    approveCardsForMarket,
-    areCardsApprovedForMarket,
+    approvePlayersForMarket,
+    arePlayersApprovedForMarket,
   } = useContractFunction();
   const listPlayerReq = useRequest(listPlayer, {
     onFinished: () => {
@@ -35,9 +35,9 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
     },
   });
 
-  const isApprovedReq = useRequest(areCardsApprovedForMarket);
+  const isApprovedReq = useRequest(arePlayersApprovedForMarket);
   const approveReq = useRequest(
-    approveCardsForMarket,
+    approvePlayersForMarket,
     {},
     { timeout: 4000, message: "Approving cards" }
   );

@@ -116,7 +116,7 @@ export function useContractFunction() {
   };
 
   const approvePlayersForMarket = async () => {
-    await NC721.connect(signer).setApprovalForAll(Marketplace.address, true);
+    await NC721.connect(signer).setApprovalForAll(addresses.Marketplace, true);
   };
 
   const getCoachBalanceOf = async (address) => {
@@ -351,21 +351,24 @@ export function useContractFunction() {
    * @param {string} listingId
    */
   const buyCard = async (listingId) => {
-    await Marketplace.connect(signer).buyCard(listingId);
+    const txn = await Marketplace.connect(signer).buyCard(listingId);
+    await txn.wait();
   };
 
   /**
    * @param {string} playerId
    */
   const buyPlayer = async (playerId) => {
-    await Marketplace.connect(signer).buyPlayer(playerId);
+    const txn = await Marketplace.connect(signer).buyPlayer(playerId);
+    await txn.wait();
   };
 
   /**
    * @param {string} playerId
    */
   const rentPlayer = async (playerId) => {
-    await Marketplace.connect(signer).rentPlayer(playerId);
+    const txn = await Marketplace.connect(signer).rentPlayer(playerId);
+    await txn.wait();
   };
 
   const getTeamStats = async (address) => {
@@ -514,8 +517,8 @@ export function useContractFunction() {
 
   const arePlayersApprovedForMarket = async () => {
     return await NC721.connect(signer).isApprovedForAll(
-      signer.address,
-      Marketplace.address
+      address,
+      addresses.Marketplace
     );
   };
 
