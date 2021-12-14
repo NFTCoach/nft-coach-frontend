@@ -282,7 +282,11 @@ export function useContractFunction() {
    * @param {string} price
    */
   const listPlayer = async (playerId, price) => {
-    await Marketplace.connect(signer).listPlayer(playerId, parseCoach(price));
+    const txn = await Marketplace.connect(signer).listPlayer(
+      playerId,
+      parseCoach(price)
+    );
+    await txn.wait();
   };
 
   /**
