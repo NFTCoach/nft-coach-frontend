@@ -433,29 +433,38 @@ export function useContractFunction() {
 
   const get10RandomTeams = async () => {
     const registerEvents = await filterEvents(Management, "TeamRegistered");
-    const usersWithTeamsUnshuffled = registerEvents.map((ev) => ev.args[0]);
-    const usersWithTeams = usersWithTeamsUnshuffled.sort(
-      () => 0.5 - Math.random()
-    );
+    const usersWithTeamsUnshuffled = registerEvents.map(ev => ev.args[0]);
+    const usersWithTeams = usersWithTeamsUnshuffled.sort(() => 0.5 - Math.random());
 
     const teamList = [];
     for (let i = 0; i < usersWithTeams.length; i++) {
-      if (teamList.length == 10) break;
+        if (teamList.length == 10)
+            break;
 
-      if (usersWithTeams[i] == signer.address) continue;
+        if (usersWithTeams[i] == signer.address)
+            continue;
 
-      const defFive = await getDefaultFive(usersWithTeams[i]);
-      if (!defFive.includes(0)) teamList.push(usersWithTeams[i]);
+        const defFive = await getDefaultFive(usersWithTeams[i]);
+        let emptyPlayer = false;
+        for (let player of defFive) {
+            if (player.toString() === "0") {
+                emptyPlayer = true;
+                break;
+            }
+        }
+
+        if (!emptyPlayer)
+            teamList.push(usersWithTeams[i]);
     }
 
-    const stats = await Promise.all(teamList.map((addr) => getTeamStats(addr)));
+    const stats = await Promise.all(teamList.map(addr => getTeamStats(addr)));
 
     return teamList.reduce((p, v, i) => {
-      const obj = Object.assign(p, {});
-      obj[v] = stats[i];
-      return obj;
+        const obj = Object.assign(p, {});
+        obj[v] = stats[i];
+        return obj;
     }, {});
-  };
+}
 
   const getChainlinkRandomOf = async (address) => {
     return await RNG.getChainlinkRandom(address);
@@ -526,6 +535,11 @@ export function useContractFunction() {
       addresses.Marketplace
     );
   };
+
+
+
+
+
 
   return {
     getTeamStats,
