@@ -26,5 +26,10 @@ export const useTournamentFunctions = () => {
         return new Tournament(tournamentId, await Tournaments.idToTournament(tournamentId));
     }
 
-    return { getOngoingTournaments, joinTournament, getTournamentDetails };
+    const leaveTournament = async (tournamentId) => {
+        const txn = await Tournaments.connect(signer).leaveTournament(tournamentId);
+        await txn.wait();
+    }
+
+    return { getOngoingTournaments, joinTournament, getTournamentDetails, leaveTournament };
 }

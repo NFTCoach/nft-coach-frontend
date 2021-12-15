@@ -9,12 +9,15 @@ import { Headline } from "components/Headline";
 import Navbar from "components/Navbar";
 import { Spinner } from "components/Spinner";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { setDefaultFive } from "store/reducers/game";
 import Tournament from "./Tournament";
 import styles from "./Tournaments.module.scss";
 
 export function Tournaments() {
+
+  const dispatch = useDispatch();
 
   const [ongoingTournamentIds, setOngoingTournamentIds] = useState(null);
   const [ongoingTournaments, setOngoingTournaments] = useState(null);
@@ -33,9 +36,12 @@ export function Tournaments() {
     directSignIn: false,
   });
 
-  const { getOngoingTournaments, getTournamentDetails } = useTournamentFunctions();
+  const { getOngoingTournaments, getTournamentDetails, leaveTournament } = useTournamentFunctions();
+  const { getDefaultFive } = useGameFunctions();
 
   const getOngoingTournamentsReq = useRequest(getOngoingTournaments);
+
+  const leaveTournamentReq = useRequest(leaveTournament);
 
   useEffect(() => {
     getIsSignedIn();
@@ -101,9 +107,15 @@ export function Tournaments() {
   }, [ongoingTournamentIds]);
 
   useEffect(() => {
-    if (!account.isSignedIn) return;
-    setUserDetails();
-  }, [account.isSignedIn]);
+    console.log(account, contracts)
+    if (!account.isSignedIn || !contracts.Management) return;
+    async function fetchData() {
+      const defaultFive = await getDefaultFive(account.address);
+      dispatch(setDefaultFive(defaultFive));
+    }
+    fetchData();
+    //setUserDetails();
+  }, [account.isSignedIn, contracts]);
 
   if (attendedTournamentId === null) {
     return (
@@ -135,7 +147,16 @@ export function Tournaments() {
     return (
       <div className={styles.container}>
         <Headline title="Continue Tournament"></Headline>
-        <Button>Finish tournament</Button>
+        <span>You're in a tournament. You can quit the tournament</span>
+        <Button onClick={async () => {
+            try {
+                await leaveTournamentReq.exec(window.localStorage.getItem("attendedTournamentId"));
+                window.localStorage.removeItem("attendedTournamentId");
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }} loading={leaveTournamentReq.loading}>Quit tournament</Button>
       </div>
     );
   }
