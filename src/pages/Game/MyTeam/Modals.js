@@ -100,7 +100,11 @@ const Modals = ({
           <Typography weight="medium" className={styles.title} variant="title3">
             Sell Player
           </Typography>
-          <PlayerCard size={"156px"} playerId={sellingPlayer?.id} />
+          <PlayerCard
+            player={sellingPlayer}
+            size={"156px"}
+            playerId={sellingPlayer?.id}
+          />
           <Input
             type="number"
             onChange={(e) => setSellingPrice(e.target.value)}
@@ -131,7 +135,11 @@ const Modals = ({
           <Typography weight="medium" className={styles.title} variant="title3">
             Rent Player
           </Typography>
-          <PlayerCard size={"156px"} playerId={rentingPlayer?.id} />
+          <PlayerCard
+            player={rentingPlayer}
+            size={"156px"}
+            playerId={rentingPlayer?.id}
+          />
           <Input
             type="number"
             onChange={(e) => setRentingPrice(e.target.value)}

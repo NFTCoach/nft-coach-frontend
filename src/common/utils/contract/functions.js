@@ -478,7 +478,7 @@ export function useContractFunction() {
     for (let i = 0; i < usersWithTeams.length; i++) {
       if (teamList.length == 10) break;
 
-      if (usersWithTeams[i] == signer.address) continue;
+      if (usersWithTeams[i] == address) continue;
 
       const defFive = await getDefaultFive(usersWithTeams[i]);
       let emptyPlayer = false;

@@ -107,6 +107,9 @@ export default function TrainingMatch() {
                     setFocused={setFocused}
                   />
                 ))}
+                {randomArray.length === 0 && !getRandomTeamsReq.loading && (
+                  <Typography>No opponents found currently.</Typography>
+                )}
               </div>
               <Match
                 fetchMyTeam={fetchMyTeam}
