@@ -1,4 +1,3 @@
-import { useListingFunctions } from "common/hooks/useListingFunctions";
 import { useRequest } from "common/hooks/useRequest";
 import { useContractFunction } from "common/utils/contract/functions";
 import Button from "components/Button";
@@ -10,6 +9,7 @@ import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
 import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import styles from "./Marketplace.module.scss";
 
 const Sale = ({
@@ -27,35 +27,33 @@ const Sale = ({
     isCoachApprovedForMarket,
     getAllPlayerListings,
   } = useContractFunction();
-  const approveReq = useRequest(
-    approveCoachForMarketplace,
-    {},
-    {
-      timeout: 5000,
-      message: "Approving coach...",
-    }
-  );
+
+  //Requests
+  const approveReq = useRequest(approveCoachForMarketplace);
   const isApprovedReq = useRequest(isCoachApprovedForMarket);
   const buyPlayerReq = useRequest(buyPlayer, {
     onFinished: () => {
       setIsModalOpen(false);
       setModalItem(null);
+      toast("You bought the player successfully!");
+      getPlayerReq();
     },
   });
   const getPlayerListingReq = useRequest(getAllPlayerListings, {
     errorMsg: "Could not load marketplace",
   });
 
+  const getPlayerReq = async () => {
+    if (contracts.Marketplace) {
+      const res = await getPlayerListingReq.exec();
+      setAllPlayerListing(res);
+    }
+  };
+
   useEffect(() => {
     if (myOwnPlayers === null) {
       return;
     }
-    const getPlayerReq = async () => {
-      if (contracts.Marketplace) {
-        const res = await getPlayerListingReq.exec();
-        setAllPlayerListing(res);
-      }
-    };
     getPlayerReq();
   }, [contracts.Marketplace, myOwnPlayers]);
 
@@ -76,6 +74,7 @@ const Sale = ({
   if (!isSignedIn) {
     return <Loader />;
   }
+
   return (
     <Fragment>
       {(getAllPlayersOfReq.loading || getPlayerListingReq.loading) && (
@@ -104,6 +103,7 @@ const Sale = ({
               onClick={async () => {
                 const isApproved = isApprovedReq.exec();
                 if (isApproved) {
+                  console.log("here");
                   await buyPlayerReq.exec(modalItem?.id);
                 } else {
                   await approveReq.exec();
@@ -122,7 +122,12 @@ const Sale = ({
         .filter((item) => !myOwnPlayers?.includes(item.id))
         .map((item, index) => {
           return (
-            <PlayerCard key={index} size="128px" playerId={item.id}>
+            <PlayerCard
+              showPowers={false}
+              key={index}
+              size="128px"
+              playerId={item.id}
+            >
               <Typography>{item.price}</Typography>
               <Button
                 className={styles.button}

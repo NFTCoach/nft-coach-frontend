@@ -3,8 +3,11 @@ body.light {
   --color-accent: #fd4d4d;
   --color-accent-hover: #fd6868;
   --color-accent-active: #fa7272;
-
   --bg: rgb(242, 240, 240);
   --card-bg: rgba(235, 230, 230, 0.9);
-  --filter-border: rgba(62, 41, 92, 0.9);
+  --card-hover: rgb(230, 230, 230);
+  --filter-border: rgba(159, 157, 161, 0.9);
+  --color-success: rgb(58, 170, 58);
+  --card-border-color: rgb(168, 168, 168);
+  --card-select-color: var(--primary-button);
 }

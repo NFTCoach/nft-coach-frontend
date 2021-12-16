@@ -8,10 +8,17 @@ import { Slider } from "components/Slider";
 import { Typography } from "components/Typography";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { setRentingPlayer, setSellingPlayer } from "store/reducers/game";
 import styles from "./MyTeam.module.scss";
 
-const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
+const Modals = ({
+  isSelling,
+  setIsSelling,
+  isRenting,
+  setIsRenting,
+  getReq,
+}) => {
   const dispatch = useDispatch();
   const { rentingPlayer, sellingPlayer } = useSelector((state) => state.game);
   const [sellingPrice, setSellingPrice] = useState("");
@@ -26,6 +33,8 @@ const Modals = ({ isSelling, setIsSelling, isRenting, setIsRenting }) => {
   } = useContractFunction();
   const listPlayerReq = useRequest(listPlayer, {
     onFinished: () => {
+      getReq?.();
+      toast("Player listed successfully!");
       setIsSelling(false);
     },
   });

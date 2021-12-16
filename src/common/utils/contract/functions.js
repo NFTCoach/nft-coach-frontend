@@ -5,11 +5,16 @@ import { setPlayers, setTeam } from "store/reducers/account";
 import { setPlayers as setGamePlayers } from "store/reducers/game";
 import { prodlog } from "../prodlog";
 import addresses from "contract/addresses";
+import { toast } from "react-toastify";
 
 const getArgs = async (txn, event) => {
   const receipt = await txn.wait();
 
   return receipt.events?.filter((x) => x.event === event)?.[0]?.args;
+};
+
+const showAlert = () => {
+  toast("Handling transaction...", { autoClose: 6000 });
 };
 
 export const parseCoach = (n) => {
@@ -79,12 +84,33 @@ export function useContractFunction() {
   const randSeed = () => Math.floor(Math.random() * 1000000);
 
   const getStats = async (players) => {
+    const listEvents = await filterEvents(Marketplace, "PlayerListed");
+    let listedIds = listEvents.map((ev) => ev.args[0]);
+    const listings = await Promise.all(
+      listedIds.map((id) =>
+        Marketplace.idToListing(id).then((l) => new Listing(id, l))
+      )
+    );
+
+    const checkListed = async (playerId) => {
+      let isListed = false;
+
+      for (let listing of listings) {
+        if (isListed) break;
+
+        isListed = listing.active && listing.id == playerId;
+      }
+
+      return isListed;
+    };
+
     const playerReqs = players.map(
       async (id, i) =>
         new Player(
           id,
           await Management.idToPlayer(id),
-          await Management.getStats(id)
+          await Management.getStats(id),
+          await checkListed(id)
         )
     );
 
@@ -103,7 +129,7 @@ export function useContractFunction() {
       addresses.Marketplace,
       ethers.constants.MaxUint256
     );
-    console.log(txn);
+
     await txn.wait();
   };
 
@@ -164,7 +190,9 @@ export function useContractFunction() {
     if (playerList.length != [...new Set(playerList)].length)
       throw new Error("Duplicate players");
 
-    await Management.connect(signer).setDefaultFive(playerList);
+    const txn = await Management.connect(signer).setDefaultFive(playerList);
+    showAlert();
+    await txn.wait();
   };
 
   const requestTraining = async (address) => {
@@ -286,6 +314,7 @@ export function useContractFunction() {
       playerId,
       parseCoach(price)
     );
+    showAlert();
     await txn.wait();
   };
 
@@ -293,7 +322,11 @@ export function useContractFunction() {
    * @param {string} playerId
    */
   const delistPlayer = async (playerId) => {
-    await Marketplace.connect(signer).delistPlayer(playerId);
+    const txn = await Marketplace.connect(signer).delistPlayer(
+      ethers.BigNumber.from(playerId)
+    );
+    showAlert();
+    await txn.wait();
   };
 
   /**
@@ -363,6 +396,7 @@ export function useContractFunction() {
    * @param {string} playerId
    */
   const buyPlayer = async (playerId) => {
+    console.log(Marketplace, playerId);
     const txn = await Marketplace.connect(signer).buyPlayer(playerId);
     await txn.wait();
   };
@@ -445,7 +479,15 @@ export function useContractFunction() {
       if (usersWithTeams[i] == signer.address) continue;
 
       const defFive = await getDefaultFive(usersWithTeams[i]);
-      if (!defFive.includes(0)) teamList.push(usersWithTeams[i]);
+      let emptyPlayer = false;
+      for (let player of defFive) {
+        if (player.toString() === "0") {
+          emptyPlayer = true;
+          break;
+        }
+      }
+
+      if (!emptyPlayer) teamList.push(usersWithTeams[i]);
     }
 
     const stats = await Promise.all(teamList.map((addr) => getTeamStats(addr)));
@@ -488,6 +530,7 @@ export function useContractFunction() {
       randSeed(),
       { gasLimit: 500000 }
     );
+    showAlert();
     const [_caller, score] = await getArgs(txn, "MatchFinished");
 
     const shoots = [...Array(score).fill(0), ...Array(7 - score).fill(1)];

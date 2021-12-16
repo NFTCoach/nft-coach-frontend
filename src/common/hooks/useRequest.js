@@ -41,9 +41,13 @@ export const useRequest = (
         return res;
       } catch (err) {
         prodlog(err);
-        notify(errorMsg);
         setLoading(false);
-        throw new Error(err);
+        if (err.code == 4001) {
+          toast("Metamask transaciton rejected");
+        } else {
+          notify(errorMsg);
+          throw new Error(err);
+        }
       }
     },
     loading: loading,

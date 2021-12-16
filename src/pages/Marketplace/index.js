@@ -4,7 +4,6 @@ import { useRequest } from "common/hooks/useRequest";
 import { useContractFunction } from "common/utils/contract/functions";
 import Button from "components/Button";
 import { Headline } from "components/Headline";
-import { PlayerCard } from "components/PlayerCard";
 import { Typography } from "components/Typography";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,13 +11,9 @@ import { Link } from "react-router-dom";
 import { setType } from "store/reducers/market";
 import { Filters } from "./Filters";
 import styles from "./Marketplace.module.scss";
-import Modal from "components/Modal/Modal";
-import { PlayerAvatar } from "components/PlayerAvatar";
 import { Sale } from "./Sale";
 import { Rent } from "./Rent";
 import { Loader } from "components/Loader";
-import { Contract } from "@ethersproject/contracts";
-import { Spinner } from "components/Spinner";
 import { useApproveFunctions } from "common/hooks/useApproveFunctions";
 
 export default function Marketplace() {
@@ -42,11 +37,6 @@ export default function Marketplace() {
     getAllCardListings,
   } = useContractFunction();
   const { approvePlayersForMarket } = useApproveFunctions();
-  const buyPlayerReq = useRequest(async () => {
-    await approvePlayersForMarket();
-    await buyPlayer();
-  });
-  const rentPlayerReq = useRequest(rentPlayer);
   const [myOwnPlayers, setMyOwnPlayers] = useState(null);
   const getCardListingsReq = useRequest(getAllCardListings, {
     errorMsg: "Could not load marketplace",
@@ -54,15 +44,6 @@ export default function Marketplace() {
   const getAllPlayersOfReq = useRequest(getAllPlayersOf, {
     errorMsg: "Could not load marketplace",
   });
-  const approveReq = useRequest(
-    isCoachApprovedForMarket,
-    {
-      onFinished: () => {
-        localStorage.setItem("approvedCoachForMarket", true);
-      },
-    },
-    { timeout: 3000, message: "Approving coaches..." }
-  );
 
   useEffect(() => {
     if (!isSignedIn) {

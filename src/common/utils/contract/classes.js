@@ -9,7 +9,7 @@ const parseCoach = (n) => {
 };
 
 export class Player {
-  constructor(id, struct, stats) {
+  constructor(id, struct, stats, listed) {
     this.id = id.toString();
 
     const [
@@ -27,11 +27,14 @@ export class Player {
     this.academyType = academyType;
     this.potential = potential;
     this.rentFinish = new Date(rentFinish * 1000);
+    this.rentDone = rentFinish === 0 || Date.now() > this.rentFinish.getTime();
     this.lastChallenge = new Date(lastChallenge * 1000);
     this.leftToExpire =
       playerStatus == 0 ? new Date(leftToExpire * 1000) : leftToExpire;
 
     this.stats = stats;
+
+    this.listed = listed;
   }
 }
 

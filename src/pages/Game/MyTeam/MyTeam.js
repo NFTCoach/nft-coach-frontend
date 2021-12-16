@@ -1,18 +1,15 @@
 import Button from "components/Button";
 import { Typography } from "components/Typography";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import styles from "./MyTeam.module.scss";
 import CourtPng from "assets/images/game/court.png";
 import { useDispatch, useSelector } from "react-redux";
-import { useContractFunction } from "common/utils/contract/functions";
-import { useGameFunctions } from "common/hooks/useGameFunctions";
 import {
   setDefaultFive,
   setPlayerStats,
   setRentingPlayer,
   setSellingPlayer,
 } from "store/reducers/game";
-import { useRequest } from "common/hooks/useRequest";
 import { Spinner } from "components/Spinner";
 import { PlayerCard } from "components/PlayerCard";
 import { PlayerDrop } from "components/PlayerDrop";
@@ -23,82 +20,60 @@ import { ReactComponent as MinusIcon } from "assets/icons/edit/minus_circle_outl
 import { ReactComponent as PlusIcon } from "assets/icons/edit/plus_circle_outline.svg";
 import Icon from "components/Icon/Icon";
 import Modals from "./Modals";
-import CreateTeam from "../CreateTeam";
 import { Loader } from "components/Loader";
 import { PATHS } from "common/constants/paths";
 import { useNavigate } from "react-router";
 import { useRouting } from "common/hooks/useRouting";
 import Modal from "components/Modal/Modal";
 import { useGeneralFunctions } from "common/hooks/useGeneralFunctions";
-import { setPlayers } from "store/reducers/account";
-import { useListingFunctions } from "common/hooks/useListingFunctions";
+import { clsnm } from "common/utils/clsnm";
+import { useMyTeamRequests } from "./useMyTeamRequests";
 
 function MyTeam() {
   const [forceUpdateChange, setForceUpdateChange] = useState(true);
-
   const [isSelling, setIsSelling] = useState(false);
   const [isRenting, setIsRenting] = useState(false);
   const [isPlayerPackOpen, setIsPlayerPackOpen] = useState(false);
-
   const [cardBalance, setCardBalance] = useState(0);
-
-  //const [playerPacks, setPlayerPacks] = useState();
-
   const { isSignedIn, address } = useSelector((state) => state.account);
   const { players, playerStats, defaultFive } = useSelector(
     (state) => state.game
   );
   const navigate = useNavigate();
   const contracts = useSelector((state) => state.contracts);
-  const {
-    getStats,
-    getDefaultFive,
-    setDefaultFive: setDefaultFiveR,
-  } = useGameFunctions();
-  const { getAllPlayersOf, testOpenPack } = useContractFunction();
-  const { getTeamStats } = useGameFunctions();
-  const { getCardBalanceOf } = useGeneralFunctions();
 
+  const { getCardBalanceOf } = useGeneralFunctions();
   const dispatch = useDispatch();
   const { getIsSignedIn } = useAccount();
-  const statReq = useRequest(getStats);
-  const defaultFiveReq = useRequest(getDefaultFive);
-  const setDefaultFiveReq = useRequest(
-    setDefaultFiveR,
-    {},
-    { timeout: 5000, message: "Saving..." }
-  );
-  const getTeamStatsReq = useRequest(getTeamStats);
-  const getAllPlayersReq = useRequest(getAllPlayersOf);
-
   const getReq = async () => {
     if (players?.length > 0) {
       const res = await statReq.exec(players);
       dispatch(setPlayerStats(res));
     }
   };
-
-  const openPackReq = useRequest(
-    async () => {
-      await testOpenPack();
-    },
-    {
-      onFinished: async () => {
-        setIsPlayerPackOpen(false);
-        setForceUpdateChange(!forceUpdateChange);
-      },
-    }
-  );
+  const {
+    statReq,
+    defaultFiveReq,
+    setDefaultFiveReq,
+    getTeamStatsReq,
+    getAllPlayersReq,
+    openPackReq,
+    delistPlayerReq,
+  } = useMyTeamRequests({
+    setForceUpdateChange,
+    setIsPlayerPackOpen,
+    forceUpdateChange,
+    getReq,
+  });
 
   const [adding, setAdding] = useState(false);
 
   useRouting();
   useEffect(() => {
-    if (!contracts.NC721 || !isSignedIn) {
+    if (!isSignedIn) {
       getIsSignedIn();
       return;
     }
-
     const fetchData = async () => {
       let res = await getTeamStatsReq.exec(address);
       if (!res.initialized) {
@@ -106,7 +81,6 @@ function MyTeam() {
       }
       const cardBalanceRes = await getCardBalanceOf(address, 10);
       setCardBalance(cardBalanceRes.toNumber());
-      console.log(cardBalanceRes.toNumber());
     };
     getAllPlayersReq.exec(address);
     fetchData();
@@ -131,6 +105,7 @@ function MyTeam() {
   return (
     <div className={styles.wrapper}>
       <Modals
+        getReq={getReq}
         isSelling={isSelling}
         setIsSelling={setIsSelling}
         isRenting={isRenting}
@@ -185,7 +160,6 @@ function MyTeam() {
               </Button>
             )}
           </div>
-
           {!defaultFiveReq.loading && defaultFive?.includes?.("0") && (
             <Typography className={styles.notReady}>
               Your team is not ready for the match. Please set your starting
@@ -207,6 +181,7 @@ function MyTeam() {
                       draggable={!adding}
                       key={index}
                       size="128px"
+                      player={item}
                       playerId={item.id}
                     >
                       {adding && (
@@ -215,28 +190,44 @@ function MyTeam() {
                           data-aos="fade-in"
                           className={styles.meta}
                         >
-                          <Button
-                            onClick={() => {
-                              dispatch(setRentingPlayer(item));
-                              setIsRenting(true);
-                            }}
-                            size="xsmall"
-                            type="secondary"
-                            disabled={item.locked}
-                          >
-                            Rent
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              dispatch(setSellingPlayer(item));
-                              setIsSelling(true);
-                            }}
-                            size="xsmall"
-                            type="tertiary"
-                            disabled={item.locked}
-                          >
-                            Sell
-                          </Button>
+                          {item.listed ? (
+                            <Button
+                              onClick={async () => {
+                                await delistPlayerReq.exec(item.id);
+                              }}
+                              size="xsmall"
+                              type="tertiary"
+                              disabled={item.locked}
+                              loading={delistPlayerReq.loading}
+                            >
+                              Delist
+                            </Button>
+                          ) : (
+                            <Fragment>
+                              <Button
+                                onClick={() => {
+                                  dispatch(setRentingPlayer(item));
+                                  setIsRenting(true);
+                                }}
+                                size="xsmall"
+                                type="secondary"
+                                disabled={item.locked}
+                              >
+                                Rent
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  dispatch(setSellingPlayer(item));
+                                  setIsSelling(true);
+                                }}
+                                size="xsmall"
+                                type="tertiary"
+                                disabled={item.locked}
+                              >
+                                Sell
+                              </Button>
+                            </Fragment>
+                          )}
                         </div>
                       )}
                     </PlayerCard>
@@ -244,26 +235,35 @@ function MyTeam() {
             </div>
           )}
         </div>
-        <div data-aos="fade-in" className={styles.court}>
-          <img src={CourtPng} className={styles.courtImg} />
-          {defaultFive?.map((item, index) => (
-            <PlayerDrop
-              key={index}
-              id={item}
-              index={index}
-              className={styles[`player${index + 1}`]}
+        {!statReq.loading && !getAllPlayersReq.loading && (
+          <div data-aos="fade-in" className={styles.court}>
+            <img
+              src={CourtPng}
+              className={clsnm(styles.courtImg, adding && styles.adding)}
             />
-          ))}
-          {defaultFive?.filter((item) => item != "0")?.length === 5 && (
-            <Button
-              loading={setDefaultFiveReq.loading}
-              onClick={() => setDefaultFiveReq.exec(defaultFive)}
-              className={styles.save}
-            >
-              Save Team
-            </Button>
-          )}
-        </div>
+            {defaultFive?.map((item, index) => (
+              <PlayerDrop
+                player={playerStats.filter((i) => i.id == item)?.[0]}
+                key={index}
+                id={playerStats.filter((i) => i.id == item)?.[0]?.id}
+                index={index}
+                className={clsnm(
+                  styles[`player${index + 1}`],
+                  adding && styles.adding
+                )}
+              />
+            ))}
+            {defaultFive?.filter((item) => item != "0")?.length === 5 && (
+              <Button
+                loading={setDefaultFiveReq.loading}
+                onClick={async () => await setDefaultFiveReq.exec(defaultFive)}
+                className={styles.save}
+              >
+                Save Team
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

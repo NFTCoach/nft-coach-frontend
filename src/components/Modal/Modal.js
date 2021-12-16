@@ -1,6 +1,5 @@
 import { useClickOutside } from "common/hooks/useOnClickOutside";
 import React, { useEffect } from "react";
-import { animated, useSpring } from "react-spring";
 import styles from "./Modal.module.scss";
 import { ReactComponent as CloseIcon } from "assets/icons/menu/close_big.svg";
 import Icon from "components/Icon/Icon";
@@ -13,6 +12,8 @@ const Modal = ({
   closeOutside = true,
   opacity = 0.3,
   className,
+  hideContent,
+  extraContent,
 }) => {
   const { ref } = useClickOutside(closeOutside ? close : null);
 
@@ -53,14 +54,18 @@ const Modal = ({
           data-aos-duration="300"
           className={styles.modal}
         >
-          <div className={clsnm(styles.content, className)} ref={ref}>
-            <div onClick={close} className={styles.close}>
-              <Icon>
-                <CloseIcon />
-              </Icon>
+          {extraContent}
+          {!hideContent && (
+            <div className={clsnm(styles.content, className)} ref={ref}>
+              <div onClick={close} className={styles.close}>
+                <Icon>
+                  <CloseIcon />
+                </Icon>
+              </div>
+              {children}
             </div>
-            {children}
-          </div>
+          )}
+
           <div
             className={styles.overlay}
             style={{ backgroundColor: style }}

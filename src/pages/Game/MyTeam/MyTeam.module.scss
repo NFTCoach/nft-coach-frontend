@@ -34,7 +34,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  cursor: grab;
 }
 
 .court {
@@ -60,6 +59,10 @@
 }
 
 .loading {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,4 +138,8 @@
 .slider {
   margin-bottom: 1.5rem;
   margin-top: 0.5rem;
+}
+
+.adding {
+  opacity: 0.5;
 }

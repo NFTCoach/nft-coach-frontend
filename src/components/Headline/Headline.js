@@ -9,10 +9,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PATHS } from "common/constants/paths";
 import { ReactComponent as HomeIcon } from "assets/icons/home/home_alt_fill.svg";
+import { useLocation } from "react-router";
 
 const Headline = ({ title, children }) => {
   const { balance } = useSelector((state) => state.account);
-
+  const { pathname } = useLocation();
   const [theme, setTheme] = useState("dark");
 
   const returnTheme = () => {
@@ -41,22 +42,31 @@ const Headline = ({ title, children }) => {
 
   return (
     <div className={styles.header}>
-      {/*children ? (
-        children
-      ) : (
-        <Button className={styles.hidden} type="secondary">
-          Balance: {balance} COACH
-        </Button>
-      )*/}
       <div className={styles.links}>
-        <Link to="/">
-          <Icon className={styles.svg}>
-            <HomeIcon />
-          </Icon>
+        <Link
+          className={pathname === PATHS.team && styles.active}
+          to={PATHS.team}
+        >
+          My Team
         </Link>
-        <Link to={PATHS.team}>My Team</Link>
-        <Link to={PATHS.training}>Training</Link>
-        <Link to={PATHS.tournaments}>Tournaments</Link>
+        <Link
+          className={pathname === PATHS.training && styles.active}
+          to={PATHS.training}
+        >
+          Training
+        </Link>
+        <Link
+          className={pathname === PATHS.tournaments && styles.active}
+          to={PATHS.tournaments}
+        >
+          Tournaments
+        </Link>
+        <Link
+          className={pathname === PATHS.market && styles.active}
+          to={PATHS.market}
+        >
+          Market
+        </Link>
       </div>
 
       <Typography className={styles.title} variant="title2" weight="semibold">

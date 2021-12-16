@@ -3,6 +3,10 @@
 import React, { forwardRef } from "react";
 import Avatar from "avataaars";
 import styles from "./PlayerAvatar.module.scss";
+import { calcPower } from "common/utils/calcPower";
+import { clsnm } from "common/utils/clsnm";
+import { Typography } from "components/Typography";
+import Button from "components/Button";
 const avatarStyle = "Circle";
 
 const topTypeArr = [
@@ -161,42 +165,57 @@ const skinColorArr = [
   "Black",
 ];
 
-const PlayerAvatar = forwardRef(({ id = "0", size, className }, ref) => {
-  return (
-    <div className={styles.wrapper} ref={ref}>
-      <Avatar
-        className={className}
-        style={{ width: size, height: size }}
-        avatarStyle={avatarStyle}
-        topType={topTypeArr[parseInt(id.slice(3, 5) % topTypeArr.length)]}
-        accessoriesType={
-          accessoriesTypeArr[
-            parseInt(id.slice(1, 2) % accessoriesTypeArr.length)
-          ]
-        }
-        hairColor={hairColorArr[parseInt(id.slice(5, 7) % hairColorArr.length)]}
-        facialHairType={
-          facialHairTypeArr[parseInt(id.slice(2, 3) % facialHairTypeArr.length)]
-        }
-        clotheType={
-          clotheTypeArr[parseInt(id.slice(7, 8) % clotheTypeArr.length)]
-        }
-        clotheColor={
-          clotheColorArr[parseInt(id.slice(0, 2) % clotheColorArr.length)]
-        }
-        eyeType={eyeTypeArr[parseInt(id.slice(8, 10) % eyeTypeArr.length)]}
-        eyebrowType={
-          eyebrowTypeArr[parseInt(id.slice(10, 12) % eyebrowTypeArr.length)]
-        }
-        mouthType={
-          mouthTypeArr[parseInt(id.slice(12, 14) % mouthTypeArr.length)]
-        }
-        skinColor={
-          skinColorArr[parseInt(id.slice(14, 16) % skinColorArr.length)]
-        }
-      />
-    </div>
-  );
-});
+const PlayerAvatar = forwardRef(
+  ({ id = "0", size, className, player, showPowers = true }, ref) => {
+    const [atk, def] = calcPower(player);
+
+    return (
+      <div className={styles.wrapper} ref={ref}>
+        <Avatar
+          className={className}
+          style={{ width: size, height: size }}
+          avatarStyle={avatarStyle}
+          topType={topTypeArr[parseInt(id.slice(3, 5) % topTypeArr.length)]}
+          accessoriesType={
+            accessoriesTypeArr[
+              parseInt(id.slice(1, 2) % accessoriesTypeArr.length)
+            ]
+          }
+          hairColor={
+            hairColorArr[parseInt(id.slice(5, 7) % hairColorArr.length)]
+          }
+          facialHairType={
+            facialHairTypeArr[
+              parseInt(id.slice(2, 3) % facialHairTypeArr.length)
+            ]
+          }
+          clotheType={
+            clotheTypeArr[parseInt(id.slice(7, 8) % clotheTypeArr.length)]
+          }
+          clotheColor={
+            clotheColorArr[parseInt(id.slice(0, 2) % clotheColorArr.length)]
+          }
+          eyeType={eyeTypeArr[parseInt(id.slice(8, 10) % eyeTypeArr.length)]}
+          eyebrowType={
+            eyebrowTypeArr[parseInt(id.slice(10, 12) % eyebrowTypeArr.length)]
+          }
+          mouthType={
+            mouthTypeArr[parseInt(id.slice(12, 14) % mouthTypeArr.length)]
+          }
+          skinColor={
+            skinColorArr[parseInt(id.slice(14, 16) % skinColorArr.length)]
+          }
+        />
+        {showPowers && (
+          <div className={styles.powers}>
+            <div type="secondary" className={clsnm(styles.power)}>
+              {atk} A - {def} D
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 export { PlayerAvatar };
