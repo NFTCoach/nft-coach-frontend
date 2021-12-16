@@ -28,6 +28,8 @@ import Modal from "components/Modal/Modal";
 import { useGeneralFunctions } from "common/hooks/useGeneralFunctions";
 import { clsnm } from "common/utils/clsnm";
 import { useMyTeamRequests } from "./useMyTeamRequests";
+import { useListingFunctions } from "common/hooks/useListingFunctions";
+import { useRequest } from "common/hooks/useRequest";
 
 function MyTeam() {
   const [forceUpdateChange, setForceUpdateChange] = useState(true);
@@ -66,7 +68,10 @@ function MyTeam() {
     getReq,
   });
 
-  const [adding, setAdding] = useState(false);
+    const [adding, setAdding] = useState(false);
+
+  const { claimAllRentedPlayers } = useListingFunctions();
+  const claimAllRentedPlayersReq = useRequest(claimAllRentedPlayers);
 
   useRouting();
   useEffect(() => {
@@ -159,6 +164,10 @@ function MyTeam() {
                 Open pack
               </Button>
             )}
+            <Button onClick={() => {
+                claimAllRentedPlayersReq.exec();
+            }} loading={claimAllRentedPlayersReq.loading}
+            type="secondary">Claim Rent Players</Button>
           </div>
           {!defaultFiveReq.loading && defaultFive?.includes?.("0") && (
             <Typography className={styles.notReady}>

@@ -8,12 +8,15 @@ import Button from "components/Button";
 import { Headline } from "components/Headline";
 import Navbar from "components/Navbar";
 import { Spinner } from "components/Spinner";
-import React, { useEffect, useState } from "react";
+import {Typography} from "components/Typography";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { setDefaultFive } from "store/reducers/game";
 import Tournament from "./Tournament";
 import styles from "./Tournaments.module.scss";
+import { clsnm } from "common/utils/clsnm";
+import moment from "moment";
 
 export function Tournaments() {
 
@@ -22,7 +25,7 @@ export function Tournaments() {
   const [ongoingTournamentIds, setOngoingTournamentIds] = useState(null);
   const [ongoingTournaments, setOngoingTournaments] = useState(null);
   const [attendedTournamentId, setAttendedTournamentId] = useState(null);
-  const [attendedTournament, setAttendedTournament] = useState(null);
+  const [tournamentStatus, setTournamentsStatus] = useState(null);
 
   //const { getDefaultFive } = useGameFunctions();
   //const getDefaultFiveReq = useRequest(getDefaultFive);
@@ -36,7 +39,7 @@ export function Tournaments() {
     directSignIn: false,
   });
 
-  const { getOngoingTournaments, getTournamentDetails, leaveTournament } = useTournamentFunctions();
+  const { getOngoingTournaments, getTournamentDetails, leaveTournament, getTournamentStatus } = useTournamentFunctions();
   const { getDefaultFive } = useGameFunctions();
 
   const getOngoingTournamentsReq = useRequest(getOngoingTournaments);
@@ -51,8 +54,7 @@ export function Tournaments() {
     if (attendedTournamentId === null) {
       return;
     }
-    async function fetchData() {
-      if (attendedTournamentId === false) {
+    async function _getOngoingTournaments() {
         const res = await getOngoingTournamentsReq.exec().then(res => {
           return res.map(i => {
             return i.toString()
@@ -61,10 +63,23 @@ export function Tournaments() {
         console.log(res);
   
         setOngoingTournamentIds(res || false);
+    }
+    async function fetchData() {
+      if (attendedTournamentId === false) {
+        _getOngoingTournaments();
       }
       else {
+        _getOngoingTournaments();
         const res = await getTournamentDetails(attendedTournamentId);
-        console.log(res);
+        if (attendedTournamentId === null) return;
+        try {
+            const _tournamentStatus = await getTournamentStatus(attendedTournamentId);
+            console.log(_tournamentStatus);
+            setTournamentsStatus(_tournamentStatus);
+        }
+        catch (err) {
+            console.log(err);
+        }
       }
     }
     // if user is not signed in and is not attend any tournament
@@ -116,12 +131,14 @@ export function Tournaments() {
     fetchData();
     //setUserDetails();
   }, [account.isSignedIn, contracts]);
-
   if (attendedTournamentId === null) {
     return (
       <div className={styles.container}>
         <Headline title="Tournaments"></Headline>
-        <Spinner />
+        <div className={styles["loading-container"]}>
+            <Spinner />
+            <Typography variant="body1">Tournaments loading...</Typography>
+        </div>
       </div>
     );
   }
@@ -139,28 +156,30 @@ export function Tournaments() {
             key={index}></Tournament>);
         })}
       </div>
+        {tournamentStatus && <div className={clsnm(styles["attended-tournament--container"])}>
+            <Typography variant="title1">
+                Next Match {moment(new Date(new Date().getTime() + tournamentStatus.timeUntilNextMatch * 100000)).from(new Date())}
+            </Typography>
+            <Button onClick={async () => {
+                try {
+                    await leaveTournamentReq.exec(window.localStorage.getItem("attendedTournamentId"));
+                    window.localStorage.removeItem("attendedTournamentId");
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            }} loading={leaveTournamentReq.loading}>Quit tournament</Button>
+        </div>}
     </div>);
   }
 
-  if (attendedTournamentId) {
-    // show attended tournaments
-    return (
-      <div className={styles.container}>
-        <Headline title="Continue Tournament"></Headline>
-        <span>You're in a tournament. You can quit the tournament</span>
-        <Button onClick={async () => {
-            try {
-                await leaveTournamentReq.exec(window.localStorage.getItem("attendedTournamentId"));
-                window.localStorage.removeItem("attendedTournamentId");
-            }
-            catch (err) {
-                console.log(err);
-            }
-        }} loading={leaveTournamentReq.loading}>Quit tournament</Button>
-      </div>
-    );
-  }
-  
 
-  return null;
+    return (<div className={styles.container}>
+        <Headline title="All Tournaments" />
+        <div className={styles["loading-container"]}>
+            <Spinner />
+            <Typography variant="body1">Tournaments loading...</Typography>
+        </div>
+    </div>);
+
 }
