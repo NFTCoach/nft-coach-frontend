@@ -42,6 +42,7 @@ export const useTournamentFunctions = () => {
         console.log({ remainingRounds, playedRounds });
 
         const roundData = {}
+        let nextOpponent = null;
         for (let i = 0; i < playedRounds + 1; i++) {
             let playedMatches = 0;
             for (let r = 0; r < i; r++)
@@ -49,7 +50,6 @@ export const useTournamentFunctions = () => {
 
             let roundPlayers = [];
             let matches = []
-            let nextOpponent = undefined;
 
             for (let j = playedMatches; j < 2 ** (tournament.matchCount - i); j++) {
                 roundPlayers.push(
@@ -86,7 +86,8 @@ export const useTournamentFunctions = () => {
             totalRounds: 2 ** tournament.matchCount,
             currentRound: playedRounds,
             matches: roundData,
-            timeUntilNextMatch
+            timeUntilNextMatch,
+            nextOpponent
         }
 
     }

@@ -5,13 +5,18 @@ import { useTournamentFunctions } from 'common/hooks/useTournamentFunctions';
 import Button from 'components/Button';
 import Modal from 'components/Modal/Modal';
 import { Typography } from 'components/Typography';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styles from "./Tournament.module.scss";
 
 
 const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId }) => {
+
+    const { getTournamentStatus } = useTournamentFunctions()
+    const getTournamentStatusReq = useRequest(getTournamentStatus);
+    const [tournamentStatus, setTournamentsStatus] = useState();
+
 
     const { address } = useSelector(state => state.account);
 
@@ -22,6 +27,15 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
     const game = useSelector(state => state.game);
 
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+    useEffect(() => {
+        async function fetchData() {
+            const res = await getTournamentStatusReq.exec(tournament.id);
+            //console.log(res);
+            setTournamentsStatus(res);
+        }
+        fetchData();
+    }, []);
 
     const enterTournament = async (e) => {
         //console.log(typeof tournamentId);
@@ -41,6 +55,7 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
           console.log(err);
         }
       };
+    console.log(tournament);
       
     return (<React.Fragment>
         <Modal isOpen={isErrorModalOpen} closeOutside={true} close={() => setIsErrorModalOpen(false)}>
@@ -49,8 +64,6 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
           </p>
         </Modal>
         <div className={styles.container}>
-            <Typography variant="title3">Rookie League</Typography>
-            <Typography variant="body2">Power Level 0 - 25</Typography>
             <Typography variant="body2">3 / 4 Slots</Typography>
             <ul>
                 <li>Entrance Fee: {tournament.entranceFee.toNumber()}</li>

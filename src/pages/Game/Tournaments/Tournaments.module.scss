@@ -1,6 +1,8 @@
 .container {
   min-height: 100vh;
   justify-content: center;
+  height: fill-available;
+  height: 100%;
 }
 
 .tournaments {
@@ -9,4 +11,18 @@
   width: 80%;
   margin: auto;
   grid-gap: 30px;
+}
+
+.loading-container {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.attended-tournament--container {
+    width: 80vw;
+    margin: 50px auto;
 }
