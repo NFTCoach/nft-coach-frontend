@@ -95,7 +95,7 @@ const Sale = ({
             <Typography variant="title6" weight="medium">
               Buy Player
             </Typography>
-            <PlayerAvatar player={modalItem} id={modalItem?.id} />
+            <PlayerAvatar id={modalItem?.id} />
             <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
               loading={approveReq.loading || buyPlayerReq.loading}
