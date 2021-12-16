@@ -95,15 +95,14 @@ const Sale = ({
             <Typography variant="title6" weight="medium">
               Buy Player
             </Typography>
-            <PlayerAvatar id={modalItem?.id} />
+            <PlayerAvatar player={modalItem} id={modalItem?.id} />
             <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
               loading={approveReq.loading || buyPlayerReq.loading}
               type="secondary"
               onClick={async () => {
-                const isApproved = isApprovedReq.exec();
+                const isApproved = await isApprovedReq.exec();
                 if (isApproved) {
-                  console.log("here");
                   await buyPlayerReq.exec(modalItem?.id);
                 } else {
                   await approveReq.exec();

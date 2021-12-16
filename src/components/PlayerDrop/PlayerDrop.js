@@ -1,6 +1,5 @@
 import styles from "./PlayerDrop.module.scss";
 import { useDrag, useDrop } from "react-dnd";
-import { PlayerCard } from "components/PlayerCard";
 import { clsnm } from "common/utils/clsnm";
 import { ReactComponent as DownloadIcon } from "assets/icons/basic/download.svg";
 import Icon from "components/Icon/Icon";

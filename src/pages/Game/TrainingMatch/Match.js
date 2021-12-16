@@ -23,7 +23,6 @@ const ExtraContent = ({
 
     shoots.forEach((item, index) => {
       setTimeout(() => {
-        console.log(score);
         if (item === 0) {
           score = [score[0] + 1, score[1]];
           setModalScore(score);
