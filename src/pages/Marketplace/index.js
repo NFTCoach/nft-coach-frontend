@@ -88,7 +88,7 @@ export default function Marketplace() {
         <div className={styles.market}>
           {type === "sale" ? (
             <Sale
-              getAllPlayersOfReq={getAllPlayersOf}
+              getAllPlayersOfReq={getAllPlayersOfReq}
               modalItemType={modalItemType}
               setModalItemType={setModalItemType}
               myOwnPlayers={myOwnPlayers}
@@ -96,12 +96,12 @@ export default function Marketplace() {
             />
           ) : (
             <Rent
+              getAllPlayersOfReq={getAllPlayersOfReq}
               myOwnPlayers={myOwnPlayers}
               modalItemType={modalItemType}
               setModalItemType={setModalItemType}
             />
           )}
-
           {/* {allCardListing.map((item, index) => {
             console.log(item);
             return <span key={index}>{item.id}</span>;

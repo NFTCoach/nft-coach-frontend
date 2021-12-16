@@ -95,7 +95,10 @@ const Sale = ({
             <Typography variant="title6" weight="medium">
               Buy Player
             </Typography>
-            <PlayerAvatar id={modalItem?.id} />
+            <PlayerAvatar
+              player={{ stats: modalItem?.stats }}
+              id={modalItem?.id}
+            />
             <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
               loading={approveReq.loading || buyPlayerReq.loading}
@@ -122,7 +125,8 @@ const Sale = ({
         .map((item, index) => {
           return (
             <PlayerCard
-              showPowers={false}
+              player={{ stats: item.stats }}
+              showPowers={true}
               key={index}
               size="128px"
               playerId={item.id}
@@ -131,7 +135,6 @@ const Sale = ({
               <Button
                 className={styles.button}
                 onClick={() => {
-                  console.log(item);
                   setModalItem(item);
                   setModalItemType("buyPlayer");
                   setIsModalOpen(true);

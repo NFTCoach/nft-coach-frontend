@@ -41,27 +41,38 @@ const Modals = ({
   const listPlayerForRentReq = useRequest(listPlayerForRent, {
     onFinished: () => {
       setIsRenting(false);
+      getReq?.();
+      toast("Player listed successfully!");
     },
   });
 
   const isApprovedReq = useRequest(arePlayersApprovedForMarket);
-  const approveReq = useRequest(
-    approvePlayersForMarket,
-    {},
-    { timeout: 4000, message: "Approving cards" }
-  );
+  const approveReq = useRequest(approvePlayersForMarket, {});
 
   const _listPlayerForRentReq = async () => {
     if (!rentingPrice) {
       return;
     }
+    if (rentingDuration <= 0) {
+      toast("Duration must be grater than 0");
+    }
 
     try {
-      await listPlayerForRentReq.exec(
-        rentingPlayer?.id,
-        rentingPrice,
-        rentingDuration
-      );
+      const isApproved = await isApprovedReq.exec();
+      if (isApproved) {
+        await listPlayerForRentReq.exec(
+          rentingPlayer?.id,
+          rentingPrice,
+          rentingDuration
+        );
+      } else {
+        await approveReq.exec();
+        await listPlayerForRentReq.exec(
+          rentingPlayer?.id,
+          rentingPrice,
+          rentingDuration
+        );
+      }
     } catch (err) {
       console.log(err);
     }

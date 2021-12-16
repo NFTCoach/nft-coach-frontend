@@ -9,35 +9,52 @@ import { Spinner } from "components/Spinner";
 import { Typography } from "components/Typography";
 import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import styles from "./Marketplace.module.scss";
 
-const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
+const Rent = ({
+  modalItemType,
+  myOwnPlayers,
+  setModalItemType,
+  getAllPlayersOfReq,
+}) => {
   const contracts = useSelector((state) => state.contracts);
   const [allRentedListing, setAllRentedListings] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalItem, setModalItem] = useState();
-
-  const { rentPlayer } = useContractFunction();
-  const { getAllRentedListings } = useListingFunctions();
+  const {
+    rentPlayer,
+    getAllRentedListings,
+    isCoachApprovedForMarket,
+    approveCoachForMarketplace,
+  } = useContractFunction();
+  const isApprovedReq = useRequest(isCoachApprovedForMarket);
+  const approveReq = useRequest(approveCoachForMarketplace);
 
   const getAllRentedListingReq = useRequest(getAllRentedListings, {
     errorMsg: "Could not load marketplace",
   });
 
-  const rentPlayerReq = useRequest(rentPlayer);
+  const rentPlayerReq = useRequest(rentPlayer, {
+    onFinished: () => {
+      setIsModalOpen(false);
+      setModalItem(null);
+      toast("Player rented successfully!");
+      getRentedReq();
+    },
+  });
+
+  const getRentedReq = async () => {
+    if (contracts.Marketplace) {
+      const res = await getAllRentedListingReq.exec();
+      setAllRentedListings(res);
+    }
+  };
 
   useEffect(() => {
     if (myOwnPlayers === null) {
       return;
     }
-
-    const getRentedReq = async () => {
-      if (contracts.Marketplace) {
-        const res = await getAllRentedListingReq.exec();
-        console.log(res);
-        setAllRentedListings(res);
-      }
-    };
 
     getRentedReq();
   }, [contracts.Marketplace, myOwnPlayers]);
@@ -56,11 +73,21 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
         {modalItemType === "rentPlayer" && (
           <div className={styles["modal-container"]}>
             <Typography variant="title6">Rent Player</Typography>
-            <PlayerAvatar id={modalItem?.id} />
+            <PlayerAvatar
+              player={{ stats: modalItem?.stats }}
+              id={modalItem?.id}
+            />
             <Button
               type="secondary"
-              onClick={() => {
-                rentPlayerReq.exec(modalItem?.id);
+              onClick={async () => {
+                const isApproved = await isApprovedReq.exec();
+                console.log(isApproved);
+                if (isApproved) {
+                  await rentPlayerReq.exec(modalItem?.id);
+                } else {
+                  await approveReq.exec();
+                  await rentPlayerReq.exec(modalItem?.id);
+                }
               }}
               loading={rentPlayerReq.loading}
             >
@@ -73,12 +100,14 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
         .filter((item) => !myOwnPlayers?.includes(item.id))
         .map((item, index) => {
           return (
-            <PlayerCard key={index} size="128px" playerId={item.id}>
+            <PlayerCard
+              player={{ stats: item.stats }}
+              key={index}
+              size="128px"
+              playerId={item.id}
+            >
               <Button
                 className={styles.button}
-                onClick={() => {
-                  rentPlayerReq.exec(item.id);
-                }}
                 size="xsmall"
                 type="secondary"
                 onClick={() => {
@@ -92,7 +121,7 @@ const Rent = ({ modalItemType, myOwnPlayers, setModalItemType }) => {
             </PlayerCard>
           );
         })}
-      {getAllRentedListingReq.loading && (
+      {(getAllRentedListingReq.loading || getAllPlayersOfReq.loading) && (
         <div className={styles.spinner}>
           <Spinner />
         </div>

@@ -208,7 +208,7 @@ const PlayerAvatar = forwardRef(
         />
         {showPowers && (
           <div className={styles.powers}>
-            <div type="secondary" className={clsnm(styles.power)}>
+            <div className={clsnm(styles.power)}>
               {atk} A - {def} D
             </div>
           </div>

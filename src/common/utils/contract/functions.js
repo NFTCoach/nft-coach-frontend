@@ -271,11 +271,17 @@ export function useContractFunction() {
 
   const getAllPlayerListings = async () => {
     const listEvents = await filterEvents(Marketplace, "PlayerListed");
-    let listedIds = [...new Set(listEvents.map((ev) => ev.args[0].toString()))];
+    let listedIds = [...new Set(listEvents.map((ev) => ev.args[0]))];
+
+    async function getListingDetails(id) {
+      const det = await Marketplace.idToListing(id);
+      const sta = await Management.getStats(id);
+      return { det, sta };
+    }
 
     const listings = await Promise.all(
       listedIds.map((id) =>
-        Marketplace.idToListing(id).then((l) => new Listing(id, l))
+        getListingDetails(id).then(({ det, sta }) => new Listing(id, det, sta))
       )
     );
 
@@ -297,13 +303,20 @@ export function useContractFunction() {
 
   const getAllRentedListings = async () => {
     const listEvents = await filterEvents(Marketplace, "PlayerListed");
-    let listedIds = listEvents.map((ev) => ev.args[0]);
+    let listedIds = [...new Set(listEvents.map((ev) => ev.args[0].toString()))];
+
+    async function getListingDetails(id) {
+      const det = await Marketplace.idToListing(id);
+      const sta = await Management.getStats(id);
+      return { det, sta };
+    }
 
     const listings = await Promise.all(
       listedIds.map((id) =>
-        Marketplace.idToListing(id).then((l) => new Listing(id, l))
+        getListingDetails(id).then(({ det, sta }) => new Listing(id, det, sta))
       )
     );
+
     return listings.filter((l) => l.active && l.rentDuration > 0);
   };
 

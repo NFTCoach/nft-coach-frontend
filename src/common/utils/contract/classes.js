@@ -89,7 +89,7 @@ export class Tournament {
 }
 
 export class Listing {
-  constructor(id, struct) {
+  constructor(id, struct, stats) {
     const [active, rentDuration, price] = struct;
 
     this.id = id.toString();
@@ -97,6 +97,8 @@ export class Listing {
     this.active = active;
     this.rentDuration = rentDuration;
     this.price = fmtCoach(price);
+
+    this.stats = stats;
   }
 }
 
