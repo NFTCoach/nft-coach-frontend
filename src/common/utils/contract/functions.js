@@ -13,8 +13,8 @@ const getArgs = async (txn, event) => {
   return receipt.events?.filter((x) => x.event === event)?.[0]?.args;
 };
 
-const showAlert = () => {
-  toast("Handling transaction...", { autoClose: 6000 });
+const showAlert = (msg) => {
+  toast(msg || "Handling transaction...", { autoClose: 6000 });
 };
 
 export const parseCoach = (n) => {
@@ -163,7 +163,9 @@ export function useContractFunction() {
   };
 
   const registerTeam = async () => {
-    await Management.connect(signer).registerTeam();
+    const txn = await Management.connect(signer).registerTeam();
+    showAlert("Initializing team...");
+    await txn.wait();
   };
 
   const requestOpenPack = async () => {

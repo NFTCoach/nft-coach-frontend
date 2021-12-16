@@ -16,13 +16,13 @@
   flex-direction: column;
   height: 100%;
   background-image: url("../../assets/images/landing/player.png");
-  background-size: 46%;
+  background-size: 24%;
   background-repeat: no-repeat;
-  background-position-x: 90%;
-  background-position-y: 50%;
+  background-position-x: 85%;
+  background-position-y: 40%;
   animation: animation infinite linear 2s;
   @media (max-width: 768px) {
-    background-size: 80%;
+    background-size: 60%;
     animation: animation-sm infinite linear 2s;
   }
 }

@@ -24,12 +24,6 @@ const Team = () => {
       linkedin: "https://www.linkedin.com/in/hamza-karaba%C4%9F-7061221b4/",
     },
     {
-      name: "Engin Çetin",
-      position: "UI/UX Designer",
-      photo: EnginPhoto,
-      linkedin: "https://www.linkedin.com/in/engincetin/",
-    },
-    {
       name: "Gürkan Ketenciler",
       position: "Business Development",
       photo: GurkanPhoto,

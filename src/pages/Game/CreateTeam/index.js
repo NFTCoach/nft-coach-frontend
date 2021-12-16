@@ -6,13 +6,11 @@ import Input from "components/Input";
 import { useGameFunctions } from "common/hooks/useGameFunctions";
 import { useContractFunction } from "common/utils/contract/functions";
 import { useRequest } from "common/hooks/useRequest";
-import { useEventRequest } from "common/hooks/useEventRequest";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { PATHS } from "common/constants/paths";
 import useAccount from "common/hooks/useAccount";
-import { prodlog } from "common/utils/prodlog";
 
 const CreateTeam = () => {
   const { registerTeam } = useContractFunction();
@@ -41,11 +39,12 @@ const CreateTeam = () => {
     fetchData();
   }, [isSignedIn]);
 
-  const registerTeamReq = useRequest(
-    registerTeam,
-    { onFinished: () => navigate(PATHS.team) },
-    { timeout: 15000, message: "Team is initalizing, please wait" }
-  );
+  const registerTeamReq = useRequest(registerTeam, {
+    onFinished: () => {
+      navigate(PATHS.team);
+      toast("Team created successfully!");
+    },
+  });
 
   return (
     <div className={styles.container}>

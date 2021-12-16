@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { PATHS } from "common/constants/paths";
 import { ReactComponent as HomeIcon } from "assets/icons/home/home_alt_fill.svg";
 import { useLocation } from "react-router";
+import { clsnm } from "common/utils/clsnm";
 
 const Headline = ({ title, children }) => {
   const { balance } = useSelector((state) => state.account);
@@ -44,25 +45,25 @@ const Headline = ({ title, children }) => {
     <div className={styles.header}>
       <div className={styles.links}>
         <Link
-          className={pathname === PATHS.team && styles.active}
+          className={clsnm(pathname === PATHS.team && styles.active)}
           to={PATHS.team}
         >
           My Team
         </Link>
         <Link
-          className={pathname === PATHS.training && styles.active}
+          className={clsnm(pathname === PATHS.training && styles.active)}
           to={PATHS.training}
         >
           Training
         </Link>
         <Link
-          className={pathname === PATHS.tournaments && styles.active}
+          className={clsnm(pathname === PATHS.tournaments && styles.active)}
           to={PATHS.tournaments}
         >
           Tournaments
         </Link>
         <Link
-          className={pathname === PATHS.market && styles.active}
+          className={clsnm(pathname === PATHS.market && styles.active)}
           to={PATHS.market}
         >
           Market
