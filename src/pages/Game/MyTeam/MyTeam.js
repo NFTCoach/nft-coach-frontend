@@ -149,7 +149,7 @@ function MyTeam() {
               <Icon>{adding ? <MinusIcon /> : <PlusIcon />}</Icon>
               Add to marketplace
             </Button>
-            {cardBalance.length > 0 && (
+            {cardBalance > 0 && (
               <Button
                 type="secondary"
                 onClick={() => {

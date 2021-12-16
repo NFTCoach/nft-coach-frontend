@@ -42,6 +42,7 @@ export const useMyTeamRequests = ({
       onFinished: async () => {
         setIsPlayerPackOpen(false);
         setForceUpdateChange(!forceUpdateChange);
+        toast("Pack opened successfully!");
       },
     }
   );
