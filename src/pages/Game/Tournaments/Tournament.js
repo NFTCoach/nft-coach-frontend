@@ -1,14 +1,17 @@
+import { PATHS } from 'common/constants/paths';
 import { useApproveFunctions } from 'common/hooks/useApproveFunctions';
 import { useRequest } from 'common/hooks/useRequest';
 import { useTournamentFunctions } from 'common/hooks/useTournamentFunctions';
 import Button from 'components/Button';
+import Modal from 'components/Modal/Modal';
 import { Typography } from 'components/Typography';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styles from "./Tournament.module.scss";
 
+
 const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId }) => {
-    console.log(tournament);
 
     const { address } = useSelector(state => state.account);
 
@@ -16,21 +19,35 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
     const { joinTournament } = useTournamentFunctions();
     const joinTournamentReq = useRequest(joinTournament);
 
-    const enterTournament = async (tournamentId) => {
-        console.log(typeof tournamentId);
+    const game = useSelector(state => state.game);
+
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+    const enterTournament = async (e) => {
+        //console.log(typeof tournamentId);
+        if (game.defaultFive?.includes("0")) {
+          setIsErrorModalOpen(true);
+          return;
+        }
+        console.log(tournament.id, typeof tournament.id)
         try {
           await approveCoachForTournament();
-          await joinTournamentReq.exec(tournamentId);
-          window.localStorage.setItem("attendedTournamentId", tournamentId);
-          setAttendedTournamentId(tournamentId);
+          await joinTournamentReq.exec(tournament.id);
+          window.localStorage.setItem("attendedTournamentId", tournament.id);
+          setAttendedTournamentId(tournament.id);
         }
         catch (err) {
           //toast("Error joining the tournament")
           console.log(err);
         }
       };
-      console.log(attendedTournamentId, tournament.id, tournament.id === attendedTournamentId);
-    return (
+      
+    return (<React.Fragment>
+        <Modal isOpen={isErrorModalOpen} closeOutside={true} close={() => setIsErrorModalOpen(false)}>
+          <p className={styles["modal-p"]}>
+            You need to set your default five players to join the tournament. <Link to={PATHS.team}>Set your default five players</Link>
+          </p>
+        </Modal>
         <div className={styles.container}>
             <Typography variant="title3">Rookie League</Typography>
             <Typography variant="body2">Power Level 0 - 25</Typography>
@@ -43,9 +60,9 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
             <div className={styles.information}>
                 {address && attendedTournamentId && (attendedTournamentId === tournament.id ? "Entered" : "Already in tournament")}
                 {!address && "Connect wallet to join tournament"}
-                </div>
+            </div>
         </div>
-    );
+      </React.Fragment>);
 }
 
 export default Tournament;

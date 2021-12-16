@@ -80,7 +80,7 @@ export class Tournament {
     this.k = k;
     this.winnerPoolPercent = winnerPoolPercent;
     this.currentTeamCount = currentTeamCount;
-    this.start = start * 1000 + " secs";
+    this.start = new Date(start * 1000);
     this.interval = interval;
     this.owner = owner;
     this.entranceFee = entranceFee;
