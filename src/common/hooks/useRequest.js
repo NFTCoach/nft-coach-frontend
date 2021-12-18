@@ -46,7 +46,9 @@ export const useRequest = (
           toast("Metamask transaciton rejected");
         } else {
           notify(errorMsg);
-          throw new Error(err);
+          if (process.env.NODE_ENV !== "production") {
+            throw new Error(err);
+          }
         }
       }
     },
