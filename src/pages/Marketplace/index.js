@@ -15,6 +15,7 @@ import { Sale } from "./Sale";
 import { Rent } from "./Rent";
 import { Loader } from "components/Loader";
 import { useApproveFunctions } from "common/hooks/useApproveFunctions";
+import { useRouting } from "common/hooks/useRouting";
 
 export default function Marketplace() {
   const [modalItemType, setModalItemType] = useState();
@@ -45,6 +46,7 @@ export default function Marketplace() {
     errorMsg: "Could not load marketplace",
   });
 
+  useRouting();
   useEffect(() => {
     if (!isSignedIn) {
       getIsSignedIn();

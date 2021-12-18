@@ -8,7 +8,7 @@ import Button from "components/Button";
 import { Headline } from "components/Headline";
 import Navbar from "components/Navbar";
 import { Spinner } from "components/Spinner";
-import {Typography} from "components/Typography";
+import { Typography } from "components/Typography";
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -17,9 +17,9 @@ import Tournament from "./Tournament";
 import styles from "./Tournaments.module.scss";
 import { clsnm } from "common/utils/clsnm";
 import moment from "moment";
+import { useRouting } from "common/hooks/useRouting";
 
 export function Tournaments() {
-
   const dispatch = useDispatch();
 
   const [ongoingTournamentIds, setOngoingTournamentIds] = useState(null);
@@ -39,13 +39,19 @@ export function Tournaments() {
     directSignIn: false,
   });
 
-  const { getOngoingTournaments, getTournamentDetails, leaveTournament, getTournamentStatus } = useTournamentFunctions();
+  const {
+    getOngoingTournaments,
+    getTournamentDetails,
+    leaveTournament,
+    getTournamentStatus,
+  } = useTournamentFunctions();
   const { getDefaultFive } = useGameFunctions();
 
   const getOngoingTournamentsReq = useRequest(getOngoingTournaments);
 
   const leaveTournamentReq = useRequest(leaveTournament);
 
+  useRouting();
   useEffect(() => {
     getIsSignedIn();
   }, []);
@@ -55,30 +61,30 @@ export function Tournaments() {
       return;
     }
     async function _getOngoingTournaments() {
-        const res = await getOngoingTournamentsReq.exec().then(res => {
-          return res.map(i => {
-            return i.toString()
-          });
+      const res = await getOngoingTournamentsReq.exec().then((res) => {
+        return res.map((i) => {
+          return i.toString();
         });
-        console.log(res);
-  
-        setOngoingTournamentIds(res || false);
+      });
+      console.log(res);
+
+      setOngoingTournamentIds(res || false);
     }
     async function fetchData() {
       if (attendedTournamentId === false) {
         _getOngoingTournaments();
-      }
-      else {
+      } else {
         _getOngoingTournaments();
         const res = await getTournamentDetails(attendedTournamentId);
         if (attendedTournamentId === null) return;
         try {
-            const _tournamentStatus = await getTournamentStatus(attendedTournamentId);
-            console.log(_tournamentStatus);
-            setTournamentsStatus(_tournamentStatus);
-        }
-        catch (err) {
-            console.log(err);
+          const _tournamentStatus = await getTournamentStatus(
+            attendedTournamentId
+          );
+          console.log(_tournamentStatus);
+          setTournamentsStatus(_tournamentStatus);
+        } catch (err) {
+          console.log(err);
         }
       }
     }
@@ -97,8 +103,9 @@ export function Tournaments() {
       //** for right now this informations will be fetched from localStorage
       //** because there no function in contracts related to this logic
 
-      const _attendedTournamentId =
-        window.localStorage.getItem("attendedTournamentId");
+      const _attendedTournamentId = window.localStorage.getItem(
+        "attendedTournamentId"
+      );
       setAttendedTournamentId(_attendedTournamentId ?? false);
     }
     fetchData();
@@ -122,7 +129,7 @@ export function Tournaments() {
   }, [ongoingTournamentIds]);
 
   useEffect(() => {
-    console.log(account, contracts)
+    console.log(account, contracts);
     if (!account.isSignedIn || !contracts.Management) return;
     async function fetchData() {
       const defaultFive = await getDefaultFive(account.address);
@@ -136,50 +143,70 @@ export function Tournaments() {
       <div className={styles.container}>
         <Headline title="Tournaments"></Headline>
         <div className={styles["loading-container"]}>
-            <Spinner />
-            <Typography variant="body1">Tournaments loading...</Typography>
+          <Spinner />
+          <Typography variant="body1">Tournaments loading...</Typography>
         </div>
       </div>
     );
   }
 
   if (ongoingTournaments) {
-    return (<div className={styles.container}>
-      <Headline title="All Tournaments"></Headline>
-      {/** Show user the ongoing tournaments */}
-      <div className={styles.tournaments}>
-        {ongoingTournaments.map((tournament, index) => {
-          //console.log(tournament);
-          return (<Tournament setAttendedTournamentId={setAttendedTournamentId}
-            tournament={tournament}
-            attendedTournamentId={attendedTournamentId}
-            key={index}></Tournament>);
-        })}
-      </div>
-        {tournamentStatus && <div className={clsnm(styles["attended-tournament--container"])}>
+    return (
+      <div className={styles.container}>
+        <Headline title="All Tournaments"></Headline>
+        {/** Show user the ongoing tournaments */}
+        <div className={styles.tournaments}>
+          {ongoingTournaments.map((tournament, index) => {
+            //console.log(tournament);
+            return (
+              <Tournament
+                setAttendedTournamentId={setAttendedTournamentId}
+                tournament={tournament}
+                attendedTournamentId={attendedTournamentId}
+                key={index}
+              ></Tournament>
+            );
+          })}
+        </div>
+        {tournamentStatus && (
+          <div className={clsnm(styles["attended-tournament--container"])}>
             <Typography variant="title1">
-                Next Match {moment(new Date(new Date().getTime() + tournamentStatus.timeUntilNextMatch * 100000)).from(new Date())}
+              Next Match{" "}
+              {moment(
+                new Date(
+                  new Date().getTime() +
+                    tournamentStatus.timeUntilNextMatch * 100000
+                )
+              ).from(new Date())}
             </Typography>
-            <Button onClick={async () => {
+            <Button
+              onClick={async () => {
                 try {
-                    await leaveTournamentReq.exec(window.localStorage.getItem("attendedTournamentId"));
-                    window.localStorage.removeItem("attendedTournamentId");
+                  await leaveTournamentReq.exec(
+                    window.localStorage.getItem("attendedTournamentId")
+                  );
+                  window.localStorage.removeItem("attendedTournamentId");
+                } catch (err) {
+                  console.log(err);
                 }
-                catch (err) {
-                    console.log(err);
-                }
-            }} loading={leaveTournamentReq.loading}>Quit tournament</Button>
-        </div>}
-    </div>);
+              }}
+              loading={leaveTournamentReq.loading}
+            >
+              Quit tournament
+            </Button>
+          </div>
+        )}
+      </div>
+    );
   }
 
-
-    return (<div className={styles.container}>
-        <Headline title="All Tournaments" />
-        <div className={styles["loading-container"]}>
-            <Spinner />
-            <Typography variant="body1">Tournaments loading...</Typography>
-        </div>
-    </div>);
-
+  return (
+    <div className={styles.container}>
+      <Headline title="All Tournaments" />
+      <div className={styles["loading-container"]}>
+        <Spinner />
+        <Typography variant="body1">Tournaments loading...</Typography>
+      </div>
+    </div>
+  );
 }
