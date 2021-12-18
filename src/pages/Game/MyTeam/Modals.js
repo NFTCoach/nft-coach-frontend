@@ -36,11 +36,13 @@ const Modals = ({
       getReq?.();
       toast("Player listed successfully!");
       setIsSelling(false);
+      setSellingPlayer(null);
     },
   });
   const listPlayerForRentReq = useRequest(listPlayerForRent, {
     onFinished: () => {
       setIsRenting(false);
+      setRentingPlayer(null);
       getReq?.();
       toast("Player listed successfully!");
     },

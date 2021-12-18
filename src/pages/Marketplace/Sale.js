@@ -1,3 +1,4 @@
+import { parse } from "@ethersproject/transactions";
 import { useRequest } from "common/hooks/useRequest";
 import { useContractFunction } from "common/utils/contract/functions";
 import Button from "components/Button";
@@ -21,6 +22,7 @@ const Sale = ({
   const [allPlayerListing, setAllPlayerListing] = useState([]);
   const contracts = useSelector((state) => state.contracts);
   const { isSignedIn } = useSelector((state) => state.account);
+  const { balance } = useSelector((state) => state.account);
   const {
     buyPlayer,
     approveCoachForMarketplace,
@@ -96,8 +98,12 @@ const Sale = ({
               Buy Player
             </Typography>
             <PlayerAvatar
-              player={{ stats: modalItem?.stats }}
+              player={{ stats: modalItem?.stats || new Array(10).fill(0) }}
               id={modalItem?.id}
+              disabled={
+                parseFloat(balance) <
+                parseFloat(modalItem?.price?.split(" ")?.[0] || "0")
+              }
             />
             <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
@@ -133,6 +139,10 @@ const Sale = ({
             >
               <Typography>{item.price}</Typography>
               <Button
+                disabled={
+                  parseFloat(balance) <
+                  parseFloat(item?.price?.split(" ")?.[0] || "0")
+                }
                 className={styles.button}
                 onClick={() => {
                   setModalItem(item);

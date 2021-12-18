@@ -19,6 +19,7 @@ const Rent = ({
   getAllPlayersOfReq,
 }) => {
   const contracts = useSelector((state) => state.contracts);
+  const { balance } = useSelector((state) => state.account);
   const [allRentedListing, setAllRentedListings] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalItem, setModalItem] = useState();
@@ -74,14 +75,18 @@ const Rent = ({
           <div className={styles["modal-container"]}>
             <Typography variant="title6">Rent Player</Typography>
             <PlayerAvatar
-              player={{ stats: modalItem?.stats }}
+              player={{ stats: modalItem?.stats || new Array(10).fill(0) }}
               id={modalItem?.id}
             />
+            <Typography variant="body2">{modalItem?.price}</Typography>
             <Button
               type="secondary"
+              disabled={
+                parseFloat(balance) <
+                parseFloat(modalItem?.price?.split(" ")?.[0] || "0")
+              }
               onClick={async () => {
                 const isApproved = await isApprovedReq.exec();
-                console.log(isApproved);
                 if (isApproved) {
                   await rentPlayerReq.exec(modalItem?.id);
                 } else {
@@ -106,7 +111,12 @@ const Rent = ({
               size="128px"
               playerId={item.id}
             >
+              <Typography>{item?.price}</Typography>
               <Button
+                disabled={
+                  parseFloat(balance) <
+                  parseFloat(item?.price?.split(" ")?.[0] || "0")
+                }
                 className={styles.button}
                 size="xsmall"
                 type="secondary"
