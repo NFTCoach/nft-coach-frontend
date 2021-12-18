@@ -27,6 +27,8 @@ export function Tournaments() {
   const [attendedTournamentId, setAttendedTournamentId] = useState(null);
   const [tournamentStatus, setTournamentsStatus] = useState(null);
 
+  const [timeUntilNextMatch, setTimeUntilNextMatch] = useState(null);
+
   //const { getDefaultFive } = useGameFunctions();
   //const getDefaultFiveReq = useRequest(getDefaultFive);
 
@@ -81,8 +83,8 @@ export function Tournaments() {
           const _tournamentStatus = await getTournamentStatus(
             attendedTournamentId
           );
-          console.log(_tournamentStatus);
           setTournamentsStatus(_tournamentStatus);
+          setTimeUntilNextMatch(_tournamentStatus.timeUntilNextMatch);
         } catch (err) {
           console.log(err);
         }
@@ -91,6 +93,19 @@ export function Tournaments() {
     // if user is not signed in and is not attend any tournament
     fetchData();
   }, [attendedTournamentId]);
+
+    useEffect(() => {
+
+        if (!tournamentStatus)
+            return;
+      const interval = setTimeout(() => {
+          setTimeUntilNextMatch(timeUntilNextMatch - 1);
+      }, 1000);
+
+      return () => {
+          clearTimeout(interval);
+      }
+    }, [timeUntilNextMatch]);
 
   useEffect(() => {
     if (account.isSignedIn === false || !contracts.Tournaments) {
@@ -175,7 +190,7 @@ export function Tournaments() {
               {moment(
                 new Date(
                   new Date().getTime() +
-                    tournamentStatus.timeUntilNextMatch * 100000
+                    timeUntilNextMatch * 1000
                 )
               ).from(new Date())}
             </Typography>

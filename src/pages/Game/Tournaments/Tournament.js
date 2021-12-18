@@ -43,7 +43,6 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
           setIsErrorModalOpen(true);
           return;
         }
-        console.log(tournament.id, typeof tournament.id)
         try {
           await approveCoachForTournament();
           await joinTournamentReq.exec(tournament.id);
@@ -55,7 +54,6 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
           console.log(err);
         }
       };
-    console.log(tournament);
       
     return (<React.Fragment>
         <Modal isOpen={isErrorModalOpen} closeOutside={true} close={() => setIsErrorModalOpen(false)}>
