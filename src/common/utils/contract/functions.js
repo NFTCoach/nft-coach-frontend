@@ -118,10 +118,11 @@ export function useContractFunction() {
   };
 
   const approveCoachForTournament = async () => {
-    await COACH.connect(signer).approve(
+    const txn = await COACH.connect(signer).approve(
       Tournaments.address,
       parseCoach(ethers.constants.MaxUint256)
     );
+    await txn.wait();
   };
 
   const approveCoachForMarketplace = async () => {
