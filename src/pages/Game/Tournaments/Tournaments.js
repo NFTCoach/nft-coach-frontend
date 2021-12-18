@@ -30,7 +30,7 @@ export function Tournaments() {
   //const { getDefaultFive } = useGameFunctions();
   //const getDefaultFiveReq = useRequest(getDefaultFive);
 
-  const { setUserDetails } = useSetUserInformation();
+  //const { setUserDetails } = useSetUserInformation();
 
   const account = useSelector((state) => state.account);
   const contracts = useSelector((state) => state.contracts);
