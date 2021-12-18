@@ -17,6 +17,7 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
     const getTournamentStatusReq = useRequest(getTournamentStatus);
     const [tournamentStatus, setTournamentsStatus] = useState();
 
+    console.log(tournament.id);
 
     const { address } = useSelector(state => state.account);
 

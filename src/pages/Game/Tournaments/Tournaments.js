@@ -53,6 +53,8 @@ export function Tournaments() {
 
   const leaveTournamentReq = useRequest(leaveTournament);
 
+  const getTournamentStatusReq = useRequest(getTournamentStatus);
+
   useRouting();
   useEffect(() => {
     getIsSignedIn();
@@ -80,7 +82,7 @@ export function Tournaments() {
         const res = await getTournamentDetails(attendedTournamentId);
         if (attendedTournamentId === null) return;
         try {
-          const _tournamentStatus = await getTournamentStatus(
+          const _tournamentStatus = await getTournamentStatusReq.exec(
             attendedTournamentId
           );
           setTournamentsStatus(_tournamentStatus);
@@ -201,6 +203,8 @@ export function Tournaments() {
                     window.localStorage.getItem("attendedTournamentId")
                   );
                   window.localStorage.removeItem("attendedTournamentId");
+                  setTournamentsStatus(null);
+                  setAttendedTournamentId(false);
                 } catch (err) {
                   console.log(err);
                 }
@@ -211,6 +215,11 @@ export function Tournaments() {
             </Button>
           </div>
         )}
+        {getTournamentStatusReq.loading && <div style={{height: "30vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20}}>
+                <Spinner />
+                <Typography>Tournament content loading</Typography>
+            </div>}
+            
       </div>
     );
   }
