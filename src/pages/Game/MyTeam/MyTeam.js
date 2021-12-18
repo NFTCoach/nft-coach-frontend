@@ -68,7 +68,7 @@ function MyTeam() {
     getReq,
   });
 
-    const [adding, setAdding] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const { claimAllRentedPlayers } = useListingFunctions();
   const claimAllRentedPlayersReq = useRequest(claimAllRentedPlayers);
@@ -164,10 +164,15 @@ function MyTeam() {
                 Open pack
               </Button>
             )}
-            <Button onClick={() => {
+            <Button
+              onClick={() => {
                 claimAllRentedPlayersReq.exec();
-            }} loading={claimAllRentedPlayersReq.loading}
-            type="secondary">Claim Rent Players</Button>
+              }}
+              loading={claimAllRentedPlayersReq.loading}
+              type="secondary"
+            >
+              Claim Rent Players
+            </Button>
           </div>
           {!defaultFiveReq.loading && defaultFive?.includes?.("0") && (
             <Typography className={styles.notReady}>
@@ -194,11 +199,7 @@ function MyTeam() {
                       playerId={item.id}
                     >
                       {adding && (
-                        <div
-                          data-aos-duration="500"
-                          data-aos="fade-in"
-                          className={styles.meta}
-                        >
+                        <div className={styles.meta}>
                           {item.listed ? (
                             <Button
                               onClick={async () => {
