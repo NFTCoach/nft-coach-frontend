@@ -208,7 +208,7 @@ function MyTeam() {
                     >
                       {adding && (
                         <Fragment>
-                          {!item.rentStatus === playerType.NOT_RENTED ? (
+                          {item.rentStatus === playerType.NOT_RENTED ? (
                             <div className={styles.meta}>
                               {item.listed ? (
                                 <Button
