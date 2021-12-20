@@ -17,22 +17,26 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
     const getTournamentStatusReq = useRequest(getTournamentStatus);
     const [tournamentStatus, setTournamentsStatus] = useState();
 
-    console.log(tournament.id);
-
     const { address } = useSelector(state => state.account);
 
     const { approveCoachForTournament } = useApproveFunctions();
     const { joinTournament } = useTournamentFunctions();
-    const joinTournamentReq = useRequest(joinTournament);
+    const joinTournamentReq = useRequest(joinTournament, {
+        onFinished: () => {
+          window.localStorage.setItem("attendedTournamentId", tournament.id);
+          setAttendedTournamentId(tournament.id);
+        }
+    });
 
     const game = useSelector(state => state.game);
 
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+    //console.log(tournament.id);
 
     useEffect(() => {
         async function fetchData() {
             const res = await getTournamentStatusReq.exec(tournament.id);
-            //console.log(res);
+            console.log(res);
             setTournamentsStatus(res);
         }
         fetchData();
@@ -47,8 +51,6 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
         try {
           await approveCoachForTournament();
           await joinTournamentReq.exec(tournament.id);
-          window.localStorage.setItem("attendedTournamentId", tournament.id);
-          setAttendedTournamentId(tournament.id);
         }
         catch (err) {
           //toast("Error joining the tournament")
@@ -63,7 +65,7 @@ const Tournament = ({ tournament, setAttendedTournamentId, attendedTournamentId 
           </p>
         </Modal>
         <div className={styles.container}>
-            <Typography variant="body2">3 / 4 Slots</Typography>
+            <Typography variant="body2">{tournament.currentTeamCount} players attended</Typography>
             <ul>
                 <li>Entrance Fee: {tournament.entranceFee.toNumber()}</li>
                 <li>Prize pool: {tournament.prizePool.toNumber()}</li>
