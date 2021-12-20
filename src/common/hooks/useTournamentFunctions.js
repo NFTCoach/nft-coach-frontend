@@ -34,12 +34,10 @@ export const useTournamentFunctions = () => {
     const getTournamentStatus = async (tournamentId) => {
         /** @type {Tournament} */
         const tournament = await getTournamentDetails(tournamentId);
-        console.log("Got tournament");
         // Needs to be checked for last round
         const pointerDelta = tournament.k - tournament.j;
         const remainingRounds = pointerDelta > 0 ? Math.log2(pointerDelta) : 0;
         const playedRounds = tournament.matchCount - remainingRounds;
-        console.log({ remainingRounds, playedRounds });
 
         const roundData = {}
         let nextOpponent = null;
@@ -97,5 +95,17 @@ export const useTournamentFunctions = () => {
         await txn.wait();
     }
 
-    return { getOngoingTournaments, joinTournament, getTournamentDetails, leaveTournament, getTournamentStatus, adminFinishTournament };
+    const useUpgradeCards = async () => {
+        //await Management.connect(signer).useUpgradeCard(0, teamStats[0].id);
+    }
+
+    return {
+        getOngoingTournaments,
+        joinTournament,
+        getTournamentDetails,
+        leaveTournament,
+        getTournamentStatus,
+        adminFinishTournament,
+        useUpgradeCards
+    };
 }

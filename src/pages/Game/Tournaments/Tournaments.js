@@ -18,6 +18,9 @@ import styles from "./Tournaments.module.scss";
 import { clsnm } from "common/utils/clsnm";
 import moment from "moment";
 import { useRouting } from "common/hooks/useRouting";
+import { PATHS } from "common/constants/paths";
+import { Link } from "react-router-dom";
+import { useContractFunction } from "common/utils/contract/functions";
 
 export function Tournaments() {
   const dispatch = useDispatch();
@@ -26,6 +29,7 @@ export function Tournaments() {
   const [ongoingTournaments, setOngoingTournaments] = useState(null);
   const [attendedTournamentId, setAttendedTournamentId] = useState(null);
   const [tournamentStatus, setTournamentsStatus] = useState(null);
+  const [teamStats, setTeamStats] = useState(null);
 
   const [timeUntilNextMatch, setTimeUntilNextMatch] = useState(null);
 
@@ -55,10 +59,23 @@ export function Tournaments() {
 
   const getTournamentStatusReq = useRequest(getTournamentStatus);
 
+  const { getTeamStats } = useContractFunction()
+
   useRouting();
   useEffect(() => {
     getIsSignedIn();
   }, []);
+
+  useEffect(() => {
+    if (!account.address && !attendedTournamentId)
+      return;
+
+    async function fetchData() {
+      const _teamStats = await getTeamStats(account.address);
+      setTeamStats(_teamStats);
+    }
+    fetchData();
+  }, [account.address, attendedTournamentId]);
 
   useEffect(() => {
     if (attendedTournamentId === null) {
@@ -80,11 +97,13 @@ export function Tournaments() {
       } else {
         _getOngoingTournaments();
         const res = await getTournamentDetails(attendedTournamentId);
+          console.log(res);
         if (attendedTournamentId === null) return;
         try {
           const _tournamentStatus = await getTournamentStatusReq.exec(
             attendedTournamentId
           );
+          console.log(tournamentStatus);
           setTournamentsStatus(_tournamentStatus);
           setTimeUntilNextMatch(_tournamentStatus.timeUntilNextMatch);
         } catch (err) {
@@ -185,8 +204,8 @@ export function Tournaments() {
             );
           })}
         </div>
-        {tournamentStatus && (
           <div className={clsnm(styles["attended-tournament--container"])}>
+          {tournamentStatus?.nextOpponent != null && (<Fragment>
             <Typography variant="title1">
               Next Match{" "}
               {moment(
@@ -196,7 +215,8 @@ export function Tournaments() {
                 )
               ).from(new Date())}
             </Typography>
-            <Button
+          </Fragment>)}
+          <Button
               onClick={async () => {
                 try {
                   await leaveTournamentReq.exec(
@@ -213,13 +233,48 @@ export function Tournaments() {
             >
               Quit tournament
             </Button>
+            {tournamentStatus && tournamentStatus?.nextOpponent === null &&
+              <Fragment>You don't have any match</Fragment>
+            }
+            <div className={styles["teams-container"]}>
+              {/** if we have a match */}
+              <div className={styles["opponent-container"]}>Your opponent</div>
+
+              <div className={styles["team-stats--container"]}>
+                <Typography variant="body1">Team Stats</Typography>
+                <div className={styles["team-info"]}>
+                  <label>Attack</label>
+                  {teamStats?.atkAvg.toString().slice(0, 2)}
+                  <progress max="100" value={teamStats?.atkAvg.toString().slice(0, 2)}></progress>
+                </div>
+                <div className={styles["team-info"]}>
+                  <label>Defence</label>
+                  {teamStats?.defAvg.toString().slice(0, 2)}
+                  <progress max="100" value={teamStats?.defAvg.toString().slice(0, 2)}></progress>
+                </div>
+              </div>
+              <div className={styles["my-team--container"]}>Your team</div>
+            </div>
+            <div className={styles["tournament-matches"]}>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+              <div className={styles.team}></div>
+            </div>
+            <div className={styles.buttons}>
+              <Button type="primary">Use Upgrade Cards</Button>
+              <Link to={PATHS.team}>
+                <Button type="secondary">Change Starter Five</Button>
+              </Link>
+            </div>
           </div>
-        )}
         {getTournamentStatusReq.loading && <div style={{height: "30vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20}}>
                 <Spinner />
                 <Typography>Tournament content loading</Typography>
             </div>}
-            
       </div>
     );
   }
