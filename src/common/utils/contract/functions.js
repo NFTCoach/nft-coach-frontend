@@ -634,7 +634,7 @@ export function useContractFunction() {
       const rentPeriodOver = rentFinish === 0 || Date.now() > rentFinish * 1000;
 
       if (rentPeriodOver) {
-        await Management.connect(signer).claimRetired(rentedPlayerId, address);
+        await Management.connect(signer).claimRented(rentedPlayerId, address);
       }
     }
 
