@@ -16,9 +16,15 @@ import { PATHS } from "common/constants/paths";
 import { Tournaments } from "pages/Game/Tournaments";
 import CreateTeam from "pages/Game/CreateTeam";
 import TrainingMatch from "pages/Game/TrainingMatch";
+import { checkIfRightNetwork } from "common/utils/checkIfRightNetwork";
 
 function App() {
   useEffect(() => {
+    const checkNetwork = async () => {
+      await checkIfRightNetwork();
+    };
+    checkNetwork();
+
     AOS.init({
       duration: 1000,
     });

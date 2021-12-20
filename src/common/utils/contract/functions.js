@@ -6,6 +6,8 @@ import { setPlayers as setGamePlayers } from "store/reducers/game";
 import { prodlog } from "../prodlog";
 import addresses from "contract/addresses";
 import { toast } from "react-toastify";
+import { checkIfRightNetwork } from "../checkIfRightNetwork";
+import { useEffect } from "react";
 
 const getArgs = async (txn, event) => {
   const receipt = await txn.wait();
@@ -43,6 +45,18 @@ export function useContractFunction() {
 
   const { signer, address } = useSelector((state) => state.account);
 
+  const checkNetwork = async () => {
+    const res = await checkIfRightNetwork();
+    return res;
+  };
+
+  useEffect(() => {
+    const res = checkNetwork();
+    if (res === true) {
+      window.location.reload(0);
+    }
+  }, []);
+
   const getAllPlayersOf = async (address) => {
     const mintEvents = await filterEvents(NC721, "Transfer", null, address);
     const playerIds = [
@@ -62,20 +76,23 @@ export function useContractFunction() {
       if (transferEvents[transferEvents.length - 1].args[1] != address)
         continue;
 
+      // TODO: Redundant code
       if ((await Management.idToCoach(playerId)) == address)
         players.push(playerId);
     }
 
     const rentEvents = await filterEvents(Marketplace, "PlayerRented");
     const rentedIds = rentEvents.map((ev) => ev.args[0].toString());
+
     for (let playerId of rentedIds) {
-      if ((await Management.idToCoach(playerId)) == signer.address) {
+      if ((await Management.idToCoach(playerId)) == address) {
         players.push(playerId);
       } else if (players.includes(playerId)) {
         const idx = players.indexOf(playerId);
         players.splice(idx, 1);
       }
     }
+
     dispatch(setGamePlayers(players));
     dispatch(setPlayers(players));
     return players;
@@ -586,6 +603,47 @@ export function useContractFunction() {
     );
   };
 
+  const claimAllRentedPlayers = async () => {
+    // Get all players
+    const transferEvents = await filterEvents(NC721, "Transfer", null, address);
+    const playerIds = [
+      ...new Set(transferEvents.map((ev) => ev.args[2].toString())),
+    ];
+
+    let rentedPlayers = [];
+    for (let playerId of playerIds) {
+      // Get all transfers related to the playerId
+      const transferEvents = await filterEvents(
+        NC721,
+        "Transfer",
+        null,
+        null,
+        ethers.BigNumber.from(playerId)
+      );
+
+      // Not mine if last transfer is not to me
+      if (transferEvents[transferEvents.length - 1].args[1] != address)
+        continue;
+
+      if ((await Management.idToCoach(playerId)) != address)
+        rentedPlayers.push(playerId);
+    }
+
+    for (let rentedPlayerId of rentedPlayers) {
+      const rentFinish = (await Management.idToPlayer(rentedPlayerId))[4];
+      const rentPeriodOver = rentFinish === 0 || Date.now() > rentFinish * 1000;
+
+      if (rentPeriodOver) {
+        await Management.connect(signer).claimRetired(rentedPlayerId, address);
+      }
+    }
+
+    if (rentedPlayers.length === 0) {
+      toast("You don't have any rented player");
+      return false;
+    }
+  };
+
   return {
     getTeamStats,
     isCoachApprovedForMarket,
@@ -635,5 +693,6 @@ export function useContractFunction() {
     getBlockRandomOf,
     testTrain,
     testOpenPack,
+    claimAllRentedPlayers,
   };
 }

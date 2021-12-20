@@ -1,3 +1,4 @@
+import { playerType } from "common/constants/playerType";
 import { ethers } from "ethers";
 
 const fmtCoach = (n) => ethers.utils.formatEther(n) + " COACH";
@@ -27,7 +28,13 @@ export class Player {
     this.academyType = academyType;
     this.potential = potential;
     this.rentFinish = new Date(rentFinish * 1000);
-    this.rentDone = rentFinish === 0 || Date.now() > this.rentFinish.getTime();
+    this.rentStatus =
+      rentFinish === 0
+        ? playerType.NOT_RENTED
+        : Date.now() < this.rentFinish.getTime()
+        ? playerType.RENTED
+        : playerType.EXPIRED;
+
     this.lastChallenge = new Date(lastChallenge * 1000);
     this.leftToExpire =
       playerStatus == 0 ? new Date(leftToExpire * 1000) : leftToExpire;

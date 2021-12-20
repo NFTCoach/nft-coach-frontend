@@ -30,6 +30,8 @@ import { clsnm } from "common/utils/clsnm";
 import { useMyTeamRequests } from "./useMyTeamRequests";
 import { useListingFunctions } from "common/hooks/useListingFunctions";
 import { useRequest } from "common/hooks/useRequest";
+import { useContractFunction } from "common/utils/contract/functions";
+import { playerType } from "common/constants/playerType";
 
 function MyTeam() {
   const [forceUpdateChange, setForceUpdateChange] = useState(true);
@@ -70,7 +72,7 @@ function MyTeam() {
 
   const [adding, setAdding] = useState(false);
 
-  const { claimAllRentedPlayers } = useListingFunctions();
+  const { claimAllRentedPlayers } = useContractFunction();
   const claimAllRentedPlayersReq = useRequest(claimAllRentedPlayers);
 
   useRouting();
@@ -165,8 +167,13 @@ function MyTeam() {
               </Button>
             )}
             <Button
-              onClick={() => {
-                claimAllRentedPlayersReq.exec();
+              onClick={async () => {
+                const res = await claimAllRentedPlayersReq.exec();
+                if (res === false) {
+                  // do nothing
+                } else {
+                  getReq?.();
+                }
               }}
               loading={claimAllRentedPlayersReq.loading}
               type="secondary"
@@ -192,6 +199,7 @@ function MyTeam() {
                   ?.filter((item) => !defaultFive?.includes(item.id))
                   ?.map?.((item, index) => (
                     <PlayerCard
+                      disabled={item.rentStatus === playerType.EXPIRED}
                       draggable={!adding}
                       key={index}
                       size="128px"
@@ -199,46 +207,60 @@ function MyTeam() {
                       playerId={item.id}
                     >
                       {adding && (
-                        <div className={styles.meta}>
-                          {item.listed ? (
-                            <Button
-                              onClick={async () => {
-                                await delistPlayerReq.exec(item.id);
-                              }}
-                              size="xsmall"
-                              type="tertiary"
-                              disabled={item.locked}
-                              loading={delistPlayerReq.loading}
-                            >
-                              Delist
-                            </Button>
+                        <Fragment>
+                          {!item.rentStatus === playerType.NOT_RENTED ? (
+                            <div className={styles.meta}>
+                              {item.listed ? (
+                                <Button
+                                  onClick={async () => {
+                                    await delistPlayerReq.exec(item.id);
+                                  }}
+                                  size="xsmall"
+                                  type="tertiary"
+                                  disabled={item.locked}
+                                  loading={delistPlayerReq.loading}
+                                >
+                                  Delist
+                                </Button>
+                              ) : (
+                                <Fragment>
+                                  <Button
+                                    onClick={() => {
+                                      dispatch(setRentingPlayer(item));
+                                      setIsRenting(true);
+                                    }}
+                                    size="xsmall"
+                                    type="secondary"
+                                    disabled={item.locked}
+                                  >
+                                    Rent
+                                  </Button>
+                                  <Button
+                                    onClick={() => {
+                                      dispatch(setSellingPlayer(item));
+                                      setIsSelling(true);
+                                    }}
+                                    size="xsmall"
+                                    type="tertiary"
+                                    disabled={item.locked}
+                                  >
+                                    Sell
+                                  </Button>
+                                </Fragment>
+                              )}
+                            </div>
                           ) : (
-                            <Fragment>
-                              <Button
-                                onClick={() => {
-                                  dispatch(setRentingPlayer(item));
-                                  setIsRenting(true);
-                                }}
-                                size="xsmall"
-                                type="secondary"
-                                disabled={item.locked}
-                              >
-                                Rent
-                              </Button>
-                              <Button
-                                onClick={() => {
-                                  dispatch(setSellingPlayer(item));
-                                  setIsSelling(true);
-                                }}
-                                size="xsmall"
-                                type="tertiary"
-                                disabled={item.locked}
-                              >
-                                Sell
-                              </Button>
-                            </Fragment>
+                            <>
+                              {item.rentStatus === playerType.RENTED ? (
+                                <Typography variant="title5">Rented</Typography>
+                              ) : (
+                                <Typography variant="title5">
+                                  Expired
+                                </Typography>
+                              )}
+                            </>
                           )}
-                        </div>
+                        </Fragment>
                       )}
                     </PlayerCard>
                   ))}
@@ -263,6 +285,9 @@ function MyTeam() {
                 )}
               />
             ))}
+            <Typography className={styles.forward}>Forwards</Typography>
+            <Typography className={styles.center}>Center</Typography>
+            <Typography className={styles.guard}>Guards</Typography>
             {defaultFive?.filter((item) => item != "0")?.length === 5 && (
               <Button
                 loading={setDefaultFiveReq.loading}

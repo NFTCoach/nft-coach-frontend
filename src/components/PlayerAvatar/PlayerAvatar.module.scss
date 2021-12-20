@@ -4,6 +4,10 @@
   justify-content: center;
   border-radius: 50%;
   flex-direction: column;
+
+  &.disabled {
+    opacity: 0.5;
+  }
 }
 
 .powers {

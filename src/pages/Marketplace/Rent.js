@@ -60,6 +60,8 @@ const Rent = ({
     getRentedReq();
   }, [contracts.Marketplace, myOwnPlayers]);
 
+  console.log(allRentedListing);
+
   return (
     <Fragment>
       <Modal

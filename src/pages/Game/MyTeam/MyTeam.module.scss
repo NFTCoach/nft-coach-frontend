@@ -144,3 +144,33 @@
 .adding {
   opacity: 0.5;
 }
+
+.forward {
+  position: absolute;
+  left: 49%;
+  top: 5%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.center {
+  position: absolute;
+  left: 49%;
+  top: 34%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.guard {
+  position: absolute;
+  left: 49%;
+  bottom: 15%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+}

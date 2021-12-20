@@ -65,14 +65,14 @@ const Modals = ({
         await listPlayerForRentReq.exec(
           rentingPlayer?.id,
           rentingPrice,
-          rentingDuration
+          rentingDuration * 60 * 60 * 24
         );
       } else {
         await approveReq.exec();
         await listPlayerForRentReq.exec(
           rentingPlayer?.id,
           rentingPrice,
-          rentingDuration
+          rentingDuration * 60 * 60 * 24
         );
       }
     } catch (err) {

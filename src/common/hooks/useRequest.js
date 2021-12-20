@@ -32,11 +32,11 @@ export const useRequest = (
           });
           setTimeout(() => {
             setLoading(false);
-            onFinished?.();
+            onFinished?.(...args);
           }, timeout);
         } else {
           setLoading(false);
-          onFinished?.();
+          onFinished?.(...args);
         }
         return res;
       } catch (err) {

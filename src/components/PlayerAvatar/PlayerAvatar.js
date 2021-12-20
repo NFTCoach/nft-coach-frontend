@@ -166,11 +166,14 @@ const skinColorArr = [
 ];
 
 const PlayerAvatar = forwardRef(
-  ({ id = "0", size, className, player, showPowers = true }, ref) => {
+  ({ id = "0", size, className, player, showPowers = true, disabled }, ref) => {
     const [atk, def] = calcPower(player);
 
     return (
-      <div className={styles.wrapper} ref={ref}>
+      <div
+        className={clsnm(styles.wrapper, disabled && styles.disabled)}
+        ref={ref}
+      >
         <Avatar
           className={className}
           style={{ width: size, height: size }}

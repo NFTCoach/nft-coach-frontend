@@ -104,40 +104,10 @@ export const useListingFunctions = () => {
     return players;
   };
 
-  const claimAllRentedPlayers = async () => {
-    // Get all players
-    const transferEvents = await filterEvents(contracts.NC721, "Transfer", null, account.address);
-    const playerIds = [...new Set(transferEvents.map(ev => ev.args[2].toString()))];
-
-    let rentedPlayers = [];
-    for (let playerId of playerIds) {
-      // Get all transfers related to the playerId
-      const transferEvents = await filterEvents(contracts.NC721, "Transfer",
-        null, null, ethers.BigNumber.from(playerId));
-
-      // Not mine if last transfer is not to me
-      if (transferEvents[transferEvents.length - 1].args[1] != account.address)
-        continue;
-
-      if (await contracts.Management.idToCoach(playerId) != account.address)
-        rentedPlayers.push(playerId);
-    }
-
-    for (let rentedPlayerId of rentedPlayers) {
-      const rentFinish = (await contracts.Management.idToPlayer(rentedPlayerId))[4];
-      const rentPeriodOver = rentFinish === 0 || Date.now() > (rentFinish * 1000);
-
-      if (rentPeriodOver) {
-        await contracts.Management.connect(account.signer).claimRetired(rentedPlayerId, account.signer.address);
-      }
-    }
-  };
-
   return {
     getAllCardListings,
     getAllPlayerListings,
     getAllRentedListings,
     getAllPlayersOf,
-    claimAllRentedPlayers
   };
 };

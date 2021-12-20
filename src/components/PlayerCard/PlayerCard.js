@@ -13,21 +13,23 @@ const PlayerCard = ({
   draggable,
   children,
   player,
+  disabled,
   showPowers = true,
 }) => {
   const [{ isDragging, isDraggable }, drag] = useDrag({
     type: "1",
     item: { playerId: playerId },
     collect: () => ({
-      isDraggable: draggable,
+      isDraggable: draggable || !disabled,
     }),
   });
 
   const [atk, def] = calcPower(player);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={clsnm(styles.wrapper, disabled && styles.disabled)}>
       <PlayerAvatar
+        disabled={disabled}
         showPowers={false}
         ref={isDraggable ? drag : null}
         id={playerId}
