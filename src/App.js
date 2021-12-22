@@ -32,7 +32,7 @@ function App() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <BrowserRouter basename={process.env.NODE_ENV === "development" ? undefined : "https://nftcoach.github.io/nft-coach-frontend"}>
+      <BrowserRouter>
         <Routes>
           <Route path={PATHS.landing} element={<Landing />}>
             {/*  <Route path=":teamId" element={<Team />} /> */}
