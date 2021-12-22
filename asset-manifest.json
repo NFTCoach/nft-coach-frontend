@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/nft-coach-frontend/static/css/main.8d04d572.chunk.css",
-    "main.js": "/nft-coach-frontend/static/js/main.70e2c9cc.chunk.js",
-    "main.js.map": "/nft-coach-frontend/static/js/main.70e2c9cc.chunk.js.map",
+    "main.js": "/nft-coach-frontend/static/js/main.ee464156.chunk.js",
+    "main.js.map": "/nft-coach-frontend/static/js/main.ee464156.chunk.js.map",
     "runtime-main.js": "/nft-coach-frontend/static/js/runtime-main.c8df15f2.js",
     "runtime-main.js.map": "/nft-coach-frontend/static/js/runtime-main.c8df15f2.js.map",
     "static/css/2.ab9f10ac.chunk.css": "/nft-coach-frontend/static/css/2.ab9f10ac.chunk.css",
@@ -48,6 +48,6 @@
     "static/css/2.ab9f10ac.chunk.css",
     "static/js/2.ca0583c2.chunk.js",
     "static/css/main.8d04d572.chunk.css",
-    "static/js/main.70e2c9cc.chunk.js"
+    "static/js/main.ee464156.chunk.js"
   ]
 }
