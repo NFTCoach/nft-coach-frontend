@@ -62,6 +62,10 @@ const Rent = ({
 
   console.log(allRentedListing);
 
+  const listings = allRentedListing.filter(
+    (item) => !myOwnPlayers?.includes(item.id)
+  );
+
   return (
     <Fragment>
       <Modal
@@ -96,47 +100,57 @@ const Rent = ({
                   await rentPlayerReq.exec(modalItem?.id);
                 }
               }}
-              loading={rentPlayerReq.loading}
+              loading={rentPlayerReq.loading || approveReq.loading}
             >
               Rent Player
             </Button>
           </div>
         )}
       </Modal>
-      {allRentedListing
-        .filter((item) => !myOwnPlayers?.includes(item.id))
-        .map((item, index) => {
-          return (
-            <PlayerCard
-              player={{ stats: item.stats }}
-              key={index}
-              size="128px"
-              playerId={item.id}
+      {listings.map((item, index) => {
+        return (
+          <PlayerCard
+            player={{ stats: item.stats }}
+            key={index}
+            size="128px"
+            playerId={item.id}
+          >
+            <Typography>{item?.price}</Typography>
+            <Button
+              disabled={
+                parseFloat(balance) <
+                parseFloat(item?.price?.split(" ")?.[0] || "0")
+              }
+              className={styles.button}
+              size="xsmall"
+              type="secondary"
+              onClick={() => {
+                setModalItem(item);
+                setModalItemType("rentPlayer");
+                setIsModalOpen(true);
+              }}
             >
-              <Typography>{item?.price}</Typography>
-              <Button
-                disabled={
-                  parseFloat(balance) <
-                  parseFloat(item?.price?.split(" ")?.[0] || "0")
-                }
-                className={styles.button}
-                size="xsmall"
-                type="secondary"
-                onClick={() => {
-                  setModalItem(item);
-                  setModalItemType("rentPlayer");
-                  setIsModalOpen(true);
-                }}
-              >
-                Rent
-              </Button>
-            </PlayerCard>
-          );
-        })}
-      {(getAllRentedListingReq.loading || getAllPlayersOfReq.loading) && (
+              Rent
+            </Button>
+          </PlayerCard>
+        );
+      })}
+      {getAllRentedListingReq.loading || getAllPlayersOfReq.loading ? (
         <div className={styles.spinner}>
           <Spinner />
         </div>
+      ) : (
+        <Fragment>
+          {listings.length === 0 && (
+            <Typography
+              variant="title5"
+              weight="medium"
+              className={styles.noresult}
+            >
+              No players listed
+            </Typography>
+          )}
+        </Fragment>
       )}
     </Fragment>
   );

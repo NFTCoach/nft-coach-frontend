@@ -88,6 +88,24 @@ export const useTournamentFunctions = () => {
     };
   };
 
+  const getAttendedTournament = async (address) => {
+    const createEvents = await filterEvents(Tournaments, "TournamentCreated");
+    const createdIds = createEvents.map((ev) => ev.args[0]);
+
+    const finishEvents = await filterEvents(Tournaments, "TournamentFinished");
+    const finishedIds = finishEvents.map((ev) => ev.args[0]);
+
+    const ongoings = createdIds.filter((id) => !finishedIds.includes(id));
+    for (let tournament of ongoings) {
+      const status = await getTournamentStatus(tournament);
+      for (let match of status.matches[status.currentRound]) {
+        if (match.includes(address)) return tournament;
+      }
+    }
+
+    return null;
+  };
+
   const adminFinishTournament = async (tournamentId) => {
     const txn = await Tournaments.connect(signer).finishTournament(
       tournamentId
@@ -107,5 +125,6 @@ export const useTournamentFunctions = () => {
     getTournamentStatus,
     adminFinishTournament,
     useUpgradeCards,
+    getAttendedTournament,
   };
 };

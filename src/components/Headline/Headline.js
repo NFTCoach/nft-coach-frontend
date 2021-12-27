@@ -56,12 +56,12 @@ const Headline = ({ title, children }) => {
         >
           Training
         </Link>
-        <Link
+        {/*    <Link
           className={clsnm(pathname === PATHS.tournaments && styles.active)}
           to={PATHS.tournaments}
         >
           Tournaments
-        </Link>
+        </Link> */}
         <Link
           className={clsnm(pathname === PATHS.market && styles.active)}
           to={PATHS.market}

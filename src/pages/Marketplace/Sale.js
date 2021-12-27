@@ -77,12 +77,28 @@ const Sale = ({
     return <Loader />;
   }
 
+  const listings = allPlayerListing.filter(
+    (item) => !myOwnPlayers?.includes(item.id)
+  );
+
   return (
     <Fragment>
-      {(getAllPlayersOfReq.loading || getPlayerListingReq.loading) && (
+      {getAllPlayersOfReq.loading || getPlayerListingReq.loading ? (
         <div className={styles.spinner}>
           <Spinner />
         </div>
+      ) : (
+        <Fragment>
+          {listings.length === 0 && (
+            <Typography
+              variant="title5"
+              weight="medium"
+              className={styles.noresult}
+            >
+              No players listed
+            </Typography>
+          )}
+        </Fragment>
       )}
       <Modal
         isOpen={isModalOpen}
@@ -126,37 +142,35 @@ const Sale = ({
         )}
       </Modal>
 
-      {allPlayerListing
-        .filter((item) => !myOwnPlayers?.includes(item.id))
-        .map((item, index) => {
-          return (
-            <PlayerCard
-              player={{ stats: item.stats }}
-              showPowers={true}
-              key={index}
-              size="128px"
-              playerId={item.id}
+      {listings.map((item, index) => {
+        return (
+          <PlayerCard
+            player={{ stats: item.stats }}
+            showPowers={true}
+            key={index}
+            size="128px"
+            playerId={item.id}
+          >
+            <Typography>{item.price}</Typography>
+            <Button
+              disabled={
+                parseFloat(balance) <
+                parseFloat(item?.price?.split(" ")?.[0] || "0")
+              }
+              className={styles.button}
+              onClick={() => {
+                setModalItem(item);
+                setModalItemType("buyPlayer");
+                setIsModalOpen(true);
+              }}
+              size="xsmall"
+              type="secondary"
             >
-              <Typography>{item.price}</Typography>
-              <Button
-                disabled={
-                  parseFloat(balance) <
-                  parseFloat(item?.price?.split(" ")?.[0] || "0")
-                }
-                className={styles.button}
-                onClick={() => {
-                  setModalItem(item);
-                  setModalItemType("buyPlayer");
-                  setIsModalOpen(true);
-                }}
-                size="xsmall"
-                type="secondary"
-              >
-                Buy
-              </Button>
-            </PlayerCard>
-          );
-        })}
+              Buy
+            </Button>
+          </PlayerCard>
+        );
+      })}
     </Fragment>
   );
 };
