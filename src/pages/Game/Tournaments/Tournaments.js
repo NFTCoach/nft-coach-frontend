@@ -144,7 +144,11 @@ export function Tournaments() {
   }, [account.isSignedIn, contracts.Tournaments]);
 
   useEffect(() => {
-    if (ongoingTournamentIds === null) {
+    if (
+      ongoingTournamentIds === null ||
+      attendedTournamentId === null ||
+      attendedTournamentId
+    ) {
       return;
     }
 
@@ -158,7 +162,7 @@ export function Tournaments() {
       setOngoingTournaments(_ongoingTournaments);
     }
     fetchData();
-  }, [ongoingTournamentIds]);
+  }, [ongoingTournamentIds, attendedTournamentId]);
 
   useEffect(() => {
     if (account.isSignedIn === false || !contracts.Tournaments) {
@@ -192,13 +196,14 @@ export function Tournaments() {
     );
   }
 
-  if (ongoingTournaments) {
+  if (ongoingTournaments || tournamentStatus) {
+    console.log(tournamentStatus);
     return (
       <div className={styles.container}>
         <Headline title="All Tournaments"></Headline>
         {/** Show user the ongoing tournaments */}
         <div className={styles.tournaments}>
-          {ongoingTournaments.map((tournament, index) => {
+          {ongoingTournaments?.map((tournament, index) => {
             //console.log(tournament);
             return (
               <Tournament
