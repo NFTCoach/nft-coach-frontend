@@ -21,39 +21,31 @@ export default function Gameplay() {
           Rent players in the marketplace.
         </p>
       </div>
-      <div
-        className={clsnm(styles["marketplace-wrapper"], styles["grid-item"])}
-      >
-        <Link className={styles.marketplace} to="/market">
-          <img src={Marketplace} />
-          <h3>Marketplace</h3>
-        </Link>
-      </div>
-
-      <div
-        className={clsnm(
-          styles["training-match--wrapper"],
-          styles["grid-item"]
-        )}
-      >
+      <div className={styles.itemWrapper}>
         <div
-          className={styles["training-match"]}
-          onClick={() => dispatch(setStage("training-match"))}
+          className={clsnm(styles["marketplace-wrapper"], styles["grid-item"])}
         >
-          <img src={TrainingMatch} />
-          <h3>PvP Training Games</h3>
+          <Link className={styles.marketplace} to="/market">
+            <img src={Marketplace} />
+            <h3>Marketplace</h3>
+          </Link>
         </div>
-      </div>
-      <Link to="/tournaments">
+
         <div
-          className={clsnm(styles["tournaments-wrapper"], styles["grid-item"])}
+          className={clsnm(
+            styles["training-match--wrapper"],
+            styles["grid-item"]
+          )}
         >
-          <div className={styles["tournaments"]}>
-            <img src={Tournaments} />
-            <h3>PvP Tournaments</h3>
+          <div
+            className={styles["training-match"]}
+            onClick={() => dispatch(setStage("training-match"))}
+          >
+            <img src={TrainingMatch} />
+            <h3>PvP Training Games</h3>
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 }
